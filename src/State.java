@@ -17,7 +17,7 @@ public class State {
 	/** room lists */
 	//TODO
 	
-	public State getState() {
+	public State getInstance() {
 		return INSTANCE;
 	}
 	
