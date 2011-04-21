@@ -42,7 +42,13 @@ public class MainWindow extends JFrame {
 		
 		this.setJMenuBar(menuBar);
 		
-		this.add(LotteryNumberPanel.getInstance(), BorderLayout.EAST);
+		// tabs
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.addTab("Preferences", new PreferencesTab());
+		tabbedPane.addTab("Results", new ResultsTab());
+		tabbedPane.addTab("Cart", new ListsTab());
+		
+		this.add(tabbedPane);
 		
 		this.pack();
 		this.setVisible(true);
