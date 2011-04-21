@@ -7,6 +7,7 @@ import com.google.common.collect.Multimap;
 /**
  * Stores all variable, non-GUI data in the program.
  *
+ * @author nmalkin, jswarren
  */
 public class State {
 	public static final State INSTANCE = new State();
@@ -25,12 +26,10 @@ public class State {
 	}
 	
 	private State() {
-		_group = Group.getInstance();
+		_group = new Group();
 		_results = LinkedListMultimap.create();
 		_roomLists = new LinkedList<RoomList>();
 	}
-	
-	// method stubs (TODO)
 	
 	public Group getGroup() {
 		return _group;
