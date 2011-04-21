@@ -1,0 +1,15 @@
+<project name="domus" default="build" basedir=".">
+  <description>Build file for Domus</description>
+  <property name="target" location="domus.MainFrame"/>
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+  <property name="tests" location="test"/>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${build}">
+  </target>
+  
+  <target name="build" depends="init">
+  </target>
+</project>
