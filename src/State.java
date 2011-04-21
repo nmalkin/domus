@@ -1,5 +1,8 @@
-import java.util.Collection;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Stores all variable, non-GUI data in the program.
@@ -12,10 +15,10 @@ public class State {
 	private Group _group;
 	
 	/** the most recent results (based on the current group) */
-	private Map<SubGroup, Collection<Room>> _results; //TODO: redo as multimap
+	private Multimap<SubGroup, Room> _results;
 	
 	/** room lists */
-	//TODO
+	private List<RoomList> _roomLists;
 	
 	public static State getInstance() {
 		return INSTANCE;
@@ -23,6 +26,8 @@ public class State {
 	
 	private State() {
 		_group = Group.getInstance();
+		_results = LinkedListMultimap.create();
+		_roomLists = new LinkedList<RoomList>();
 	}
 	
 	// method stubs (TODO)
@@ -32,12 +37,17 @@ public class State {
 	}
 	
 	public void updateResults() {
-		
+		// TODO
+		System.out.println("updateResults");
 	}
 	
-	// public ? getResults() {}
+	public Multimap<SubGroup, Room> getResults() {
+		return LinkedListMultimap.create(_results);
+	}
 	
-	// public ? getRoomLists()
+	public List<RoomList> getRoomLists() {
+		return new LinkedList<RoomList>(_roomLists);
+	}
 	
 	public void export(String filename) {
 		// TODO: consider returning boolean depending on success/failure
