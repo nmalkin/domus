@@ -42,6 +42,7 @@ public class MainWindow extends JFrame {
 		
 		this.setJMenuBar(menuBar);
 		
+		this.add(LotteryNumberPanel.getInstance(), BorderLayout.EAST);
 		
 		this.pack();
 		this.setVisible(true);
