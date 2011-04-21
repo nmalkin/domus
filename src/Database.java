@@ -23,6 +23,7 @@ public class Database {
 	 * @return
 	 */
 	public static Collection<CampusArea> getCampusAreas() {
+		//TODO
 		return null;
 	}
 	
@@ -43,31 +44,36 @@ public class Database {
 			boolean genderNeutral,
 			boolean sophomoreOnly)
 	{
+		//TODO
 		// use INSTANCE.privateMethods()...
 		return null;
 	}
 	
 	/**
-	 * Given a lottery number and an array of years to use,
+	 * Given a lottery number,
 	 * returns the average semester level for groups with this lottery number.
+	 * Looks at settings in State to choose which years to use. (TODO)
 	 * 
 	 * @param lotteryNumber the lottery number
-	 * @param years all years to include in the results
 	 * @return average semester level for groups with this lottery number
 	 */
-	public static int semesterLevel(int lotteryNumber, int[] years) {
-		return 1;
+	public static int semesterFromLotteryNumber(int lotteryNumber) {
+		//TODO
+		return 7 - lotteryNumber / 200; // not a real formula
 	}
 	
 	/**
-	 * Given a lottery number,
-	 * returns the average semester level for groups with this lottery number,
-	 * over all the data in the database.
+	 * Given a semester level,
+	 * returns an approximate lottery number for groups with this semester level.
+	 * Looks at settings in State to choose which years to use. (TODO)
+	 * TODO TOO: interface will probaby change to accomodate happiness level as well.
 	 * 
 	 * @param lotteryNumber the lottery number
 	 * @return average semester level for groups with this lottery number
 	 */
-	public static int semesterLevel(int lotteryNumber) {
-		return 1;
+	public static int lotteryNumberFromSemester(int semester) {
+		//TODO
+		return 800 - (semester - 3) * 200; // not a real formula
 	}
+	
 }
