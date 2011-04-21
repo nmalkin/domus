@@ -5,14 +5,44 @@ import java.util.LinkedList;
 
 
 public class RoomList extends AbstractCollection<Room> {
+	/** the name by which this RoomList will be referred to */
+	private String _name;
+	
+	/** the rooms that make up this RoomList */
 	private Collection<Room> _rooms;
 	
-	public RoomList() {
+	/**
+	 * Initializes a RoomList with the given name.
+	 */
+	public RoomList(String name) {
+		_name = name;
 		_rooms = new LinkedList<Room>();
 	}
 	
-	public RoomList(Collection<Room> dorms) {
+	/**
+	 * Initializes a RoomList with the given name,
+	 * with the given Rooms.
+	 * @param dorms
+	 */
+	public RoomList(Collection<Room> dorms, String name) {
+		_name = name;
 		_rooms = dorms;
+	}
+	
+	/**
+	 * Initializes a RoomList without a name.
+	 */
+	public RoomList() {
+		this("");
+	}
+	
+	/**
+	 * Initializes a RoomList without a name,
+	 * with the given Rooms.
+	 * @param dorms
+	 */
+	public RoomList(Collection<Room> dorms) {
+		this(dorms, "");
 	}
 	
 	@Override
@@ -28,5 +58,9 @@ public class RoomList extends AbstractCollection<Room> {
 	@Override
 	public int size() {
 		return _rooms.size();
+	}
+	
+	public String getName() {
+		return _name;
 	}
 }
