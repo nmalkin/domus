@@ -66,7 +66,7 @@ public class Database {
 	 * Given a semester level,
 	 * returns an approximate lottery number for groups with this semester level.
 	 * Looks at settings in State to choose which years to use. (TODO)
-	 * TODO TOO: interface will probaby change to accomodate happiness level as well.
+	 * TODO TOO: interface will probably change to accommodate happiness level as well.
 	 * 
 	 * @param lotteryNumber the lottery number
 	 * @return average semester level for groups with this lottery number
