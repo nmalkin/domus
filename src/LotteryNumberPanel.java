@@ -50,6 +50,11 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		//semesterLevel.setPreferredSize(new Dimension(100,25));
 		_semesterLevelBox.setMaximumSize(new Dimension(100,25));
 		_semesterLevelBox.setEditable(false);
+				
+		// set semester level for current number
+		int semesterLevel = Database.semesterFromLotteryNumber(STARTING_NUMBER);
+		int semesterIndex = semesterLevel - 3;
+		_semesterLevelBox.setSelectedIndex(semesterIndex);
 		
 		// set panel size and add elements to it
 		Dimension size = new Dimension(200,500);
