@@ -10,13 +10,17 @@ public class Constants {
 	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	
 	// general graphics
-	protected static final int STANDARD_PADDING = 15; // pixels
+	protected static final int STANDARD_PADDING = 25; // pixels
 	protected static final int INSET = 5; // pixels
 	
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
 	protected static final int CANVAS_HEIGHT = 400;
 	protected static final java.awt.Color CANVAS_COLOR = Color.WHITE;
+	
+	protected static final int HOUSE_LAYER    = 3;
+	protected static final int SUBGROUP_LAYER = 2;
+	protected static final int PERSON_LAYER   = 1;
 	
 	// House
 	protected static final java.awt.Color HOUSE_COLOR = Color.BLUE;

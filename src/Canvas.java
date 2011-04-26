@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import javax.swing.*;
 
-public class Canvas extends JPanel {
+public class Canvas extends JLayeredPane {
 	
 	
 	public Canvas() {
@@ -16,6 +16,7 @@ public class Canvas extends JPanel {
 		this.setSize(d);
 		
 		this.setBackground(Constants.CANVAS_COLOR);
+		this.setOpaque(true);
 		
 		// sample data; TODO: remove
 		House h = new House();
@@ -27,10 +28,10 @@ public class Canvas extends JPanel {
 		s.addPerson(p1);
 		s.addPerson(p2);
 		
-		this.add(p1);
-		this.add(p2);
-		this.add(s);
-		this.add(h);
+		this.add(p1, Constants.PERSON_LAYER);
+		this.add(p2, Constants.PERSON_LAYER);
+		this.add(s, Constants.SUBGROUP_LAYER);
+		this.add(h, Constants.HOUSE_LAYER);
 		
 		/*
 		 * NOTE:
@@ -117,7 +118,7 @@ public class Canvas extends JPanel {
 			newSubGroup.addPerson(person);
 			
 			// display it
-			this.add(newSubGroup);
+			this.add(newSubGroup, Constants.SUBGROUP_LAYER);
 			
 			// but wait! is this new subgroup in a house?
 			dropSubGroupAt(newSubGroup, // checks for that and adds a house if necessary
@@ -202,7 +203,7 @@ public class Canvas extends JPanel {
 			newHouse.addSubGroup(subgroup);
 			
 			// display it
-			this.add(newHouse);
+			this.add(newHouse, Constants.HOUSE_LAYER);
 		}
 		
 		// with the addition/removal, the canvas could have changed. let's repaint it.
@@ -237,4 +238,11 @@ public class Canvas extends JPanel {
 			y >= c.getPosition().y &&
 			y <= c.getPosition().y + c.getHeight();
 	}
+	
+	/*
+	 * FIXME:
+	 * sometimes, relatively rarely, when a person is dropped in a new location,
+	 * a new house and subgroup are created, but the subgroup is behind the house (not seen),
+	 * contrary to the layer hierarchy.
+	 */
 }
