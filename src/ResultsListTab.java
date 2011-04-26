@@ -29,6 +29,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private JPanel _itemsPanel;
 	private JScrollPane _itemsScroller;
 	private Dorm _dorm;
+	private SubGroup _subGroup;
 	private int _index;
 	private boolean _isOpen;
 	private static ImageIcon _openIcon = ImageIconLoader.getInstance().createImageIcon("images/open_results_tab.png", "open results list");
@@ -40,9 +41,10 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private final int _scrollPaneHeight = 100;
 	private final int _scrollBarWidth = 20;
 	
-	ResultsListTab(Dorm dorm) {
+	ResultsListTab(Dorm dorm, SubGroup sg) {
 		super();
 		_dorm = dorm;
+		_subGroup = sg;
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(_listWidth, _tabHeight));
 		this.setSize(new Dimension(_listWidth, _tabHeight));
@@ -87,7 +89,6 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		i.right += _scrollBarWidth + 1;
 		i.top = 0;
 		i.bottom = 0;
-		System.out.println("insets " + i);
 		return i;
 	}
 

@@ -24,9 +24,9 @@ public class RoomList extends AbstractCollection<Room> {
 	 * with the given Rooms.
 	 * @param dorms
 	 */
-	public RoomList(Collection<Room> dorms, String name) {
+	public RoomList(Collection<Room> rooms, String name) {
 		_name = name;
-		_rooms = dorms;
+		_rooms = rooms;
 	}
 	
 	/**
@@ -41,8 +41,8 @@ public class RoomList extends AbstractCollection<Room> {
 	 * with the given Rooms.
 	 * @param dorms
 	 */
-	public RoomList(Collection<Room> dorms) {
-		this(dorms, "");
+	public RoomList(Collection<Room> rooms) {
+		this(rooms, "");
 	}
 	
 	@Override

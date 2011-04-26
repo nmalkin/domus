@@ -15,7 +15,7 @@ public class ResultsPanel extends JPanel {
 	
 	public ResultsPanel() {
 		super();
-		Dimension size = new Dimension(1000, 500);
+		Dimension size = new Dimension(500, 550);
 		this.setPreferredSize(size);
 		_lists = new LinkedList<AccordionList<ResultsListTab, ResultsListItem>>();
 		_results = State.getInstance().getResults();
@@ -30,7 +30,7 @@ public class ResultsPanel extends JPanel {
 			list.setPreferredSize(new Dimension(200, 500));
 			list.setVisible(true);
 			for (Dorm d : _dormMap.get(sg)) {
-				ResultsListTab tab = new ResultsListTab(d);
+				ResultsListTab tab = new ResultsListTab(d, sg);
 				list.addTab(tab);
 				for (Room r : _results.get(sg)) {
 					if (r.getDorm() == d) {
