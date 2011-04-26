@@ -31,9 +31,9 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private Dorm _dorm;
 	private int _index;
 	private boolean _isOpen;
-	private ImageIcon _openIcon;
-	private ImageIcon _closedIcon;
-	private ImageIcon _addToListIcon;
+	private static ImageIcon _openIcon = ImageIconLoader.getInstance().createImageIcon("images/open_results_tab.png", "open results list");
+	private static ImageIcon _closedIcon = ImageIconLoader.getInstance().createImageIcon("images/closed_results_tab.png", "closed results list");
+	private static ImageIcon _addToListIcon = ImageIconLoader.getInstance().createImageIcon("images/add_to_list.png", "add to list");
 	
 	private final int _tabHeight = 25;
 	private final int _listWidth = 200;
@@ -56,14 +56,11 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		//Set up label on tag (with expansion icon)
 		_label = new JLabel();
 		_label.setText(_dorm.getName());
-		_openIcon = createImageIcon("images/open_results_tab.png", "open results list");
-		_closedIcon = createImageIcon("images/closed_results_tab.png", "closed results list");
 		_label.setIcon(_closedIcon);
 		_tab.addMouseListener(new ExpandListener());
 		_tab.add(_label);
 		
 		//Set up addToListButton (actually a blank label with an icon)
-		_addToListIcon = createImageIcon("images/add_to_list.png", "add to list");
 		_tab.add(Box.createHorizontalGlue());
 		_addButton = new JLabel(_addToListIcon);
 		_addButton.addMouseListener(new AddListener());
