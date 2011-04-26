@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 
@@ -15,4 +17,5 @@ public class ResultsTab extends JPanel {
 			this.add(new LotteryNumberPanel(), BorderLayout.LINE_END);
 			this.add(new ResultsPanel(), BorderLayout.CENTER);
 		}
+		
 }
