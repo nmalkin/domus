@@ -54,6 +54,8 @@ public class Canvas extends JPanel {
 	 * @param y
 	 */
 	public void dropPersonAt(Person person, int x, int y) {
+		int parentSubGroups = 0; // tracks how many subgroups this person is currently in
+		
 		for(Component c : this.getComponents()) { // go through all components
 			if(c instanceof SubGroup) { // for each subgroup:
 				SubGroup s = (SubGroup) c;
@@ -62,6 +64,8 @@ public class Canvas extends JPanel {
 				Iterator<Person> it = s.iterator();
 				while(it.hasNext()) {
 					if(it.next() == person) { // yes!
+						parentSubGroups++;
+						
 						if(isDraggablePositionableComponentAt(s, x, y)) { // well, should it?
 											// (is the person, graphically, inside this subgroup?)
 							// yes!
@@ -71,6 +75,7 @@ public class Canvas extends JPanel {
 							// no, not anymore
 							// remove it
 							it.remove();
+							parentSubGroups--;
 							
 							// are there any people left in this subgroup?
 							if(s.isEmpty()) { // no
@@ -87,12 +92,38 @@ public class Canvas extends JPanel {
 				if(isDraggablePositionableComponentAt(s, x, y)) {
 					// yes. add it.
 					s.addPerson(person);
+					parentSubGroups++;
 				}
 			}
 		}
 		
 		// if we removed people, some houses may be empty. check for that
 		removeEmptyHouses();
+		
+		if(parentSubGroups == 0) { // this person isn't in any subgroup
+			// we should fix that.
+			SubGroup newSubGroup = new SubGroup();
+			
+			// place the new house wherever the subgroup is right now
+			newSubGroup.setPosition(
+					person.getPosition().x - Constants.STANDARD_PADDING, 
+					person.getPosition().y - Constants.STANDARD_PADDING);
+				/*TODO: our use of the PADDING constant here
+				 * is based on knowledge of how the house places internal components.
+				 * any way to make it more abstract?
+				 */
+			
+			// add the person to the subgroup
+			newSubGroup.addPerson(person);
+			
+			// display it
+			this.add(newSubGroup);
+			
+			// but wait! is this new subgroup in a house?
+			dropSubGroupAt(newSubGroup, // checks for that and adds a house if necessary
+					newSubGroup.getPosition().x, 
+					newSubGroup.getPosition().y);
+		}
 		
 		// with the addition/removal, the canvas could have changed. let's repaint it.
 		this.repaint();
@@ -111,6 +142,8 @@ public class Canvas extends JPanel {
 	 * @param y
 	 */
 	public void dropSubGroupAt(SubGroup subgroup, int x, int y) {
+		int parentHouses = 0; // tracks how many houses this subgroup is currently in
+		
 		for(Component c : this.getComponents()) { // go through all components
 			if(c instanceof House) { // for each house:
 				House h = (House) c;
@@ -119,6 +152,8 @@ public class Canvas extends JPanel {
 				Iterator<SubGroup> it = h.iterator();
 				while(it.hasNext()) {
 					if(it.next() == subgroup) { // yes!
+						parentHouses++;
+						
 						if(isDraggablePositionableComponentAt(h, x, y)) { // well, should it?
 											// (is the person, graphically, inside this subgroup?)
 							// yes!
@@ -128,6 +163,7 @@ public class Canvas extends JPanel {
 							// no, not anymore
 							// remove it
 							it.remove();
+							parentHouses--;
 							
 							// are there any subgroups left in this house?
 							if(h.isEmpty()) { // no
@@ -144,8 +180,29 @@ public class Canvas extends JPanel {
 				if(isDraggablePositionableComponentAt(h, x, y)) {
 					// yes. add it.
 					h.addSubGroup(subgroup);
+					parentHouses++;
 				}
 			}
+		}
+		
+		if(parentHouses == 0) { // this subgroup isn't in any house
+			// we should fix that.
+			House newHouse = new House();
+			
+			// place the new house wherever the subgroup is right now
+			newHouse.setPosition(
+					subgroup.getPosition().x - Constants.STANDARD_PADDING, 
+					subgroup.getPosition().y - Constants.STANDARD_PADDING);
+				/*TODO: our use of the PADDING constant here
+				 * is based on knowledge of how the house places internal components.
+				 * any way to make it more abstract?
+				 */
+			
+			// add the subgroup to the house
+			newHouse.addSubGroup(subgroup);
+			
+			// display it
+			this.add(newHouse);
 		}
 		
 		// with the addition/removal, the canvas could have changed. let's repaint it.
@@ -170,6 +227,10 @@ public class Canvas extends JPanel {
 	}
 	
 	private boolean isDraggablePositionableComponentAt(DraggablePositionableComponent c, int x, int y) {
+//		System.out.println("Is " + 
+//				x + " within [" + c.getPosition().x + "," + (c.getPosition().x + c.getWidth()) + "] and " +
+//				y + " within [" + c.getPosition().y + "," + (c.getPosition().y + c.getHeight()) + "]?");
+		
 		return 
 			x >= c.getPosition().x &&
 			x <= c.getPosition().x + c.getWidth() &&
