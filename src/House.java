@@ -36,6 +36,27 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 		return true;
 	}
 	
+	/**
+	 * Returns true if there are no subgroups in this house.
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty() {
+		return _subgroups.isEmpty();
+	}
+	
+	/**
+	 * Removes any subgroup that is in this house but has no people in it.
+	 */
+	public void removeEmptySubGroups() {
+		Iterator<SubGroup> it = _subgroups.iterator();
+		while(it.hasNext()) {
+			if(it.next().isEmpty()) {
+				it.remove();
+			}
+		}
+	}
+	
 	@Override
 	public Iterator<SubGroup> iterator() {
 		return _subgroups.iterator();

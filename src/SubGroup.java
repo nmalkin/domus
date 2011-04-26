@@ -40,6 +40,14 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		return true;
 	}
 	
+	/**
+	 * Returns true if there are no people in this subgroup.
+	 * @return
+	 */
+	public boolean isEmpty() {
+		return _people.isEmpty();
+	}
+	
 	public Iterator<Person> iterator() {
 		return _people.iterator();
 	}

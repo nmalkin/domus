@@ -71,7 +71,13 @@ public class Canvas extends JPanel {
 							// no, not anymore
 							// remove it
 							it.remove();
-							s.updatePeoplePositions();
+							
+							// are there any people left in this subgroup?
+							if(s.isEmpty()) { // no
+								this.remove(s); // remove it from view
+							} else { // yes
+								s.updatePeoplePositions(); // update their positions
+							}
 						}
 					}
 				}
@@ -84,6 +90,9 @@ public class Canvas extends JPanel {
 				}
 			}
 		}
+		
+		// if we removed people, some houses may be empty. check for that
+		removeEmptyHouses();
 		
 		// with the addition/removal, the canvas could have changed. let's repaint it.
 		this.repaint();
@@ -119,7 +128,13 @@ public class Canvas extends JPanel {
 							// no, not anymore
 							// remove it
 							it.remove();
-							h.updateSubGroupPositions();
+							
+							// are there any subgroups left in this house?
+							if(h.isEmpty()) { // no
+								this.remove(h); // remove it from view
+							} else { // yes
+								h.updateSubGroupPositions(); // update their positions
+							}
 						}
 					}
 				}
@@ -135,6 +150,23 @@ public class Canvas extends JPanel {
 		
 		// with the addition/removal, the canvas could have changed. let's repaint it.
 		this.repaint();
+	}
+	
+	/**
+	 * Removes any houses on the canvas that do not have any people inside them.
+	 */
+	private void removeEmptyHouses() {
+		for(Component c : this.getComponents()) {
+			if(c instanceof House) {
+				House h = (House) c;
+				
+				h.removeEmptySubGroups();
+				
+				if(h.isEmpty()) {
+					this.remove(h);
+				}
+			}
+		}
 	}
 	
 	private boolean isDraggablePositionableComponentAt(DraggablePositionableComponent c, int x, int y) {
