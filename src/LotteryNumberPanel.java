@@ -31,7 +31,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 	
 	private LotteryNumberPanel() {
 		// slider
-		_numberSlider = new JSlider(JSlider.VERTICAL, 0, Constants.MAX_LOTTERY_NUMBER, Constants.DEFAULT_LOTTERY_NUMBER);
+		_numberSlider = new JSlider(JSlider.VERTICAL, 1, Constants.MAX_LOTTERY_NUMBER, Constants.DEFAULT_LOTTERY_NUMBER);
 		_numberSlider.addChangeListener(this);
 		_numberSlider.setMajorTickSpacing(50);
 		_numberSlider.setPaintTicks(true);

@@ -7,7 +7,7 @@ public class Constants {
 	protected static final int MAX_LOTTERY_NUMBER = 800;
 	
 	/** the value that the slider starts with */
-	protected static final int DEFAULT_LOTTERY_NUMBER = 0;
+	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	
 	// general graphics
 	protected static final int STANDARD_PADDING = 15; // pixels
