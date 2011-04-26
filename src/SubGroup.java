@@ -1,8 +1,10 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -20,6 +22,8 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		_people = new LinkedList<Person>();
 		
 		this.setBounds(0,0,1,1);
+		
+		this.addMouseListener(new SubGroupDropListener());
 		
 		this.setBackground(Color.BLACK);
 		
@@ -40,7 +44,7 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		return _people.iterator();
 	}
 	
-	private void updatePeoplePositions() {
+	protected void updatePeoplePositions() {
 		// note: positions are absolute,
 		// so everything is (also) offset by this subgroup's position
 		
@@ -107,11 +111,17 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 				Constants.INSET, Constants.INSET, 
 				width - 2 * Constants.INSET, height - 2 * Constants.INSET, 
 				10, 10));
-		
-		// draw the people in the subgroup
-//		for(Person p : _people) {
-//			p.paintComponent(g);
-//		}
 	}
-
+	
+	private class SubGroupDropListener extends java.awt.event.MouseAdapter {
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			SubGroup source = (SubGroup) e.getSource();
+			int xAbsolute = source.getPosition().x + e.getX();
+			int yAbsolute = source.getPosition().y + e.getY();
+			
+			Canvas canvas = (Canvas) source.getParent();
+			canvas.dropSubGroupAt(source, xAbsolute, yAbsolute);
+		}
+	}
 }

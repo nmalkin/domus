@@ -49,13 +49,14 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 		_locations = l;
 	}
 	
-	private void updateSubGroupPositions() {
+	protected void updateSubGroupPositions() {
 		// note: positions are absolute,
 		// so everything is (also) offset by this subgroup's position
 		
 		int horizontalOffset = Constants.STANDARD_PADDING;
 		for(SubGroup s : _subgroups) {
 			s.setPosition(getPosition().x + horizontalOffset, getPosition().y + Constants.STANDARD_PADDING);
+			s.updatePeoplePositions();
 			
 			horizontalOffset += s.getWidth() + Constants.STANDARD_PADDING;
 		}
