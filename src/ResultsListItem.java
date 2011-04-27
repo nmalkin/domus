@@ -3,6 +3,8 @@ import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,6 +14,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -22,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import static java.awt.event.KeyEvent.*;
@@ -37,7 +41,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private Room _room;
 	private JLabel _label;
 	private JLabel _addButton;
-	private static ImageIcon _addToListIcon = ImageIconLoader.getInstance().createImageIcon("images/add_to_list.png", "add to list");
+	private static ImageIcon _addToListIcon = ImageIconLoader.getInstance().createImageIcon("images/add_to_list_new.png", "add to list");
 	private int _index;
 	private boolean _isAddedToList;
 	private Collection<RoomList> _roomList;
@@ -101,6 +105,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		private String _newList = "Make a new list...";
 		private JDialog _prompt;
 		private String[] _lists;
+		private JComboBox _cb;
+		private boolean _fromKeyListener = false;
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
@@ -126,33 +132,53 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 				label2.setAlignmentX(CENTER_ALIGNMENT);
 				pane.add(label1);
 				pane.add(label2);
-				JComboBox cb = (_lists != null) ? new JComboBox(_lists): new JComboBox();
-				cb.setSize(new Dimension(200, 20));
-				cb.setEditable(true);
-				ListAutodetectionListener listener = new ListAutodetectionListener();
-				cb.addActionListener(listener);
-				KeyListener[] listeners = cb.getKeyListeners();
-				System.out.println(listeners.length);
-				for (int i = 0; i < listeners.length; ++i) {
-					cb.removeKeyListener(listeners[i]);
-				}
-				listeners = cb.getKeyListeners();
-				System.out.println(listeners.length);
-				cb.addKeyListener(listener);
-				pane.add(cb);
+				_cb = (_lists != null) ? new JComboBox(_lists): new JComboBox();
+				_cb.setSize(new Dimension(200, 20));
+				_cb.setEditable(true);
+				_cb.setSelectedIndex(-1);
+				_cb.putClientProperty("JComboBox.isTableCellEditor", true);
+				JTextField cbField = (JTextField) _cb.getEditor().getEditorComponent();
+				RoomListSelectionListener rlslistener = new RoomListSelectionListener();
+//				ActionListener[] listeners = _cb.getActionListeners();
+//				System.out.println(listeners.length);
+//				for (int i = 0; i < listeners.length; ++i) {
+//					_cb.removeActionListener(listeners[i]);
+//				}
+//				listeners = _cb.getActionListeners();
+//				System.out.println(listeners.length);
+				_cb.addActionListener(rlslistener);
+//				listeners = cbField.getActionListeners();
+//				System.out.println(listeners.length);
+//				for (int i = 0; i < listeners.length; ++i) {
+//					cbField.removeActionListener(listeners[i]);
+//				}
+//				listeners = cbField.getActionListeners();
+//				System.out.println(listeners.length);
+//				KeyListener[] klisteners = cbField.getKeyListeners();
+//				System.out.println(klisteners.length);
+//				for (int i = 0; i < klisteners.length; ++i) {
+//					cbField.removeKeyListener(klisteners[i]);
+//				}
+//				klisteners = cbField.getKeyListeners();
+//				System.out.println(klisteners.length);
+				RoomListAutoverificationListener rlalistener = new RoomListAutoverificationListener();
+				cbField.addKeyListener(rlalistener);
+				pane.add(_cb);
 				_prompt.setLocationRelativeTo(JOptionPane.getFrameForComponent(ResultsListItem.this));
 				_prompt.setVisible(true);
 //				String selected = (String) JOptionPane.showInputDialog(ResultsListItem.this, "Choose list:", "Domus", JOptionPane.PLAIN_MESSAGE, null, lists, null);
 			}
 		}
 		
-		private class ListAutodetectionListener extends KeyAdapter implements ActionListener{
+		private class RoomListSelectionListener implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JComboBox cb = (JComboBox) e.getSource();
 				String selected = (String) cb.getSelectedItem();
 				System.out.println(selected);
+				JTextField tf = (JTextField) cb.getEditor().getEditorComponent();
+				System.out.println("tf: " + tf.getText());
 				if (selected == null || selected.equals("")) {
 					System.out.println("cancel");
 				}
@@ -175,38 +201,29 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 				}
 				_prompt.setVisible(false);
 				_prompt.dispose();
+				_fromKeyListener = false;
 			}
+			
+		}
+		
+		private class RoomListAutoverificationListener extends KeyAdapter {
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				System.out.println("pressed " + e);
-				JComboBox cb = (JComboBox) e.getSource();
-				int selected = cb.getSelectedIndex();
-				if (e.getKeyCode() == VK_DOWN) {
-					if (cb.getItemCount() > 0) {
-						cb.setPopupVisible(true);
-					}
-					if (selected < cb.getItemCount()) {
-						cb.setSelectedIndex(selected + 1);
-					}
-				}
-				if (e.getKeyCode() == VK_UP) {
-					if (cb.getItemCount() > 0) {
-						cb.setPopupVisible(true);
-					}
-					if (selected > 0) {
-						cb.setSelectedIndex(selected - 1);
-					}
-				}
-				if (e.getKeyCode() == VK_ENTER) {
-					cb.setSelectedItem(cb.getItemAt(selected));
+				JTextField tf = (JTextField) e.getSource();
+				String selected = (String) tf.getText();
+				System.out.println("p " + selected);
+				if (e.getKeyChar() == VK_ENTER) {
 					System.out.println("enter");
 				}
 			}
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
-				System.out.println("typed " + e);
+				System.out.println(e);
+				JTextField tf = (JTextField) e.getSource();
+				String selected = (String) tf.getText();
+				System.out.println("t " + selected);
 			}
 			
 		}

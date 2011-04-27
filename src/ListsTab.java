@@ -27,11 +27,11 @@ public class ListsTab extends JPanel {
 		int i = 0;
 		for (RoomList rl : State.getInstance().getRoomLists()) {
 			if (i >= _lists.size()) {
-				ListPanel lp = new ListPanel(rl, i);
+				ListPanel lp = new ListPanel(rl);
 				_lists.add(lp);
 				this.add(lp);
 			}
-			++i;
+			i++;
 		}
 		for (ListPanel lp : _lists) {
 			lp.updateList();

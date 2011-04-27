@@ -32,9 +32,9 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private SubGroup _subGroup;
 	private int _index;
 	private boolean _isOpen;
-	private static ImageIcon _openIcon = ImageIconLoader.getInstance().createImageIcon("images/open_results_tab.png", "open results list");
-	private static ImageIcon _closedIcon = ImageIconLoader.getInstance().createImageIcon("images/closed_results_tab.png", "closed results list");
-	private static ImageIcon _addToListIcon = ImageIconLoader.getInstance().createImageIcon("images/add_to_list.png", "add to list");
+	private static ImageIcon _openIcon = ImageIconLoader.getInstance().createImageIcon("images/open_results_tab_new.png", "open results list");
+	private static ImageIcon _closedIcon = ImageIconLoader.getInstance().createImageIcon("images/closed_results_tab_new.png", "closed results list");
+	private static ImageIcon _addToListIcon = ImageIconLoader.getInstance().createImageIcon("images/add_to_list_new.png", "add to list");
 	
 	private final int _tabHeight = 25;
 	private final int _listWidth = 200;
@@ -124,17 +124,6 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	@Override
 	public int compareTo(AccordionItem o) {
 		return (_index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0));
-	}
-
-	private ImageIcon createImageIcon(String path, String description) {
-		URL imgURL = ResultsListTab.class.getResource(path);
-		if (imgURL != null) {
-			return new ImageIcon(imgURL, description);
-		}
-		else {
-			System.err.println("Couldn't find file: " + path);
-			return null;
-		}
 	}
 	
 	private class ExpandListener extends MouseAdapter {
