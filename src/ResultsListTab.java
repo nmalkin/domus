@@ -3,15 +3,21 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -35,6 +41,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private static ImageIcon _openIcon = ImageIconLoader.getInstance().createImageIcon("images/open_results_tab_new.png", "open results list");
 	private static ImageIcon _closedIcon = ImageIconLoader.getInstance().createImageIcon("images/closed_results_tab_new.png", "closed results list");
 	private static ImageIcon _addToListIcon = ImageIconLoader.getInstance().createImageIcon("images/add_to_list_new.png", "add to list");
+	private static Font _font = new Font("Verdana", Font.PLAIN, 12);
 	
 	private final int _tabHeight = 25;
 	private final int _listWidth = 200;
@@ -58,6 +65,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		//Set up label on tag (with expansion icon)
 		_label = new JLabel();
 		_label.setText(_dorm.getName());
+		_label.setFont(_font);
 		_label.setIcon(_closedIcon);
 		_tab.addMouseListener(new ExpandListener());
 		_tab.add(_label);
@@ -65,7 +73,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		//Set up addToListButton (actually a blank label with an icon)
 		_tab.add(Box.createHorizontalGlue());
 		_addButton = new JLabel(_addToListIcon);
-		_addButton.addMouseListener(new AddListener());
+		_addButton.addMouseListener(new AddListener(this));
 		_tab.add(_addButton);
 		_tab.add(Box.createRigidArea(new Dimension(_scrollBarWidth, 0)));
 		_tab.setBorder(LineBorder.createBlackLineBorder());
@@ -147,12 +155,46 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		
 	}
 	
-	private class AddListener extends MouseAdapter {
+	public class RoomListSelectionListener implements ActionListener {
+		
+		private JDialog _prompt;
+		
+		public RoomListSelectionListener(JDialog prompt) {
+			_prompt = prompt;
+		}
 		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			// TODO
-			JOptionPane.showMessageDialog(ResultsListTab.this, "add to list (TODO)", "Domus", JOptionPane.PLAIN_MESSAGE);
+		public void actionPerformed(ActionEvent e) {
+			JComboBox cb = (JComboBox) e.getSource();
+			String selected = (String) cb.getSelectedItem();
+			if (selected == null || selected.equals("")) {
+				System.out.println("cancel");
+			}
+			else {
+				boolean exists = false;
+				for (RoomList rl : State.getInstance().getRoomLists()) {
+					if (rl.getName().equals(selected)) {
+						for (Component c : _itemsPanel.getComponents()) {
+							ResultsListItem rli = (ResultsListItem) c;
+							rl.add(rli.getRoom());
+						}
+						ListsTab.getInstance().updateLists();
+						exists = true;
+						break;
+					}
+				}
+				if (!exists) {
+					RoomList list = new RoomList(selected);
+					State.getInstance().addRoomList(list);
+					for (Component c : _itemsPanel.getComponents()) {
+						ResultsListItem rli = (ResultsListItem) c;
+						list.add(rli.getRoom());
+					}
+					ListsTab.getInstance().updateLists();
+				}
+			}
+			_prompt.setVisible(false);
+			_prompt.dispose();
 		}
 		
 	}

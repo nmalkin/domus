@@ -1,5 +1,6 @@
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +47,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private boolean _isAddedToList;
 	private Collection<RoomList> _roomList;
 	private Insets _insets;
+	private static Font _font = new Font("Verdana", Font.PLAIN, 12);
 	
 	private final int _itemHeight = 15;
 	private final int _itemWidth = 200;
@@ -58,10 +60,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		this.setSize(size);
 		_room = room;
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
+		_label.setFont(_font);
 		this.add(_label);
 		this.add(Box.createHorizontalGlue());
 		_addButton = new JLabel(_addToListIcon);
-		_addButton.addMouseListener(new AddListener());
+		_addButton.addMouseListener(new AddListener(this));
 		this.add(_addButton);	
 	}
 	
@@ -99,135 +102,43 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	public int compareTo(AccordionItem o) {
 		return (_index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0));
 	}
-
-	private class AddListener extends MouseAdapter {
 		
-		private String _newList = "Make a new list...";
+	public class RoomListSelectionListener implements ActionListener {
+		
 		private JDialog _prompt;
-		private String[] _lists;
-		private JComboBox _cb;
-		private boolean _fromKeyListener = false;
+		
+		public RoomListSelectionListener(JDialog prompt) {
+			_prompt = prompt;
+		}
 		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			List<RoomList> roomLists = State.getInstance().getRoomLists();
-			{
-				_lists = null;
-				if (roomLists.size() > 0) {
-					_lists = new String[roomLists.size()];
-					int i = 0;
-					for (RoomList rl : roomLists) {
-						_lists[i++] = rl.getName();
-					}
-				}
-				_prompt = new JDialog(JOptionPane.getFrameForComponent(ResultsListItem.this), "Domus");
-				_prompt.setSize(new Dimension(250, 120));
-				JComponent pane = (JComponent) _prompt.getContentPane();
-				pane.setSize(new Dimension(250, 120));
-				pane.setLayout(new FlowLayout());
-				((FlowLayout) pane.getLayout()).setAlignment(FlowLayout.CENTER);
-				JLabel label1 = new JLabel("Start typing to choose a list");
-				JLabel label2 = new JLabel("or create a new one.");
-				label1.setAlignmentX(CENTER_ALIGNMENT);
-				label2.setAlignmentX(CENTER_ALIGNMENT);
-				pane.add(label1);
-				pane.add(label2);
-				_cb = (_lists != null) ? new JComboBox(_lists): new JComboBox();
-				_cb.setSize(new Dimension(200, 20));
-				_cb.setEditable(true);
-				_cb.setSelectedIndex(-1);
-				_cb.putClientProperty("JComboBox.isTableCellEditor", true);
-				JTextField cbField = (JTextField) _cb.getEditor().getEditorComponent();
-				RoomListSelectionListener rlslistener = new RoomListSelectionListener();
-//				ActionListener[] listeners = _cb.getActionListeners();
-//				System.out.println(listeners.length);
-//				for (int i = 0; i < listeners.length; ++i) {
-//					_cb.removeActionListener(listeners[i]);
-//				}
-//				listeners = _cb.getActionListeners();
-//				System.out.println(listeners.length);
-				_cb.addActionListener(rlslistener);
-//				listeners = cbField.getActionListeners();
-//				System.out.println(listeners.length);
-//				for (int i = 0; i < listeners.length; ++i) {
-//					cbField.removeActionListener(listeners[i]);
-//				}
-//				listeners = cbField.getActionListeners();
-//				System.out.println(listeners.length);
-//				KeyListener[] klisteners = cbField.getKeyListeners();
-//				System.out.println(klisteners.length);
-//				for (int i = 0; i < klisteners.length; ++i) {
-//					cbField.removeKeyListener(klisteners[i]);
-//				}
-//				klisteners = cbField.getKeyListeners();
-//				System.out.println(klisteners.length);
-				RoomListAutoverificationListener rlalistener = new RoomListAutoverificationListener();
-				cbField.addKeyListener(rlalistener);
-				pane.add(_cb);
-				_prompt.setLocationRelativeTo(JOptionPane.getFrameForComponent(ResultsListItem.this));
-				_prompt.setVisible(true);
-//				String selected = (String) JOptionPane.showInputDialog(ResultsListItem.this, "Choose list:", "Domus", JOptionPane.PLAIN_MESSAGE, null, lists, null);
+		public void actionPerformed(ActionEvent e) {
+			JComboBox cb = (JComboBox) e.getSource();
+			String selected = (String) cb.getSelectedItem();
+			if (selected == null || selected.equals("")) {
+				System.out.println("cancel");
 			}
-		}
-		
-		private class RoomListSelectionListener implements ActionListener {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JComboBox cb = (JComboBox) e.getSource();
-				String selected = (String) cb.getSelectedItem();
-				System.out.println(selected);
-				JTextField tf = (JTextField) cb.getEditor().getEditorComponent();
-				System.out.println("tf: " + tf.getText());
-				if (selected == null || selected.equals("")) {
-					System.out.println("cancel");
-				}
-				else {
-					boolean exists = false;
-					for (RoomList rl : State.getInstance().getRoomLists()) {
-						if (rl.getName().equals(selected)) {
-							rl.add(_room);
-							ListsTab.getInstance().updateLists();
-							exists = true;
-							break;
-						}
-					}
-					if (!exists) {
-						RoomList list = new RoomList(selected);
-						State.getInstance().addRoomList(list);
-						list.add(_room);
+			else {
+				boolean exists = false;
+				for (RoomList rl : State.getInstance().getRoomLists()) {
+					if (rl.getName().equals(selected)) {
+						rl.add(_room);
 						ListsTab.getInstance().updateLists();
+						exists = true;
+						break;
 					}
 				}
-				_prompt.setVisible(false);
-				_prompt.dispose();
-				_fromKeyListener = false;
-			}
-			
-		}
-		
-		private class RoomListAutoverificationListener extends KeyAdapter {
-			
-			@Override
-			public void keyPressed(KeyEvent e) {
-				JTextField tf = (JTextField) e.getSource();
-				String selected = (String) tf.getText();
-				System.out.println("p " + selected);
-				if (e.getKeyChar() == VK_ENTER) {
-					System.out.println("enter");
+				if (!exists) {
+					RoomList list = new RoomList(selected);
+					State.getInstance().addRoomList(list);
+					list.add(_room);
+					ListsTab.getInstance().updateLists();
 				}
 			}
-			
-			@Override
-			public void keyTyped(KeyEvent e) {
-				System.out.println(e);
-				JTextField tf = (JTextField) e.getSource();
-				String selected = (String) tf.getText();
-				System.out.println("t " + selected);
-			}
-			
+			_prompt.setVisible(false);
+			_prompt.dispose();
 		}
 		
-	} // end of AddListener
+	}
 	
 } // end of ResultsListItem
