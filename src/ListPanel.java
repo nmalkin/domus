@@ -32,7 +32,7 @@ public class ListPanel extends JPanel {
 	private static Font _font = new Font("Verdana", Font.PLAIN, 12);
 	
 	private final int _listWidth = 200;
-	private final int _listHeight = 500;
+	private final int _listHeight = 525;
 	private final int _itemWidth = 150;
 	private final int _itemHeight = 15;
 	
