@@ -146,6 +146,21 @@ public class Canvas extends JLayeredPane {
 	public void dropSubGroupAt(SubGroup subgroup, int x, int y) {
 		int parentHouses = 0; // tracks how many houses this subgroup is currently in
 		
+		// perform subgroup merging
+		for(Component c : this.getComponents()) { // go through all components
+			if(c instanceof SubGroup) { // for each subgroup:
+				SubGroup s = (SubGroup) c;
+				if(subgroup != s &&
+						intersectionAreaFraction(subgroup.getRectangle(), s.getRectangle())
+						> Constants.INTERSECTION_FRACTION) 
+				{ // a large fraction of this subgroup is intersecting. merge them.
+					mergeSubGroups(subgroup, s);
+					repaint();
+					return;
+				}
+			}
+		}
+		
 		for(Component c : this.getComponents()) { // go through all components
 			if(c instanceof House) { // for each house:
 				House h = (House) c;
@@ -157,7 +172,7 @@ public class Canvas extends JLayeredPane {
 						parentHouses++;
 						
 						if(intersectionAreaFraction(subgroup.getRectangle(), h.getRectangle()) > Constants.INTERSECTION_FRACTION) { // well, should it?
-											// (is the person, graphically, inside this subgroup?)
+											// (is the subgroup, graphically, inside this house?)
 							// yes!
 							// ah, good, we're done then
 							return;
@@ -177,7 +192,7 @@ public class Canvas extends JLayeredPane {
 					}
 				}
 				
-				// at this point, this subgroup definitely doesn't contain the given person
+				// at this point, this house definitely doesn't contain the given subgroup
 				// should it?
 				if(intersectionAreaFraction(subgroup.getRectangle(), h.getRectangle()) > Constants.INTERSECTION_FRACTION) {
 					// yes. add it.
@@ -226,6 +241,42 @@ public class Canvas extends JLayeredPane {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Merges subgroup a into subgroup b.
+	 * 
+	 * @param a
+	 * @param b
+	 */
+	private void mergeSubGroups(SubGroup a, SubGroup b) {
+		// move over the people from this subgroup to the new one
+		for(Person p : a) {
+			b.addPerson(p);
+		}
+		
+		// remove the old subgroup from its current house
+			// TODO: this is kind of ugly. clean up?
+		for(Component cc : this.getComponents()) {
+			if(cc instanceof House) {
+				Iterator<SubGroup> it = ((House) cc).iterator();
+				while(it.hasNext()) {
+					if(a == it.next()) {
+						it.remove();
+						((House) cc).updateSubGroupPositions();
+						break;
+					}
+				}
+			}
+		}
+		
+		removeEmptyHouses();
+		
+		// and remove it from view
+		this.remove(a);
+		
+		// and we're done
+		return;
 	}
 	
 	private boolean isDraggablePositionableComponentAt(DraggablePositionableComponent c, int x, int y) {
