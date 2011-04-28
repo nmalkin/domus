@@ -60,15 +60,15 @@ public abstract class DraggablePositionableComponent extends JComponent implemen
 	 * returns how much you can *actually* move this component
 	 * without running into the walls of the Canvas.
 	 * 
-	 * @param x how much you want the component to move in the x dimension
-	 * @param y how much you want the component to move in the y dimension
+	 * @param xDelta how much you want the component to move in the x dimension
+	 * @param yDelta how much you want the component to move in the y dimension
 	 * @return Point with values for how much you are allowed to move
 	 */
-	protected Point movementConstraint(int x, int y) {
-		Point constraint = new Point(x,y);
+	protected Point movementConstraint(int xDelta, int yDelta) {
+		Point constraint = new Point(xDelta,yDelta);
 		
-		int xNew = _position.x + x;
-		int yNew = _position.y + y;
+		int xNew = _position.x + xDelta;
+		int yNew = _position.y + yDelta;
 		
 		try {
 			Canvas canvas = (Canvas) this.getParent();
@@ -78,10 +78,10 @@ public abstract class DraggablePositionableComponent extends JComponent implemen
 				int yMin = 0;
 				int yMax = canvas.getHeight();
 				
-				if(xNew < xMin) constraint.x = 0;
-				if(yNew < yMin) constraint.y = 0 ;
-				if(xNew + getWidth()  > xMax) constraint.x = 0;
-				if(yNew + getHeight() > yMax) constraint.y = 0;
+				if(xNew < xMin) constraint.x = xMin - _position.x;
+				if(yNew < yMin) constraint.y = yMin - _position.y;
+				if(xNew + getWidth()  > xMax) constraint.x = xMax - (_position.x + getWidth());
+				if(yNew + getHeight() > yMax) constraint.y = yMax - (_position.y + getHeight());
 			}
 		} catch(ClassCastException e) {}
 		
