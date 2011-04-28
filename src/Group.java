@@ -4,9 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-// Note: a Group is a Singleton
 public class Group extends AbstractCollection<House> {
-	private static final Group INSTANCE = new Group();
 	
 	/** the houses that make up this group */
 	private Collection<House> _houses;
@@ -17,11 +15,7 @@ public class Group extends AbstractCollection<House> {
 	/** Where on screen am I located? */
 	private Point _position;
 	
-	public static final Group getInstance() {
-		return INSTANCE;
-	}
-	
-	private Group() {
+	public Group() {
 		_houses = new LinkedList<House>();
 		_position = new Point(0,0);
 	}

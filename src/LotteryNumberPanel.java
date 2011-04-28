@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -12,13 +14,10 @@ import javax.swing.event.ChangeListener;
  * either directly (through the slider) or, indirectly, 
  * by having the program estimate it based on their semester level and optimism.
  * 
- * @author nmalkin
+ * @author nmalkin, jswarren
  *
  */
-public class LotteryNumberPanel extends JPanel implements ChangeListener, ActionListener {
-	// LotteryNumberPanel is a singleton.
-	private static final LotteryNumberPanel INSTANCE = new LotteryNumberPanel();
-	public static LotteryNumberPanel getInstance() { return INSTANCE; }
+public class LotteryNumberPanel extends JPanel implements ChangeListener, ActionListener, AncestorListener {
 	
 	
 	
@@ -29,7 +28,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 	private JComboBox _semesterLevelBox;
 		
 	
-	private LotteryNumberPanel() {
+	public LotteryNumberPanel() {
 		// slider
 		_numberSlider = new JSlider(JSlider.VERTICAL, 1, Constants.MAX_LOTTERY_NUMBER, Constants.DEFAULT_LOTTERY_NUMBER);
 		_numberSlider.addChangeListener(this);
@@ -72,6 +71,13 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		happiness.setToolTipText("Brown students are always happy.");
 		happiness.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.add(happiness);
+		this.addAncestorListener(this);
+	}
+	
+	@Override
+	public void repaint() {
+		if (_numberSlider != null)
+		    System.out.println(_numberSlider.getValue());
 	}
 	
 	/**
@@ -119,4 +125,25 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 			_numberSlider.setValue(lotteryNumber);
 		}
 	}
+	
+	/**
+	 * Called when the ancestor (Preferences or Results tab) becomes visible.
+	 * Ensures that the values on both of the sliders will always be the same.
+	 */
+	@Override
+	public void ancestorAdded(AncestorEvent e) {
+		// get the group's lottery number
+		int lotteryNumber = State.getInstance().getGroup().getLotteryNumber();
+		
+		_numberSlider.setValue(lotteryNumber);
+	}
+	
+	/**
+	 * Nothing needs to happen when an ancestor is moved or removed.
+	 */
+	@Override
+	public void ancestorMoved(AncestorEvent e) { }
+	
+	@Override
+	public void ancestorRemoved(AncestorEvent e) { }
 }
