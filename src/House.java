@@ -85,6 +85,9 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 	
 	@Override
 	public void moveBy(int x, int y) {
+		Point constraint = this.movementConstraint(x, y);
+		x = constraint.x;
+		y = constraint.y;
 		super.moveBy(x, y); // adjust my position
 		
 		// adjust the positions of everybody inside me

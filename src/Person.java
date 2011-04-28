@@ -46,6 +46,15 @@ public class Person extends DraggablePositionableComponent {
 	}
 	
 	@Override
+	public void moveBy(int x, int y) {
+		Point constraint = this.movementConstraint(x, y);
+		x = constraint.x;
+		y = constraint.y;
+		
+		super.moveBy(x, y);
+	}
+	
+	@Override
 	public int getWidth() {
 		return _gender.getImageDimension().width;
 	}

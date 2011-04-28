@@ -66,6 +66,10 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 	
 	@Override
 	public void moveBy(int x, int y) {
+		Point constraint = this.movementConstraint(x, y);
+		x = constraint.x;
+		y = constraint.y;
+		
 		super.moveBy(x, y); // adjust my position
 		
 		// adjust the positions of everybody inside me

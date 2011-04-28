@@ -55,9 +55,75 @@ public abstract class DraggablePositionableComponent extends JComponent implemen
 		setPosition(_position.x + x, _position.y + y);
 	}
 	
+	/**
+	 * Given how much you want this component to move,
+	 * returns how much you can *actually* move this component
+	 * without running into the walls of the Canvas.
+	 * 
+	 * @param x how much you want the component to move in the x dimension
+	 * @param y how much you want the component to move in the y dimension
+	 * @return Point with values for how much you are allowed to move
+	 */
+	protected Point movementConstraint(int x, int y) {
+		Point constraint = new Point(x,y);
+		
+		int xNew = _position.x + x;
+		int yNew = _position.y + y;
+		
+		try {
+			Canvas canvas = (Canvas) this.getParent();
+			if(canvas != null) {
+				int xMin = 0;
+				int xMax = canvas.getWidth();
+				int yMin = 0;
+				int yMax = canvas.getHeight();
+				
+				if(xNew < xMin) constraint.x = 0;
+				if(yNew < yMin) constraint.y = 0 ;
+				if(xNew + getWidth()  > xMax) constraint.x = 0;
+				if(yNew + getHeight() > yMax) constraint.y = 0;
+			}
+		} catch(ClassCastException e) {}
+		
+		return constraint;
+	}
+	
 	@Override
 	protected void paintComponent(java.awt.Graphics g) {
 		super.paintComponent(g);
-//		System.out.println(this.toString() + " " + getPosition());
+	}
+	
+	/**
+	 * Checks if the current component is out of the bounds for the Canvas.
+	 * 
+	 * NOTE that for this method to work, the parent of this element 
+	 * must be the Canvas.
+	 * Otherwise an UnsupportedOperationException is thrown.
+	 * 	TODO: after testing is over, it might be a good idea to change this behavior to just return true on error.
+	 * 
+	 * @return
+	 */
+	@Deprecated // not currently used for anything
+	protected boolean outOfBounds() {
+		Canvas canvas = null;
+		
+		try {
+			canvas = (Canvas) this.getParent();
+		} catch(ClassCastException e) {
+			throw new UnsupportedOperationException("expected parent of element to be Canvas");
+		}
+		
+		if(canvas == null) {
+			throw new UnsupportedOperationException("cannot be out of bounds when there is no parent");
+		}
+		
+		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
+		double intersectionArea = GraphicsSupport.intersectionAreaFraction(getRectangle(), canvasRectangle);
+		
+		if(intersectionArea < 1) { // some part of the rectangle is out of bounds
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
