@@ -25,6 +25,7 @@ public class Canvas extends JLayeredPane {
 		Person p1 = new Person("Sumner", Gender.MALE);
 		Person p2 = new Person("Miya", Gender.FEMALE);
 		
+		State.getInstance().getGroup().add(h);
 		h.addSubGroup(s);
 		s.addPerson(p1);
 		s.addPerson(p2);
@@ -206,6 +207,9 @@ public class Canvas extends JLayeredPane {
 			// we should fix that.
 			House newHouse = new House();
 			
+			// save the new house to State
+			State.getInstance().getGroup().add(newHouse);
+			
 			// place the new house wherever the subgroup is right now
 			newHouse.setPosition(
 					subgroup.getPosition().x - Constants.HOUSE_PADDING, 
@@ -237,7 +241,8 @@ public class Canvas extends JLayeredPane {
 				h.removeEmptySubGroups();
 				
 				if(h.isEmpty()) {
-					this.remove(h);
+					this.remove(h); // remove from view
+					State.getInstance().getGroup().remove(h); // remove from state
 				}
 			}
 		}
