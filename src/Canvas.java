@@ -69,7 +69,10 @@ public class Canvas extends JLayeredPane {
 					if(it.next() == person) { // yes!
 						parentSubGroups++;
 						
-						if(intersectionAreaFraction(person.getRectangle(), s.getRectangle()) > Constants.INTERSECTION_FRACTION) { // well, should it?
+						if(GraphicsSupport.intersectionAreaFraction(
+								person.getRectangle(), 
+								s.getRectangle()) > Constants.INTERSECTION_FRACTION) 
+						{ // well, should it?
 											// (is the person, graphically, inside this subgroup?)
 							// yes!
 							// ah, good, we're done then
@@ -92,7 +95,10 @@ public class Canvas extends JLayeredPane {
 				
 				// at this point, this subgroup definitely doesn't contain the given person
 				// should it?
-				if(intersectionAreaFraction(person.getRectangle(), s.getRectangle()) > Constants.INTERSECTION_FRACTION) {
+				if(GraphicsSupport.intersectionAreaFraction(
+						person.getRectangle(), 
+						s.getRectangle()) > Constants.INTERSECTION_FRACTION) 
+				{
 					// yes. add it.
 					s.addPerson(person);
 					parentSubGroups++;
@@ -152,8 +158,9 @@ public class Canvas extends JLayeredPane {
 			if(c instanceof SubGroup) { // for each subgroup:
 				SubGroup s = (SubGroup) c;
 				if(subgroup != s &&
-						intersectionAreaFraction(subgroup.getRectangle(), s.getRectangle())
-						> Constants.INTERSECTION_FRACTION) 
+						GraphicsSupport.intersectionAreaFraction(
+								subgroup.getRectangle(), 
+								s.getRectangle()) > Constants.INTERSECTION_FRACTION) 
 				{ // a large fraction of this subgroup is intersecting. merge them.
 					mergeSubGroups(subgroup, s);
 					repaint();
@@ -172,8 +179,11 @@ public class Canvas extends JLayeredPane {
 					if(it.next() == subgroup) { // yes!
 						parentHouses++;
 						
-						if(intersectionAreaFraction(subgroup.getRectangle(), h.getRectangle()) > Constants.INTERSECTION_FRACTION) { // well, should it?
-											// (is the subgroup, graphically, inside this house?)
+						if(GraphicsSupport.intersectionAreaFraction(
+								subgroup.getRectangle(), 
+								h.getRectangle()) > Constants.INTERSECTION_FRACTION) 
+						{ // well, should it?
+								// (is the subgroup, graphically, inside this house?)
 							// yes!
 							// ah, good, we're done then
 							return;
@@ -195,7 +205,10 @@ public class Canvas extends JLayeredPane {
 				
 				// at this point, this house definitely doesn't contain the given subgroup
 				// should it?
-				if(intersectionAreaFraction(subgroup.getRectangle(), h.getRectangle()) > Constants.INTERSECTION_FRACTION) {
+				if(GraphicsSupport.intersectionAreaFraction(
+						subgroup.getRectangle(), 
+						h.getRectangle()) > Constants.INTERSECTION_FRACTION) 
+				{
 					// yes. add it.
 					h.addSubGroup(subgroup);
 					parentHouses++;
@@ -294,30 +307,6 @@ public class Canvas extends JLayeredPane {
 			x <= c.getPosition().x + c.getWidth() &&
 			y >= c.getPosition().y &&
 			y <= c.getPosition().y + c.getHeight();
-	}
-	
-	/**
-	 * What fraction of Rectangle A's area does its intersection with Rectangle B take up?
-	 * 
-	 * @param a
-	 * @param b
-	 * @return
-	 */
-	private double intersectionAreaFraction(Rectangle a, Rectangle b) {
-		if(! a.intersects(b)) {
-			return 0;
-		}
-		
-		Rectangle intersection = a.intersection(b);
-		
-		double aArea = a.getWidth() * a.getHeight();
-		double intersectionArea = intersection.getWidth() * intersection.getHeight();
-		
-		if(aArea == 0) {
-			return 0;
-		} else {
-			return intersectionArea / aArea;
-		}
 	}
 	
 	/*
