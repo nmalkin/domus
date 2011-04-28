@@ -74,12 +74,12 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 		// note: positions are absolute,
 		// so everything is (also) offset by this subgroup's position
 		
-		int horizontalOffset = Constants.STANDARD_PADDING;
+		int horizontalOffset = Constants.HOUSE_PADDING;
 		for(SubGroup s : _subgroups) {
-			s.setPosition(getPosition().x + horizontalOffset, getPosition().y + Constants.STANDARD_PADDING);
+			s.setPosition(getPosition().x + horizontalOffset, getPosition().y + Constants.HOUSE_PADDING);
 			s.updatePeoplePositions();
 			
-			horizontalOffset += s.getWidth() + Constants.STANDARD_PADDING;
+			horizontalOffset += s.getWidth() + Constants.HOUSE_PADDING;
 		}
 	}
 	
@@ -95,10 +95,10 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 	
 	@Override
 	public int getWidth() {
-		int width = Constants.STANDARD_PADDING;
+		int width = Constants.HOUSE_PADDING;
 		
 		for(SubGroup s : _subgroups) {
-			width += s.getWidth() + Constants.STANDARD_PADDING; //TODO: getWidth() may not return correct width
+			width += s.getWidth() + Constants.HOUSE_PADDING; //TODO: getWidth() may not return correct width
 		}
 		
 		return width;
@@ -112,7 +112,7 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 			height = Math.max(height, s.getHeight());
 		}
 		
-		height += 2 * Constants.STANDARD_PADDING;
+		height += 2 * Constants.HOUSE_PADDING;
 		
 		return height;
 	}

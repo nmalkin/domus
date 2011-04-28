@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.awt.Rectangle;
 
 import javax.swing.JComponent;
 
@@ -34,6 +35,10 @@ public abstract class DraggablePositionableComponent extends JComponent implemen
 		_position.y = y;
 		
 		updatePosition();
+	}
+	
+	public Rectangle getRectangle() {
+		return new Rectangle(this.getPosition().x, this.getPosition().y, getWidth(), getHeight());
 	}
 	
 	/**

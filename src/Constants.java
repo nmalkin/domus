@@ -10,7 +10,6 @@ public class Constants {
 	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	
 	// general graphics
-	protected static final int STANDARD_PADDING = 25; // pixels
 	protected static final int INSET = 5; // pixels
 	
 	// Canvas
@@ -22,11 +21,16 @@ public class Constants {
 	protected static final int SUBGROUP_LAYER = 2;
 	protected static final int PERSON_LAYER   = 1;
 	
+	/** what portion of an object is overlapping for the two to be considered intersecting */
+	protected static final double INTERSECTION_FRACTION = 0.5;
+	
 	// House
 	protected static final java.awt.Color HOUSE_COLOR = Color.BLUE;
+	protected static final int HOUSE_PADDING = 45; // pixels
 	
 	// SubGroup
 	protected static final java.awt.Color SUBGROUP_COLOR = Color.GREEN;
+	protected static final int SUBGROUP_PADDING = 25; // pixels
 	
 	// Person images & dimensions
 	protected static final String MAN_FILE   = "/home/nmalkin/course/cs032/domus/img/man.png";

@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.Iterator;
 
 import javax.swing.*;
@@ -67,7 +68,7 @@ public class Canvas extends JLayeredPane {
 					if(it.next() == person) { // yes!
 						parentSubGroups++;
 						
-						if(isDraggablePositionableComponentAt(s, x, y)) { // well, should it?
+						if(intersectionAreaFraction(person.getRectangle(), s.getRectangle()) > Constants.INTERSECTION_FRACTION) { // well, should it?
 											// (is the person, graphically, inside this subgroup?)
 							// yes!
 							// ah, good, we're done then
@@ -90,7 +91,7 @@ public class Canvas extends JLayeredPane {
 				
 				// at this point, this subgroup definitely doesn't contain the given person
 				// should it?
-				if(isDraggablePositionableComponentAt(s, x, y)) {
+				if(intersectionAreaFraction(person.getRectangle(), s.getRectangle()) > Constants.INTERSECTION_FRACTION) {
 					// yes. add it.
 					s.addPerson(person);
 					parentSubGroups++;
@@ -105,10 +106,10 @@ public class Canvas extends JLayeredPane {
 			// we should fix that.
 			SubGroup newSubGroup = new SubGroup();
 			
-			// place the new house wherever the subgroup is right now
+			// place the new subgroup wherever the subgroup is right now
 			newSubGroup.setPosition(
-					person.getPosition().x - Constants.STANDARD_PADDING, 
-					person.getPosition().y - Constants.STANDARD_PADDING);
+					person.getPosition().x - Constants.SUBGROUP_PADDING, 
+					person.getPosition().y - Constants.SUBGROUP_PADDING);
 				/*TODO: our use of the PADDING constant here
 				 * is based on knowledge of how the house places internal components.
 				 * any way to make it more abstract?
@@ -155,7 +156,7 @@ public class Canvas extends JLayeredPane {
 					if(it.next() == subgroup) { // yes!
 						parentHouses++;
 						
-						if(isDraggablePositionableComponentAt(h, x, y)) { // well, should it?
+						if(intersectionAreaFraction(subgroup.getRectangle(), h.getRectangle()) > Constants.INTERSECTION_FRACTION) { // well, should it?
 											// (is the person, graphically, inside this subgroup?)
 							// yes!
 							// ah, good, we're done then
@@ -178,7 +179,7 @@ public class Canvas extends JLayeredPane {
 				
 				// at this point, this subgroup definitely doesn't contain the given person
 				// should it?
-				if(isDraggablePositionableComponentAt(h, x, y)) {
+				if(intersectionAreaFraction(subgroup.getRectangle(), h.getRectangle()) > Constants.INTERSECTION_FRACTION) {
 					// yes. add it.
 					h.addSubGroup(subgroup);
 					parentHouses++;
@@ -192,8 +193,8 @@ public class Canvas extends JLayeredPane {
 			
 			// place the new house wherever the subgroup is right now
 			newHouse.setPosition(
-					subgroup.getPosition().x - Constants.STANDARD_PADDING, 
-					subgroup.getPosition().y - Constants.STANDARD_PADDING);
+					subgroup.getPosition().x - Constants.HOUSE_PADDING, 
+					subgroup.getPosition().y - Constants.HOUSE_PADDING);
 				/*TODO: our use of the PADDING constant here
 				 * is based on knowledge of how the house places internal components.
 				 * any way to make it more abstract?
@@ -237,6 +238,30 @@ public class Canvas extends JLayeredPane {
 			x <= c.getPosition().x + c.getWidth() &&
 			y >= c.getPosition().y &&
 			y <= c.getPosition().y + c.getHeight();
+	}
+	
+	/**
+	 * What fraction of Rectangle A's area does its intersection with Rectangle B take up?
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	private double intersectionAreaFraction(Rectangle a, Rectangle b) {
+		if(! a.intersects(b)) {
+			return 0;
+		}
+		
+		Rectangle intersection = a.intersection(b);
+		
+		double aArea = a.getWidth() * a.getHeight();
+		double intersectionArea = intersection.getWidth() * intersection.getHeight();
+		
+		if(aArea == 0) {
+			return 0;
+		} else {
+			return intersectionArea / aArea;
+		}
 	}
 	
 	/*

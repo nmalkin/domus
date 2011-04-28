@@ -56,11 +56,11 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		// note: positions are absolute,
 		// so everything is (also) offset by this subgroup's position
 		
-		int horizontalOffset = Constants.STANDARD_PADDING;
+		int horizontalOffset = Constants.SUBGROUP_PADDING;
 		for(Person p : _people) {
-			p.setPosition(getPosition().x + horizontalOffset, getPosition().y + Constants.STANDARD_PADDING);
+			p.setPosition(getPosition().x + horizontalOffset, getPosition().y + Constants.SUBGROUP_PADDING);
 			
-			horizontalOffset += p.getPreferredSize().width + Constants.STANDARD_PADDING;
+			horizontalOffset += p.getPreferredSize().width + Constants.SUBGROUP_PADDING;
 		}
 	}
 	
@@ -76,10 +76,10 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 	
 	@Override
 	public int getWidth() {
-		int width = Constants.STANDARD_PADDING;
+		int width = Constants.SUBGROUP_PADDING;
 		
 		for(Person p : _people) {
-			width += p.getWidth() + Constants.STANDARD_PADDING;
+			width += p.getWidth() + Constants.SUBGROUP_PADDING;
 		}
 		
 		return width;
@@ -93,7 +93,7 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 			height = Math.max(p.getHeight(), height);
 		}
 		
-		height += 2 * Constants.STANDARD_PADDING;
+		height += 2 * Constants.SUBGROUP_PADDING;
 		
 		return height;
 	}
