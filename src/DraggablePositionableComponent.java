@@ -73,7 +73,7 @@ public abstract class DraggablePositionableComponent extends JComponent implemen
 		try {
 			Canvas canvas = (Canvas) this.getParent();
 			if(canvas != null) {
-				int xMin = 0;
+				int xMin = Constants.SEPARATOR_X_POSITION;
 				int xMax = canvas.getWidth();
 				int yMin = 0;
 				int yMax = canvas.getHeight();

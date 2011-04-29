@@ -17,12 +17,14 @@ public class Constants {
 	protected static final int CANVAS_HEIGHT = 400;
 	protected static final java.awt.Color CANVAS_COLOR = Color.WHITE;
 	
-	protected static final int HOUSE_LAYER    = 3;
-	protected static final int SUBGROUP_LAYER = 2;
-	protected static final int PERSON_LAYER   = 1;
+	protected static final int HOUSE_LAYER    = 10;
+	protected static final int SUBGROUP_LAYER = 20;
+	protected static final int PERSON_LAYER   = 30;
 	
 	/** what portion of an object is overlapping for the two to be considered intersecting */
 	protected static final double INTERSECTION_FRACTION = 0.5;
+	
+	protected static final int SEPARATOR_X_POSITION = 100;
 	
 	// House
 	protected static final java.awt.Color HOUSE_COLOR = Color.BLUE;

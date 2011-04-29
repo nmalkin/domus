@@ -1,13 +1,18 @@
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Iterator;
 
 import javax.swing.*;
 
 public class Canvas extends JLayeredPane {
 	
+	private DraggablePositionableComponent _cursor;
+	private java.awt.Point _mousePosition;
 	
 	public Canvas() {
 		this.setLayout(null);
@@ -19,6 +24,12 @@ public class Canvas extends JLayeredPane {
 		this.setBackground(Constants.CANVAS_COLOR);
 		this.setOpaque(true);
 		
+		AddPersonListener listener = new AddPersonListener();
+		this.addMouseListener(listener);
+		this.addMouseMotionListener(listener);
+		_cursor = null;
+		_mousePosition = new java.awt.Point(0,0);
+		
 		// sample data; TODO: remove
 		House h = new House();
 		SubGroup s = new SubGroup();
@@ -29,6 +40,9 @@ public class Canvas extends JLayeredPane {
 		h.addSubGroup(s);
 		s.addPerson(p1);
 		s.addPerson(p2);
+		
+		h.setPosition(200,150);
+		h.updateSubGroupPositions();
 		
 		this.add(p1, Constants.PERSON_LAYER);
 		this.add(p2, Constants.PERSON_LAYER);
@@ -86,6 +100,7 @@ public class Canvas extends JLayeredPane {
 							// are there any people left in this subgroup?
 							if(s.isEmpty()) { // no
 								this.remove(s); // remove it from view
+								//TODO: remove it from the house!!!
 							} else { // yes
 								s.updatePeoplePositions(); // update their positions
 							}
@@ -132,6 +147,8 @@ public class Canvas extends JLayeredPane {
 			dropSubGroupAt(newSubGroup, // checks for that and adds a house if necessary
 					newSubGroup.getPosition().x, 
 					newSubGroup.getPosition().y);
+		} else if(parentSubGroups > 1) {
+			throw new RuntimeException("failed sanity check: more than one parent subgroup");
 		}
 		
 		// with the addition/removal, the canvas could have changed. let's repaint it.
@@ -237,6 +254,8 @@ public class Canvas extends JLayeredPane {
 			
 			// display it
 			this.add(newHouse, Constants.HOUSE_LAYER);
+		} else if(parentHouses > 1) {
+			throw new RuntimeException("failed sanity check: more than one parent house");
 		}
 		
 		// with the addition/removal, the canvas could have changed. let's repaint it.
@@ -315,4 +334,56 @@ public class Canvas extends JLayeredPane {
 	 * a new house and subgroup are created, but the subgroup is behind the house (not seen),
 	 * contrary to the layer hierarchy.
 	 */
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		
+		// separator
+		g.drawLine(Constants.SEPARATOR_X_POSITION, 0, Constants.SEPARATOR_X_POSITION, this.getHeight());
+		
+		// new guy
+		g.drawString("New guy", 10, 100);
+		g.drawImage(Gender.MALE.getImage(), 20, 120, null);
+		
+		// cursor
+//		if(_cursor != null) {
+//			g.drawImage(Gender.MALE.getImage(), _mousePosition.x, _mousePosition.y, null);
+//		}
+	}
+	
+	private class AddPersonListener extends MouseAdapter {
+		private boolean overNewPersonIcon(int x, int y) {
+			return	
+				x >= 20 &&
+				x <= 20 + Gender.MALE.getImageDimension().width &&
+				y >= 120 &&
+				y <= 120 + Gender.MALE.getImageDimension().height;
+		}
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(_cursor != null) {
+				dropPersonAt((Person) _cursor, -1, -1);
+				_cursor = null;
+			} else if(overNewPersonIcon(e.getX(), e.getY())) {
+//				Person newPerson = new Person("New guy", Gender.MALE);
+//				newPerson.setPosition(20, 120);
+//				add(newPerson, Constants.PERSON_LAYER);
+//				_cursor = newPerson;
+			}
+			repaint();
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			_mousePosition.x = e.getX();
+			_mousePosition.y = e.getY();
+			
+			if(_cursor != null) {
+				_cursor.setPosition(e.getX() + 5, e.getY() + 5);
+				repaint();
+			}
+		}
+	}
 }
