@@ -96,5 +96,24 @@ public class Person extends DraggablePositionableComponent {
 			Canvas canvas = (Canvas) source.getParent();
 			canvas.dropPerson(source);
 		}
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(e.getClickCount() == 2) {
+				String newName = (String) JOptionPane.showInputDialog(
+						(java.awt.Component) e.getSource(), 
+						"Enter a name:", 
+						"Domus", 
+						JOptionPane.QUESTION_MESSAGE, 
+						null, 
+						null,
+						_name);
+				
+				if(newName != null) {
+					_name = newName;
+					setToolTipText(_name);
+				}
+			}
+		}
 	}
 }
