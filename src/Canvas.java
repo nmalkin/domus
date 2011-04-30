@@ -10,10 +10,6 @@ import java.util.Iterator;
 import javax.swing.*;
 
 public class Canvas extends JLayeredPane {
-	
-	private DraggablePositionableComponent _cursor;
-	private java.awt.Point _mousePosition;
-	
 	public Canvas() {
 		this.setLayout(null);
 		
@@ -27,8 +23,6 @@ public class Canvas extends JLayeredPane {
 		AddPersonListener listener = new AddPersonListener();
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
-		_cursor = null;
-		_mousePosition = new java.awt.Point(0,0);
 		
 		// sample data; TODO: remove
 		House h = new House();
@@ -273,13 +267,6 @@ public class Canvas extends JLayeredPane {
 			y <= c.getPosition().y + c.getHeight();
 	}
 	
-	/*
-	 * FIXME:
-	 * sometimes, relatively rarely, when a person is dropped in a new location,
-	 * a new house and subgroup are created, but the subgroup is behind the house (not seen),
-	 * contrary to the layer hierarchy.
-	 */
-	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -290,14 +277,12 @@ public class Canvas extends JLayeredPane {
 		// new guy
 		g.drawString("New guy", 10, 100);
 		g.drawImage(Gender.MALE.getImage(), 20, 120, null);
-		
-		// cursor
-//		if(_cursor != null) {
-//			g.drawImage(Gender.MALE.getImage(), _mousePosition.x, _mousePosition.y, null);
-//		}
 	}
 	
 	private class AddPersonListener extends MouseAdapter {
+		private Person _currentlyDragging = null;
+		private java.awt.Point _lastMousePosition = new java.awt.Point(0,0);
+		
 		private boolean overNewPersonIcon(int x, int y) {
 			return	
 				x >= 20 &&
@@ -307,28 +292,39 @@ public class Canvas extends JLayeredPane {
 		}
 		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			if(_cursor != null) {
-				dropPerson((Person) _cursor);
-				_cursor = null;
-			} else if(overNewPersonIcon(e.getX(), e.getY())) {
+		public void mousePressed(MouseEvent e) {
+			if(overNewPersonIcon(e.getX(), e.getY())) {
 				Person newPerson = new Person("New guy", Gender.MALE);
 				newPerson.setPosition(20, 120);
-				add(newPerson, new Integer(4));
-				_cursor = newPerson;
+				add(newPerson, JLayeredPane.DRAG_LAYER);
+				
+				_currentlyDragging = newPerson;
 			}
-			repaint();
 		}
 		
 		@Override
-		public void mouseMoved(MouseEvent e) {
-			_mousePosition.x = e.getX();
-			_mousePosition.y = e.getY();
-			
-			if(_cursor != null) {
-				_cursor.setPosition(e.getX() + 5, e.getY() + 5);
-				repaint();
+		public void mouseReleased(MouseEvent e) {
+			if(_currentlyDragging != null) {
+				dropPerson(_currentlyDragging);
+				_currentlyDragging = null;
 			}
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			int xOffset = e.getX() - _lastMousePosition.x;
+			int yOffset = e.getY() - _lastMousePosition.y;
+			
+			_currentlyDragging.moveBy(xOffset, yOffset);
+			
+			_lastMousePosition.x = e.getX();
+			_lastMousePosition.y = e.getY();
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			_lastMousePosition.x = e.getX();
+			_lastMousePosition.y = e.getY();
 		}
 	}
 }

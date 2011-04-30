@@ -73,7 +73,7 @@ public abstract class DraggablePositionableComponent extends JComponent implemen
 		try {
 			Canvas canvas = (Canvas) this.getParent();
 			if(canvas != null) {
-				int xMin = Constants.SEPARATOR_X_POSITION;
+				int xMin = 0; //Constants.SEPARATOR_X_POSITION;
 				int xMax = canvas.getWidth();
 				int yMin = 0;
 				int yMax = canvas.getHeight();
@@ -103,7 +103,7 @@ public abstract class DraggablePositionableComponent extends JComponent implemen
 	 * 
 	 * @return
 	 */
-	@Deprecated // not currently used for anything
+	@Deprecated
 	protected boolean outOfBounds() {
 		Canvas canvas = null;
 		
