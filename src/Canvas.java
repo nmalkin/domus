@@ -44,6 +44,12 @@ public class Canvas extends JLayeredPane {
 		 */
 	}
 	
+	private boolean intersecting(DraggablePositionableComponent a, DraggablePositionableComponent b) {
+		return GraphicsSupport.intersectionAreaFraction(
+				a.getRectangle(), 
+				b.getRectangle()) > Constants.INTERSECTION_FRACTION;
+	}
+	
 	/**
 	 * Performs a drop of the given person at the given location.
 	 * 
@@ -56,85 +62,60 @@ public class Canvas extends JLayeredPane {
 	 * @param x
 	 * @param y
 	 */
-	public void dropPersonAt(Person person, int x, int y) {
-		int parentSubGroups = 0; // tracks how many subgroups this person is currently in
+	public void dropPerson(Person person) {
+		SubGroup newSubGroup = null;
 		
-		for(Component c : this.getComponents()) { // go through all components
-			if(c instanceof SubGroup) { // for each subgroup:
-				SubGroup s = (SubGroup) c;
-				
-				// does this subgroup contain the given person?
-				Iterator<Person> it = s.iterator();
-				while(it.hasNext()) {
-					if(it.next() == person) { // yes!
-						parentSubGroups++;
-						
-						if(GraphicsSupport.intersectionAreaFraction(
-								person.getRectangle(), 
-								s.getRectangle()) > Constants.INTERSECTION_FRACTION) 
-						{ // well, should it?
-											// (is the person, graphically, inside this subgroup?)
-							// yes!
-							// ah, good, we're done then
-							return;
-						} else {
-							// no, not anymore
-							// remove it
-							it.remove();
-							parentSubGroups--;
-							
-							// are there any people left in this subgroup?
-							if(s.isEmpty()) { // no
-								this.remove(s); // remove it from view
-							} else { // yes
-								s.updatePeoplePositions(); // update their positions
-							}
-						}
+		// if this person can be put in any existing subgroup, add him to it
+		outer:
+		for(House h : State.getInstance().getGroup()) {
+			if(intersecting(person, h)) { // person is inside this house
+				for(SubGroup s : h) {
+					if(intersecting(person, s)) { // person is inside this subgroup 
+						newSubGroup = s;
+						break outer;
 					}
-				}
-				
-				// at this point, this subgroup definitely doesn't contain the given person
-				// should it?
-				if(GraphicsSupport.intersectionAreaFraction(
-						person.getRectangle(), 
-						s.getRectangle()) > Constants.INTERSECTION_FRACTION) 
-				{
-					// yes. add it.
-					s.addPerson(person);
-					parentSubGroups++;
 				}
 			}
 		}
 		
-		// if we removed people, some houses may be empty. check for that
-		removeEmptyHouses();
+		// remove this person from his/her old subgroup
+		SubGroup currentSubGroup = person.getSubGroup();
 		
-		if(parentSubGroups == 0) { // this person isn't in any subgroup
-			// we should fix that.
-			SubGroup newSubGroup = new SubGroup();
+		if(currentSubGroup == newSubGroup) { // ...unless he's staying in the same subgroup
+			currentSubGroup.updatePeoplePositions(); // move the person pack to his/her spot
+			return; // otherwise, no changes are needed
+		}
+		
+		currentSubGroup.removePerson(person);
+		if(currentSubGroup.isEmpty()) {
+			removeIfEmpty(currentSubGroup); // (may require cleaning up subgroup/house, if they have been left empty)
+		} else {
+			currentSubGroup.updatePeoplePositions();
+		}
+		
+		if(newSubGroup == null) { // no subgroup was found for this person. create a new one.
+			newSubGroup = new SubGroup();
 			
-			// place the new subgroup wherever the subgroup is right now
+			// place the new subgroup wherever the person is right now
 			newSubGroup.setPosition(
 					person.getPosition().x - Constants.SUBGROUP_PADDING, 
 					person.getPosition().y - Constants.SUBGROUP_PADDING);
-				/*TODO: our use of the PADDING constant here
-				 * is based on knowledge of how the house places internal components.
-				 * any way to make it more abstract?
-				 */
 			
 			// add the person to the subgroup
 			newSubGroup.addPerson(person);
 			
+			// place the subgroup into a house
+			dropSubGroup(newSubGroup);
+			
 			// display it
 			this.add(newSubGroup, Constants.SUBGROUP_LAYER);
-			
-			// but wait! is this new subgroup in a house?
-			dropSubGroupAt(newSubGroup, // checks for that and adds a house if necessary
-					newSubGroup.getPosition().x, 
-					newSubGroup.getPosition().y);
+		} else {
+			// add the person to the (already-existing) subgroup
+			newSubGroup.addPerson(person);
 		}
 		
-		// with the addition/removal, the canvas could have changed. let's repaint it.
+		newSubGroup.updatePeoplePositions();
+		
 		this.repaint();
 	}
 	
@@ -150,75 +131,34 @@ public class Canvas extends JLayeredPane {
 	 * @param x
 	 * @param y
 	 */
-	public void dropSubGroupAt(SubGroup subgroup, int x, int y) {
-		int parentHouses = 0; // tracks how many houses this subgroup is currently in
+	public void dropSubGroup(SubGroup subgroup) {
+		House newHouse = null;
 		
-		// perform subgroup merging
-		for(Component c : this.getComponents()) { // go through all components
-			if(c instanceof SubGroup) { // for each subgroup:
-				SubGroup s = (SubGroup) c;
-				if(subgroup != s &&
-						GraphicsSupport.intersectionAreaFraction(
-								subgroup.getRectangle(), 
-								s.getRectangle()) > Constants.INTERSECTION_FRACTION) 
-				{ // a large fraction of this subgroup is intersecting. merge them.
-					mergeSubGroups(subgroup, s);
-					repaint();
-					return;
-				}
-			}
-		}
-		
-		for(Component c : this.getComponents()) { // go through all components
-			if(c instanceof House) { // for each house:
-				House h = (House) c;
-				
-				// does this house contain the given subgroup?
-				Iterator<SubGroup> it = h.iterator();
-				while(it.hasNext()) {
-					if(it.next() == subgroup) { // yes!
-						parentHouses++;
-						
-						if(GraphicsSupport.intersectionAreaFraction(
-								subgroup.getRectangle(), 
-								h.getRectangle()) > Constants.INTERSECTION_FRACTION) 
-						{ // well, should it?
-								// (is the subgroup, graphically, inside this house?)
-							// yes!
-							// ah, good, we're done then
-							return;
-						} else {
-							// no, not anymore
-							// remove it
-							it.remove();
-							parentHouses--;
-							
-							// are there any subgroups left in this house?
-							if(h.isEmpty()) { // no
-								this.remove(h); // remove it from view
-							} else { // yes
-								h.updateSubGroupPositions(); // update their positions
-							}
-						}
+		for(House h : State.getInstance().getGroup()) {
+			if(intersecting(subgroup, h)) { // subgroup is inside this house
+				// is the subgroup intersecting any existing subgroups?
+				for(SubGroup s : h) {
+					if(	subgroup != s &&
+						intersecting(subgroup, s)) 
+					{ // subgroup is inside this subgroup 
+						mergeSubGroups(subgroup, s);
+						h.updateSubGroupPositions();
+						repaint();
+						return;
 					}
 				}
 				
-				// at this point, this house definitely doesn't contain the given subgroup
-				// should it?
-				if(GraphicsSupport.intersectionAreaFraction(
-						subgroup.getRectangle(), 
-						h.getRectangle()) > Constants.INTERSECTION_FRACTION) 
-				{
-					// yes. add it.
-					h.addSubGroup(subgroup);
-					parentHouses++;
-				}
+				// subgroup is inside house, but not intersecting any existing subgroups
+				// add it to the house in its current form.
+				newHouse = h; // (happens later)
+				break;
 			}
 		}
 		
-		if(parentHouses == 0) { // this subgroup isn't in any house
-			// we should fix that.
-			House newHouse = new House();
+		
+		if(newHouse == null) {
+			// subgroup isn't in any house. create one for it.
+			newHouse = new House();
 			
 			// save the new house to State
 			State.getInstance().getGroup().add(newHouse);
@@ -227,38 +167,34 @@ public class Canvas extends JLayeredPane {
 			newHouse.setPosition(
 					subgroup.getPosition().x - Constants.HOUSE_PADDING, 
 					subgroup.getPosition().y - Constants.HOUSE_PADDING);
-				/*TODO: our use of the PADDING constant here
-				 * is based on knowledge of how the house places internal components.
-				 * any way to make it more abstract?
-				 */
-			
-			// add the subgroup to the house
-			newHouse.addSubGroup(subgroup);
-			
+						
 			// display it
 			this.add(newHouse, Constants.HOUSE_LAYER);
 		}
 		
-		// with the addition/removal, the canvas could have changed. let's repaint it.
-		this.repaint();
-	}
-	
-	/**
-	 * Removes any houses on the canvas that do not have any people inside them.
-	 */
-	private void removeEmptyHouses() {
-		for(Component c : this.getComponents()) {
-			if(c instanceof House) {
-				House h = (House) c;
-				
-				h.removeEmptySubGroups();
-				
-				if(h.isEmpty()) {
-					this.remove(h); // remove from view
-					State.getInstance().getGroup().remove(h); // remove from state
-				}
-			}
+		House currentHouse = subgroup.getHouse();
+		
+		if(currentHouse == newHouse) {
+			currentHouse.updateSubGroupPositions(); // move subgroup to its default location in house
+			this.repaint();
+			return;
 		}
+		
+		if(currentHouse != null) {
+			currentHouse.removeSubGroup(subgroup);
+			currentHouse.updateSubGroupPositions();
+		}
+		
+		newHouse.addSubGroup(subgroup);
+		
+		if(currentHouse != null && currentHouse.isEmpty()) {
+			this.remove(currentHouse); // remove from view
+			State.getInstance().getGroup().remove(currentHouse); // remove from group
+		}
+		
+		newHouse.updateSubGroupPositions();
+		
+		this.repaint();
 	}
 	
 	/**
@@ -269,34 +205,49 @@ public class Canvas extends JLayeredPane {
 	 */
 	private void mergeSubGroups(SubGroup a, SubGroup b) {
 		// move over the people from this subgroup to the new one
+		/* unfortunately, we can't just do:
+		 * 	for(Person p : a) { b.addPerson(p); }
+		 * because this creates a ConcurrentModificationException.
+		 * So the workaround is to copy the people to a temporary container,
+		 * and delete from there.
+		 * This is hacky. It would be nice to avoid this. (TODO)
+		 */
+		java.util.Collection<Person> tmp = new java.util.LinkedList<Person>();
 		for(Person p : a) {
+			tmp.add(p);
+		}
+		
+		for(Person p : tmp) {
 			b.addPerson(p);
 		}
 		
 		// remove the old subgroup from its current house
-			// TODO: this is kind of ugly. clean up?
-		for(Component cc : this.getComponents()) {
-			if(cc instanceof House) {
-				Iterator<SubGroup> it = ((House) cc).iterator();
-				while(it.hasNext()) {
-					if(a == it.next()) {
-						it.remove();
-						((House) cc).updateSubGroupPositions();
-						break;
-					}
-				}
-			}
-		}
-		
-		removeEmptyHouses();
-		
-		// and remove it from view
-		this.remove(a);
-		
-		// and we're done
-		return;
+		removeIfEmpty(a);
 	}
 	
+	/**
+	 * Removes the given SubGroup from its House, and from view, if it is empty.
+	 * If the container House becomes empty, it is removed as well.
+	 * 
+	 * @param currentSubGroup
+	 */
+	private void removeIfEmpty(SubGroup currentSubGroup) {
+		if(currentSubGroup.isEmpty()) {
+			this.remove(currentSubGroup); // remove from view
+			
+			House currentHouse = currentSubGroup.getHouse();
+			if(currentHouse != null) {
+				currentHouse.removeSubGroup(currentSubGroup); // remove from house
+				
+				if(currentHouse.isEmpty()) {
+					this.remove(currentHouse); // remove from view
+					State.getInstance().getGroup().remove(currentHouse); // remove from group
+				}	
+			}
+		}
+	}
+	
+	@Deprecated
 	private boolean isDraggablePositionableComponentAt(DraggablePositionableComponent c, int x, int y) {
 //		System.out.println("Is " + 
 //				x + " within [" + c.getPosition().x + "," + (c.getPosition().x + c.getWidth()) + "] and " +

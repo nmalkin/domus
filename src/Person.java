@@ -18,11 +18,15 @@ public class Person extends DraggablePositionableComponent {
 	/** What is my gender? */
 	private Gender _gender;
 	
+	/** What is the subgroup that I'm contained in? */
+	private SubGroup _subgroup;
+	
 	public Person(String name, Gender gender) {
 		super();
 		
 		_name = name;
 		_gender = gender;
+		_subgroup = null;
 
 		this.setPreferredSize(_gender.getImageDimension());
 		updatePosition();
@@ -43,6 +47,14 @@ public class Person extends DraggablePositionableComponent {
 	
 	public Gender getGender() {
 		return _gender;
+	}
+	
+	public void setSubGroup(SubGroup s) {
+		_subgroup = s;
+	}
+	
+	public SubGroup getSubGroup() {
+		return _subgroup;
 	}
 	
 	@Override
@@ -79,13 +91,10 @@ public class Person extends DraggablePositionableComponent {
 	
 	private class PersonDropListener extends java.awt.event.MouseAdapter {
 		@Override
-		public void mouseReleased(MouseEvent e) {//System.out.println("mouse released @ " + e.getX() + "," + e.getY());
+		public void mouseReleased(MouseEvent e) {
 			Person source = (Person) e.getSource();
-			int xAbsolute = source.getPosition().x + e.getX();
-			int yAbsolute = source.getPosition().y + e.getY();
-			
 			Canvas canvas = (Canvas) source.getParent();
-			canvas.dropPersonAt(source, xAbsolute, yAbsolute);
+			canvas.dropPerson(source);
 		}
 	}
 }

@@ -29,11 +29,38 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 		this.setVisible(true);
 	}
 	
-	public boolean addSubGroup(SubGroup e) {
-		_subgroups.add(e);
+	public boolean addSubGroup(SubGroup s) {
+		_subgroups.add(s);
+		
+		// remove it from its old house
+		if(s.getHouse() != null) {
+			s.getHouse().removeSubGroup(s);
+		}
+		s.setHouse(this);
+		
 		updateSubGroupPositions();
 		
 		return true;
+	}
+	
+	/**
+	 * Removes the given subgroup from this house.
+	 * 
+	 * @param s
+	 * @return true if the subgroup was found and removed, or false if the subgroup wasn't found
+	 */
+	public boolean removeSubGroup(SubGroup s) {
+		Iterator<SubGroup> it = _subgroups.iterator();
+		while(it.hasNext()) {
+			SubGroup current = it.next();
+			if(current == s) {
+				current.setHouse(null);
+				it.remove();
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -43,18 +70,6 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 	 */
 	public boolean isEmpty() {
 		return _subgroups.isEmpty();
-	}
-	
-	/**
-	 * Removes any subgroup that is in this house but has no people in it.
-	 */
-	public void removeEmptySubGroups() {
-		Iterator<SubGroup> it = _subgroups.iterator();
-		while(it.hasNext()) {
-			if(it.next().isEmpty()) {
-				it.remove();
-			}
-		}
 	}
 	
 	@Override

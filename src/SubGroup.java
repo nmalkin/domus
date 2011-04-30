@@ -17,9 +17,13 @@ import javax.swing.*;
 public class SubGroup extends DraggablePositionableComponent implements Iterable<Person> {
 	/** the people that make up this sub-group */
 	private Collection<Person> _people;
+	
+	/** the house that this subgroup is contained in */
+	private House _house;
 		
 	public SubGroup() {
 		_people = new LinkedList<Person>();
+		_house = null;
 		
 		this.setBounds(0,0,1,1);
 		
@@ -35,9 +39,43 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		
 //		this.add(p); // add to parent JComponent
 		
+		// remove him from his old subgroup
+		if(p.getSubGroup() != null) {
+			p.getSubGroup().removePerson(p);
+		}
+		p.setSubGroup(this);
+		
 		updatePeoplePositions(); // update everybody's positions
 		
 		return true;
+	}
+	
+	/**
+	 * Removes the given person from this house.
+	 * 
+	 * @param p
+	 * @return true if the person was found and removed, or false if the person wasn't found
+	 */
+	public boolean removePerson(Person p) {
+		Iterator<Person> it = _people.iterator();
+		while(it.hasNext()) {
+			Person current = it.next();
+			if(current == p) {
+				current.setSubGroup(null);
+				it.remove();
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public void setHouse(House h) {
+		_house = h;
+	}
+	
+	public House getHouse() {
+		return _house;
 	}
 	
 	/**
@@ -129,11 +167,9 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			SubGroup source = (SubGroup) e.getSource();
-			int xAbsolute = source.getPosition().x + e.getX();
-			int yAbsolute = source.getPosition().y + e.getY();
 			
 			Canvas canvas = (Canvas) source.getParent();
-			canvas.dropSubGroupAt(source, xAbsolute, yAbsolute);
+			canvas.dropSubGroup(source);
 		}
 	}
 }
