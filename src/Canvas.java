@@ -296,7 +296,7 @@ public class Canvas extends JLayeredPane {
 			if(overNewPersonIcon(e.getX(), e.getY())) {
 				Person newPerson = new Person("New guy", Gender.MALE);
 				newPerson.setPosition(20, 120);
-				add(newPerson, JLayeredPane.DRAG_LAYER);
+				add(newPerson, Constants.PERSON_LAYER);
 				
 				_currentlyDragging = newPerson;
 			}
