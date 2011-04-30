@@ -312,10 +312,12 @@ public class Canvas extends JLayeredPane {
 		
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			int xOffset = e.getX() - _lastMousePosition.x;
-			int yOffset = e.getY() - _lastMousePosition.y;
-			
-			_currentlyDragging.moveBy(xOffset, yOffset);
+			if(_currentlyDragging != null) {
+				int xOffset = e.getX() - _lastMousePosition.x;
+				int yOffset = e.getY() - _lastMousePosition.y;
+				
+				_currentlyDragging.moveBy(xOffset, yOffset);
+			}
 			
 			_lastMousePosition.x = e.getX();
 			_lastMousePosition.y = e.getY();
