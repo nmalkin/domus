@@ -143,18 +143,19 @@ public class Canvas extends JLayeredPane {
 					{ // subgroup is inside this subgroup 
 						mergeSubGroups(subgroup, s);
 						h.updateSubGroupPositions();
-						repaint();
+						this.repaint();
 						return;
 					}
 				}
 				
 				// subgroup is inside house, but not intersecting any existing subgroups
-				// add it to the house in its current form.
-				newHouse = h; // (happens later)
+				// add it to the house.
+				newHouse = h;
 				break;
 			}
 		}
 		
+		House currentHouse = subgroup.getHouse();
 		
 		if(newHouse == null) {
 			// subgroup isn't in any house. create one for it.
@@ -170,11 +171,7 @@ public class Canvas extends JLayeredPane {
 						
 			// display it
 			this.add(newHouse, Constants.HOUSE_LAYER);
-		}
-		
-		House currentHouse = subgroup.getHouse();
-		
-		if(currentHouse == newHouse) {
+		} else if(newHouse == currentHouse) {
 			currentHouse.updateSubGroupPositions(); // move subgroup to its default location in house
 			this.repaint();
 			return;
@@ -183,15 +180,14 @@ public class Canvas extends JLayeredPane {
 		if(currentHouse != null) {
 			currentHouse.removeSubGroup(subgroup);
 			currentHouse.updateSubGroupPositions();
+			
+			if(currentHouse.isEmpty()) {
+				this.remove(currentHouse); // remove from view
+				State.getInstance().getGroup().remove(currentHouse); // remove from group
+			}
 		}
 		
 		newHouse.addSubGroup(subgroup);
-		
-		if(currentHouse != null && currentHouse.isEmpty()) {
-			this.remove(currentHouse); // remove from view
-			State.getInstance().getGroup().remove(currentHouse); // remove from group
-		}
-		
 		newHouse.updateSubGroupPositions();
 		
 		this.repaint();
@@ -219,6 +215,7 @@ public class Canvas extends JLayeredPane {
 		
 		for(Person p : tmp) {
 			b.addPerson(p);
+			// the addPerson code also removes the current person from his/her current subgroup (a)
 		}
 		
 		// remove the old subgroup from its current house
@@ -259,11 +256,4 @@ public class Canvas extends JLayeredPane {
 			y >= c.getPosition().y &&
 			y <= c.getPosition().y + c.getHeight();
 	}
-	
-	/*
-	 * FIXME:
-	 * sometimes, relatively rarely, when a person is dropped in a new location,
-	 * a new house and subgroup are created, but the subgroup is behind the house (not seen),
-	 * contrary to the layer hierarchy.
-	 */
 }
