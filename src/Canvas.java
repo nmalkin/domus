@@ -275,27 +275,65 @@ public class Canvas extends JLayeredPane {
 		g.drawLine(Constants.SEPARATOR_X_POSITION, 0, Constants.SEPARATOR_X_POSITION, this.getHeight());
 		
 		// new guy
-		g.drawString("New guy", 10, 100);
-		g.drawImage(Gender.MALE.getImage(), 20, 120, null);
+		String text = "New Guy";
+		int textWidth = g.getFontMetrics().stringWidth(text);
+		int textPosition = (0 + Constants.SEPARATOR_X_POSITION) / 2 - textWidth / 2; 
+		g.drawString(text, textPosition, Constants.NEW_MALE_Y_POSITION - 20);
+		g.drawImage(Gender.MALE.getImage(), Constants.NEW_MALE_X_POSITION, Constants.NEW_MALE_Y_POSITION, null);
+		
+		text = "New Girl";
+		textWidth = g.getFontMetrics().stringWidth(text);
+		textPosition = (0 + Constants.SEPARATOR_X_POSITION) / 2 - textWidth / 2;
+		g.drawString(text, textPosition, Constants.NEW_FEMALE_Y_POSITION - 20);
+		g.drawImage(Gender.FEMALE.getImage(), Constants.NEW_FEMALE_X_POSITION, Constants.NEW_FEMALE_Y_POSITION, null);
 	}
 	
 	private class AddPersonListener extends MouseAdapter {
 		private Person _currentlyDragging = null;
 		private java.awt.Point _lastMousePosition = new java.awt.Point(0,0);
 		
-		private boolean overNewPersonIcon(int x, int y) {
-			return	
-				x >= 20 &&
-				x <= 20 + Gender.MALE.getImageDimension().width &&
-				y >= 120 &&
-				y <= 120 + Gender.MALE.getImageDimension().height;
+		/**
+		 * Given a position on the Canvas, returns null if the position is not over any "New Person" button;
+		 * otherwise, returns the gender of that new person.
+		 * 
+		 * @param x
+		 * @param y
+		 * @return
+		 */
+		private Gender overNewPersonIcon(int x, int y) {
+			if(	x >= Constants.NEW_MALE_X_POSITION &&
+				x <= Constants.NEW_MALE_X_POSITION + Gender.MALE.getImageDimension().width &&
+				y >= Constants.NEW_MALE_Y_POSITION &&
+				y <= Constants.NEW_MALE_Y_POSITION + Gender.MALE.getImageDimension().height) 
+			{
+				return Gender.MALE;
+			} else if(
+				x >= Constants.NEW_FEMALE_X_POSITION &&
+				x <= Constants.NEW_FEMALE_X_POSITION + Gender.FEMALE.getImageDimension().width &&
+				y >= Constants.NEW_FEMALE_Y_POSITION &&
+				y <= Constants.NEW_FEMALE_Y_POSITION + Gender.FEMALE.getImageDimension().height) 
+			{
+				return Gender.FEMALE;
+			} else {
+				return null;
+			}
 		}
 		
 		@Override
 		public void mousePressed(MouseEvent e) {
-			if(overNewPersonIcon(e.getX(), e.getY())) {
-				Person newPerson = new Person("New guy", Gender.MALE);
-				newPerson.setPosition(20, 120);
+			Gender newPersonGender = overNewPersonIcon(e.getX(), e.getY());
+			if(newPersonGender != null) {
+				Person newPerson = new Person("A Person", newPersonGender);
+				
+				switch(newPersonGender) {
+				case MALE:
+					newPerson.setPosition(Constants.NEW_MALE_X_POSITION, Constants.NEW_MALE_Y_POSITION);
+					break;
+				case FEMALE:
+					newPerson.setPosition(Constants.NEW_FEMALE_X_POSITION, Constants.NEW_FEMALE_Y_POSITION);
+					break;
+				}
+				
 				add(newPerson, Constants.PERSON_LAYER);
 				
 				_currentlyDragging = newPerson;

@@ -26,6 +26,12 @@ public class Constants {
 	
 	protected static final int SEPARATOR_X_POSITION = 100;
 	
+	protected static final int NEW_MALE_X_POSITION = (0 + Constants.SEPARATOR_X_POSITION) / 2 - Gender.MALE.getImageDimension().width / 2;
+	protected static final int NEW_MALE_Y_POSITION = 120;
+	
+	protected static final int NEW_FEMALE_X_POSITION = (0 + Constants.SEPARATOR_X_POSITION) / 2 - Gender.FEMALE.getImageDimension().width / 2;
+	protected static final int NEW_FEMALE_Y_POSITION = 320;
+	
 	// House
 	protected static final java.awt.Color HOUSE_COLOR = Color.BLUE;
 	protected static final int HOUSE_PADDING = 45; // pixels
