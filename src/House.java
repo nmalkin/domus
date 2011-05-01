@@ -23,6 +23,7 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 		super();
 		
 		_subgroups = new LinkedList<SubGroup>();
+		_locations = new LocationPreference();
 		
 		this.setBounds(0,0,1,1);
 		

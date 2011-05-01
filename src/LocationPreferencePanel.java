@@ -1,10 +1,12 @@
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * The LocationPreferencePanel allows the user to select which dorms and areas of campus 
@@ -13,16 +15,21 @@ import javax.swing.*;
  * @author nmalkin
  *
  */
-public class LocationPreferencePanel extends JPanel {
+public class LocationPreferencePanel extends JPanel implements ChangeListener {
 	// LocationPreferencePanel is a singleton.
 	private static final LocationPreferencePanel INSTANCE = new LocationPreferencePanel();
 	public static LocationPreferencePanel getInstance() { return INSTANCE; }
 	
 	/** all the dorm checkboxes in this panel */
-	private List<DormCheckBox> _dormBoxes;
+	private Map<Dorm, DormCheckBox> _dormBoxes;
+	
+	/** flag for preventing concurrent modification */
+	private boolean _changingState = false;
 	
 	private LocationPreferencePanel() {
-		_dormBoxes = new LinkedList<DormCheckBox>();
+		_dormBoxes = new HashMap<Dorm, DormCheckBox>();
+		
+		State.getInstance().setSelectedHouseChangeListener(this);
 		
 		CheckBoxListener myListener = new CheckBoxListener();
 		
@@ -40,7 +47,7 @@ public class LocationPreferencePanel extends JPanel {
 				dormBox.setParent(areaBox);
 				areaBox.addChild(dormBox);
 				
-				_dormBoxes.add(dormBox);
+				_dormBoxes.put(dorm, dormBox);
 				this.add(dormBox);
 			}
 		}
@@ -55,17 +62,42 @@ public class LocationPreferencePanel extends JPanel {
 	private class CheckBoxListener implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
-			LocationPreference preference = new LocationPreference();
-			
-			for(DormCheckBox checkbox : _dormBoxes) {
-				if(checkbox.isSelected()) {
-					preference.add(checkbox.getDorm());
+			if(! _changingState) {
+				LocationPreference preference = new LocationPreference();
+				
+				for(DormCheckBox checkbox : _dormBoxes.values()) {
+					if(checkbox.isSelected()) {
+						preference.add(checkbox.getDorm());
+					}
+				}
+				
+				if(State.getInstance().getSelectedHouse() != null) {
+					State.getInstance().getSelectedHouse().setLocationPreference(preference);
 				}
 			}
-			
-			if(State.getInstance().getSelectedHouse() != null) {
-				State.getInstance().getSelectedHouse().setLocationPreference(preference);
-			}
 		}	
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// the currently selected house has changed
+		_changingState = true;
+		
+		// clear all the current values
+		for(DormCheckBox checkbox : _dormBoxes.values()) {
+			checkbox.setSelected(false);
+		}
+		
+		// update the checkboxes accordingly
+		if(State.getInstance().getSelectedHouse() != null) {
+			for(Dorm dorm : State.getInstance().getSelectedHouse().getLocationPreference()) {
+				DormCheckBox checkbox = _dormBoxes.get(dorm);
+				if(checkbox != null) { // null shouldn't happen
+					checkbox.setSelected(true);
+				}
+			}
+		}
+		
+		_changingState = false;
 	}
 }
