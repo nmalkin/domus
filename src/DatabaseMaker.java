@@ -117,8 +117,8 @@ public class DatabaseMaker {
 	private void makeSophomoreTable() throws SQLException {
 		PreparedStatement prep;
 
-		for(int i = 0; i < Constants.SOPHOMORE_DORMS.length; i++) {
-			prep = connection.prepareStatement("insert into " + Constants.SOPHOMORE_TABLE + " values ('" + Constants.SOPHOMORE_DORMS[i] + "');");
+		for(int i = 0; i < DatabaseConstants.SOPHOMORE_DORMS.length; i++) {
+			prep = connection.prepareStatement("insert into " + Constants.SOPHOMORE_TABLE + " values ('" + DatabaseConstants.SOPHOMORE_DORMS[i] + "');");
 			prep.execute();
 		}
 	}
@@ -126,8 +126,8 @@ public class DatabaseMaker {
 	private void makeGenderTable() throws SQLException {
 		PreparedStatement prep;
 
-		for(int i = 0; i < Constants.NEUTRAL_DORMS.length; i++) {
-			prep = connection.prepareStatement("insert into " + Constants.GENDER_TABLE + " values ('" + Constants.NEUTRAL_DORMS[i] + "');");
+		for(int i = 0; i < DatabaseConstants.NEUTRAL_DORMS.length; i++) {
+			prep = connection.prepareStatement("insert into " + Constants.GENDER_TABLE + " values ('" + DatabaseConstants.NEUTRAL_DORMS[i] + "');");
 			prep.execute();
 		}
 	}
@@ -199,7 +199,7 @@ public class DatabaseMaker {
 	public static void main(String[] args) throws SQLException {
 		DatabaseMaker maker = new DatabaseMaker();
 
-		File path = new File(Constants.PATH_NAME);
+		File path = new File(DatabaseConstants.PATH_NAME);
 		String[] files = path.list();
 
 		for(int i = 0; i < files.length; i++) {
@@ -207,7 +207,7 @@ public class DatabaseMaker {
 				String year = files[i].replaceAll(".csv", "");
 				System.out.println("reading " + year + " data........");
 
-				CSVReader reader = new CSVReader(Constants.PATH_NAME + files[i]);
+				CSVReader reader = new CSVReader(DatabaseConstants.PATH_NAME + files[i]);
 				ArrayList<String[]> rooms = reader.read();
 
 				for(String[] room: rooms) maker.add(room, year);

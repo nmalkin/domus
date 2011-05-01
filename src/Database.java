@@ -34,7 +34,7 @@ public class Database {
 	 * 
 	 * @return
 	 */
-	public static Collection<CampusArea> getCampusAreas() throws SQLException {
+	public static Collection<CampusArea> getCampusAreas() {
 		ArrayList<CampusArea> campusAreas = new ArrayList<CampusArea>();
 
 		try {
@@ -130,19 +130,26 @@ public class Database {
 	 * @return average semester level for groups with this lottery number
 	 * @throws SQLException 
 	 */
-	public static int semesterFromLotteryNumber(int lotteryNumber, int[] years) throws SQLException {
-		ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
-		semesters.next();
+	public static int semesterFromLotteryNumber(int lotteryNumber) {
+		try {
+			int[] years = {}; //TODO: get years from State
+			
+			ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
+			semesters.next();
 
-		int sum = 0;
-		int count = 0;
-		for (int i = 0; i < years.length; i++) {
-			sum += semesters.getInt("y" + years[i]);
+			int sum = 0;
+			int count = 0;
+			for (int i = 0; i < years.length; i++) {
+				sum += semesters.getInt("y" + years[i]);
 
-			if(semesters.getInt(years[i] - 2004) != 0) count++;
+				if(semesters.getInt(years[i] - 2004) != 0) count++;
+			}
+
+			return sum / count;
+		} catch(SQLException e) {
+			//TODO: better handling
+			return -1;
 		}
-
-		return sum / count;
 	}
 
 	/**
@@ -154,11 +161,14 @@ public class Database {
 	 * @return average semester level for groups with this lottery number
 	 * @throws SQLException 
 	 */
-	public static int lotteryNumberFromSemester(int semester, int[] years) throws SQLException {
+	public static int lotteryNumberFromSemester(int semester) {
+		int[] years = {}; //TODO: get years from State
+		
 		// still need to incorporate happiness level
 		int count = 0;
 		int sum = 0;
 
+		try {
 		for(int i = 0; i < years.length; i++) {
 			ResultSet numbers = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + ";");
 
@@ -168,7 +178,10 @@ public class Database {
 			}
 		}
 
-		return sum / count; 
+		return sum / count;
+		} catch(SQLException e) { //TODO
+			return -1; //TODO: fix this too
+		}
 	}
 
 	public static void closeDatabase() {
