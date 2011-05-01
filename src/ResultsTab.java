@@ -24,6 +24,7 @@ public class ResultsTab extends JPanel {
 					this.remove(c);
 				}
 			}
+			State.getInstance().clearResults();
 			int[] years = State.getInstance().getYears();
 			boolean sophomoreOnly = State.getInstance().isSophomoreOnly();
 			for (House h : State.getInstance().getGroup()) {

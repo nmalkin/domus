@@ -90,6 +90,10 @@ public class State {
 		//TODO Move update code to here
 	}
 	
+	public void clearResults() {
+		_results.clear();
+	}
+	
 	public Multimap<SubGroup, Room> getResults() {
 		return LinkedListMultimap.create(_results);
 	}
