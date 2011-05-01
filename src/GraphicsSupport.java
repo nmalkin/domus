@@ -10,7 +10,7 @@ import java.awt.Rectangle;
  */
 public class GraphicsSupport {
 	/**
-	 * What fraction of Rectangle A's area does its intersection with Rectangle B take up?
+	 * What fraction of Rectangle A or B's area does their intersection take up?
 	 * 
 	 * @param a
 	 * @param b
@@ -24,12 +24,13 @@ public class GraphicsSupport {
 		Rectangle intersection = a.intersection(b);
 		
 		double aArea = a.getWidth() * a.getHeight();
+		double bArea = b.getWidth() * b.getHeight();
 		double intersectionArea = intersection.getWidth() * intersection.getHeight();
 		
-		if(aArea == 0) {
+		if(aArea == 0 || bArea == 0) {
 			return 0;
 		} else {
-			return intersectionArea / aArea;
+			return intersectionArea / Math.min(aArea, bArea);
 		}
 	}
 }
