@@ -21,6 +21,9 @@ public class State {
 	/** room lists */
 	private List<RoomList> _roomLists;
 	
+	/** the house that's currently selected on the screen */
+	private House _selectedHouse;
+	
 	public static State getInstance() {
 		return INSTANCE;
 	}
@@ -29,10 +32,19 @@ public class State {
 		_group = new Group();
 		_results = LinkedListMultimap.create();
 		_roomLists = new LinkedList<RoomList>();
+		_selectedHouse = null;
 	}
 	
 	public Group getGroup() {
 		return _group;
+	}
+	
+	public void setSelectedHouse(House h) {
+		_selectedHouse = h;
+	}
+	
+	public House getSelectedHouse() {
+		return _selectedHouse;
 	}
 	
 	public void updateResults() {

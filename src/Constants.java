@@ -36,6 +36,9 @@ public class Constants {
 	protected static final java.awt.Color HOUSE_COLOR = Color.BLUE;
 	protected static final int HOUSE_PADDING = 45; // pixels
 	
+	protected static final java.awt.Color SELECTED_HOUSE_BORDER_COLOR = Color.PINK;
+	protected static final float SELECTED_HOUSE_BORDER_WIDTH = INSET + 0f;
+	
 	// SubGroup
 	protected static final java.awt.Color SUBGROUP_COLOR = Color.GREEN;
 	protected static final int SUBGROUP_PADDING = 25; // pixels

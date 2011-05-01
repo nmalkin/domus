@@ -3,6 +3,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -25,6 +27,8 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 		this.setBounds(0,0,1,1);
 		
 		this.setBackground(Color.BLACK);
+		
+		this.addMouseListener(new HouseMouseListener());
 		
 		this.setVisible(true);
 	}
@@ -151,12 +155,27 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 		updatePosition(); // updates component dimensions (in addition to position)
 		
 		// draw box representing the subgroup
-		Graphics2D g2 = (Graphics2D) g;
-		g2.setPaint(Constants.HOUSE_COLOR);
-		g2.fill(new RoundRectangle2D.Double(
+		java.awt.Shape houseBox = new RoundRectangle2D.Double(
 				Constants.INSET, Constants.INSET, 
 				width - 2 * Constants.INSET, height - 2 * Constants.INSET, 
-				10, 10));
+				10, 10);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setPaint(Constants.HOUSE_COLOR);
+		g2.fill(houseBox);
 		
+		// if selected, draw border
+		if(this == State.getInstance().getSelectedHouse()) {
+			g2.setPaint(Constants.SELECTED_HOUSE_BORDER_COLOR);
+			g2.setStroke(new java.awt.BasicStroke(Constants.SELECTED_HOUSE_BORDER_WIDTH));
+			g2.draw(houseBox);
+		}
+	}
+	
+	private class HouseMouseListener extends MouseAdapter {
+		@Override
+		public void mousePressed(MouseEvent e) {
+			State.getInstance().setSelectedHouse((House) e.getSource());
+			getParent().repaint();
+		}
 	}
 }

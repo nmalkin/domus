@@ -126,6 +126,8 @@ public class Canvas extends JLayeredPane {
 		
 		newSubGroup.updatePeoplePositions();
 		
+		State.getInstance().setSelectedHouse(newSubGroup.getHouse());
+		
 		this.repaint();
 	}
 	
@@ -153,6 +155,9 @@ public class Canvas extends JLayeredPane {
 					{ // subgroup is inside this subgroup 
 						mergeSubGroups(subgroup, s);
 						h.updateSubGroupPositions();
+						
+						State.getInstance().setSelectedHouse(h);
+						
 						this.repaint();
 						return;
 					}
@@ -199,6 +204,8 @@ public class Canvas extends JLayeredPane {
 		
 		newHouse.addSubGroup(subgroup);
 		newHouse.updateSubGroupPositions();
+		
+		State.getInstance().setSelectedHouse(newHouse);
 		
 		this.repaint();
 	}

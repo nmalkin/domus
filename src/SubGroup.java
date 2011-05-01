@@ -171,5 +171,12 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 			Canvas canvas = (Canvas) source.getParent();
 			canvas.dropSubGroup(source);
 		}
+		
+		@Override
+		public void mousePressed(MouseEvent e) {
+			House myHouse = ((SubGroup) e.getSource()).getHouse();
+			State.getInstance().setSelectedHouse(myHouse);
+			getParent().repaint();
+		}
 	}
 }

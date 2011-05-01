@@ -115,5 +115,17 @@ public class Person extends DraggablePositionableComponent {
 				}
 			}
 		}
+		
+		@Override
+		public void mousePressed(MouseEvent e) {
+			SubGroup mySubGroup = ((Person) e.getSource()).getSubGroup();
+			House myHouse = null;
+			if(mySubGroup != null) {
+				myHouse = mySubGroup.getHouse();
+			}
+			
+			State.getInstance().setSelectedHouse(myHouse);
+			getParent().repaint();
+		}
 	}
 }
