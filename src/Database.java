@@ -132,7 +132,7 @@ public class Database {
 	 */
 	public static int semesterFromLotteryNumber(int lotteryNumber) {
 		try {
-			int[] years = {}; //TODO: get years from State
+			int[] years = {2006,2007,2008,2009,2010,2011}; //TODO: get years from State
 			
 			ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
 			semesters.next();
@@ -162,7 +162,7 @@ public class Database {
 	 * @throws SQLException 
 	 */
 	public static int lotteryNumberFromSemester(int semester) {
-		int[] years = {}; //TODO: get years from State
+		int[] years = {2006,2007,2008,2009,2010,2011}; //TODO: get years from State
 		
 		// still need to incorporate happiness level
 		int count = 0;
