@@ -35,4 +35,14 @@ public class LocationPreference extends AbstractCollection<Dorm> {
 	public int size() {
 		return _dorms.size();
 	}
+	
+	@Override
+	public String toString() {
+		String r = "| ";
+		for(Dorm d : _dorms) {
+			r += d + " |";
+		}
+		
+		return r;
+	}
 }
