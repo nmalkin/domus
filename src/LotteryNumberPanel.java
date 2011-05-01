@@ -74,12 +74,6 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		this.addAncestorListener(this);
 	}
 	
-	@Override
-	public void repaint() {
-		if (_numberSlider != null)
-		    System.out.println(_numberSlider.getValue());
-	}
-	
 	/**
 	 * Listens for changes in the slider and updates the state accordingly.
 	 */
