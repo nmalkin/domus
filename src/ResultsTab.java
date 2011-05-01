@@ -16,7 +16,7 @@ public class ResultsTab extends JPanel {
 			sidePanel.setPreferredSize(size);
 			this.add(new JPanel(), BorderLayout.LINE_START);
 			this.add(new LotteryNumberPanel(), BorderLayout.LINE_END);
-			this.add(new ResultsPanel(), BorderLayout.CENTER);
+			//this.add(new ResultsPanel(), BorderLayout.CENTER);
 		}
 		
 		public void updateResults() {
@@ -26,7 +26,7 @@ public class ResultsTab extends JPanel {
 				Collection<Dorm> locations = h.getLocationPreference();
 				boolean genderNeutral = h.isGenderNeutral();
 				for (SubGroup sg : h) {
-					RoomList results = Database.getResults(locations, sg.size(), years, genderNeutral, sophomoreOnly);
+					RoomList results = Database.getResults(locations, sg.getOccupancy(), years, genderNeutral, sophomoreOnly);
 					State.getInstance().putResults(sg, results);
 				}
 			}

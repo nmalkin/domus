@@ -1,6 +1,9 @@
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -21,6 +24,12 @@ public class State {
 	/** room lists */
 	private List<RoomList> _roomLists;
 	
+	/** the house that's currently selected on the screen */
+	private House _selectedHouse;
+	
+	/** listener for whether or not the house is changing */
+	private ChangeListener _selectedHouseChangeListener;
+	
 	public static State getInstance() {
 		return INSTANCE;
 	}
@@ -37,6 +46,8 @@ public class State {
 		_group.add(h);
 		_results = LinkedListMultimap.create();
 		_roomLists = new LinkedList<RoomList>();
+		_selectedHouse = null;
+		_selectedHouseChangeListener = null;
 	}
 	
 	public Group getGroup() {
@@ -50,6 +61,29 @@ public class State {
 	public int[] getYears() {
 		int[] years = {2006, 2007, 2008, 2009, 2010, 2011};
 		return years;
+	}
+	
+	public void setSelectedHouse(House h) {
+		_selectedHouse = h;
+		
+		if(_selectedHouseChangeListener != null) {
+			ChangeEvent e = new ChangeEvent(this);
+			_selectedHouseChangeListener.stateChanged(e);
+		}
+	}
+	
+	public House getSelectedHouse() {
+		return _selectedHouse;
+	}
+	
+	/**
+	 * Attaches the given ChangeListener such that
+	 * a ChangeEvent is fired whenever the selected house is changed.
+	 * 
+	 * @param l
+	 */
+	public void setSelectedHouseChangeListener(ChangeListener l) {
+		_selectedHouseChangeListener = l;
 	}
 	
 	public void updateResults() {

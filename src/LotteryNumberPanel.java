@@ -19,11 +19,7 @@ import javax.swing.event.ChangeListener;
  */
 public class LotteryNumberPanel extends JPanel implements ChangeListener, ActionListener, AncestorListener {
 	
-	/** the maximum lottery number one is allowed to enter */
-	private static final int MAX_LOTTERY_NUMBER = 800;
 	
-	/** the value that the slider starts with */
-	private static final int STARTING_NUMBER = 0;
 	
 	/** the slider displaying the lottery number */
 	private JSlider _numberSlider;
@@ -34,7 +30,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 	
 	public LotteryNumberPanel() {
 		// slider
-		_numberSlider = new JSlider(JSlider.VERTICAL, 0, MAX_LOTTERY_NUMBER, STARTING_NUMBER);
+		_numberSlider = new JSlider(JSlider.VERTICAL, 1, Constants.MAX_LOTTERY_NUMBER, Constants.DEFAULT_LOTTERY_NUMBER);
 		_numberSlider.addChangeListener(this);
 		_numberSlider.setMajorTickSpacing(50);
 		_numberSlider.setPaintTicks(true);
@@ -49,6 +45,11 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		//semesterLevel.setPreferredSize(new Dimension(100,25));
 		_semesterLevelBox.setMaximumSize(new Dimension(100,25));
 		_semesterLevelBox.setEditable(false);
+				
+		// set semester level for current number
+		int semesterLevel = Database.semesterFromLotteryNumber(Constants.DEFAULT_LOTTERY_NUMBER);
+		int semesterIndex = semesterLevel - 3;
+		_semesterLevelBox.setSelectedIndex(semesterIndex);
 		
 		// set panel size and add elements to it
 		Dimension size = new Dimension(200,500);
@@ -71,12 +72,6 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		happiness.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.add(happiness);
 		this.addAncestorListener(this);
-	}
-	
-	@Override
-	public void repaint() {
-		if (_numberSlider != null)
-		    System.out.println(_numberSlider.getValue());
 	}
 	
 	/**
