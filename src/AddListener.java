@@ -56,8 +56,6 @@ public class AddListener extends MouseAdapter {
 		else {
 			_cb.addActionListener(((ResultsListItem) _container).new RoomListSelectionListener(_prompt));
 		}
-//		RoomListAutoverificationListener rlalistener = new RoomListAutoverificationListener();
-//		cbField.addKeyListener(rlalistener);
 		pane.add(_cb);
 		_prompt.setLocationRelativeTo(JOptionPane.getFrameForComponent((JComponent) e.getSource()));
 		_prompt.setVisible(true);

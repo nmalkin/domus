@@ -55,7 +55,7 @@ public class State {
 	}
 	
 	public boolean isSophomoreOnly() {
-		return false;
+		return true;
 	}
 	
 	public int[] getYears() {
@@ -87,8 +87,7 @@ public class State {
 	}
 	
 	public void updateResults() {
-		// TODO
-		System.out.println("updateResults");
+		//TODO Move update code to here
 	}
 	
 	public Multimap<SubGroup, Room> getResults() {

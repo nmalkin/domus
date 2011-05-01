@@ -47,13 +47,13 @@ public class Room {
 		_results = new LinkedList<LotteryResult>();
 	}
 	
-	public void print() {
+	public String toString() {
 		String resultString = "[ ";
 		
 		for(LotteryResult r: _results) resultString += r.getLotteryNumber() + " ";
 		resultString += "]";
 		
-		System.out.println(_dorm.getName() + " " + _number + "; " + resultString + "; avg " + _averageResult);
+		return _dorm.getName() + " " + _number + "; " + resultString + "; avg " + _averageResult;
 	}
 	
 	public void addResult(LotteryResult result) {

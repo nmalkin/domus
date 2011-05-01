@@ -22,9 +22,9 @@ public class Database {
 
 			_dorms = new HashMap<String, Dorm>();
 		} catch (ClassNotFoundException e) {
-			System.out.println("ERROR: missing .jar file");
+			System.err.println("ERROR: missing .jar file");
 		} catch (SQLException e) {
-			System.out.println("ERROR: unable to connect to database " + Constants.DATABASE_NAME);
+			System.err.println("ERROR: unable to connect to database " + Constants.DATABASE_NAME);
 		}
 	}
 
@@ -115,7 +115,7 @@ public class Database {
 				}
 			}
 		} catch (SQLException e) {
-			System.out.println("ERROR: unable to retrieve results");
+			System.err.println("ERROR: unable to retrieve results");
 		}
 
 		return rooms;
@@ -134,6 +134,7 @@ public class Database {
 		try {
 			int[] years = {2006,2007,2008,2009,2010,2011}; //TODO: get years from State
 			
+			//TODO: getMaxLotteryNumber()
 			ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
 			semesters.next();
 
@@ -193,7 +194,7 @@ public class Database {
 			statement.close();
 			connection.close();
 		} catch (SQLException e) {
-			System.out.println("ERROR: unable to close database");
+			System.err.println("ERROR: unable to close database");
 		}
 	}
 

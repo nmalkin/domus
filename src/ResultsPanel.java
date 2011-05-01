@@ -44,5 +44,4 @@ public class ResultsPanel extends JPanel {
 			this.add(list);
 		}
 	}
-	
 }

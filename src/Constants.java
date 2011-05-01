@@ -4,7 +4,7 @@ import java.awt.Color;
 public class Constants {
 	// lottery numbers
 	/** the maximum lottery number one is allowed to enter */
-	protected static final int MAX_LOTTERY_NUMBER = 800;
+	protected static final int MAX_LOTTERY_NUMBER = 791;
 	
 	/** the value that the slider starts with */
 	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
@@ -44,17 +44,17 @@ public class Constants {
 	protected static final int SUBGROUP_PADDING = 25; // pixels
 	
 	// Person images & dimensions
-	protected static final String MAN_FILE   = "/home/nmalkin/course/cs032/domus/img/man.png";
+	protected static final String MAN_FILE   = "../img/man.png";
 	protected static final int    MAN_WIDTH  = 37; // pixels
 	protected static final int    MAN_HEIGHT = 100; // pixels
 
-	protected static final String WOMAN_FILE   = "/home/nmalkin/course/cs032/domus/img/woman.png";
+	protected static final String WOMAN_FILE   = "../domus/img/woman.png";
 	protected static final int    WOMAN_WIDTH  = 46; // pixels
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
 	// Database
 	/** database name **/
-	public final static String DATABASE_NAME = "/home/nmalkin/course/cs032/domus/data/housingdata.db";
+	public final static String DATABASE_NAME = "../data/housingdata.db";
 	
 	/** table names in database */
 	public final static String ROOM_TABLE = "rooms";
