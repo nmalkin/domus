@@ -51,4 +51,15 @@ public class Constants {
 	protected static final String WOMAN_FILE   = "/home/nmalkin/course/cs032/domus/img/woman.png";
 	protected static final int    WOMAN_WIDTH  = 46; // pixels
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
+	
+	// Database
+	/** database name **/
+	public final static String DATABASE_NAME = "/home/nmalkin/course/cs032/domus/data/housingdata.db";
+	
+	/** table names in database */
+	public final static String ROOM_TABLE = "rooms";
+	public final static String GENDER_TABLE = "genderNeutral";
+	public final static String SOPHOMORE_TABLE = "sophomoreOnly";
+	public final static String SEMESTER_TABLE = "semester";
+	public final static String CAMPUS_AREA_TABLE = "campusArea";
 }
