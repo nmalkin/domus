@@ -27,12 +27,29 @@ public class State {
 	
 	private State() {
 		_group = new Group();
+		SubGroup a = new SubGroup();
+		a.add(new Person("Nate", Gender.MALE));
+		SubGroup b = new SubGroup();
+		b.add(new Person("Miya", Gender.FEMALE));
+		House h = new House();
+		h.add(a);
+		h.add(b);
+		_group.add(h);
 		_results = LinkedListMultimap.create();
 		_roomLists = new LinkedList<RoomList>();
 	}
 	
 	public Group getGroup() {
 		return _group;
+	}
+	
+	public boolean isSophomoreOnly() {
+		return false;
+	}
+	
+	public int[] getYears() {
+		int[] years = {2006, 2007, 2008, 2009, 2010, 2011};
+		return years;
 	}
 	
 	public void updateResults() {
@@ -44,8 +61,18 @@ public class State {
 		return LinkedListMultimap.create(_results);
 	}
 	
+	public void putResults(SubGroup sg, RoomList rl) {
+		for (Room r : rl) {
+			_results.put(sg, r);
+		}
+	}
+	
 	public List<RoomList> getRoomLists() {
 		return new LinkedList<RoomList>(_roomLists);
+	}
+	
+	public void addRoomList(RoomList list) {
+		_roomLists.add(list);
 	}
 	
 	public void export(String filename) {

@@ -50,4 +50,8 @@ public class House extends AbstractCollection<SubGroup> {
 	public void setLocationPreference(LocationPreference l) {
 		_locations = l;
 	}
+	
+	public boolean isGenderNeutral() {
+		return true;
+	}
 }

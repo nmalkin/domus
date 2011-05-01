@@ -39,5 +39,15 @@ public class SubGroup extends AbstractCollection<Person> {
 	public void setPosition(Point p) {
 		_position = p;
 	}
+	
+	@Override
+	public String toString() {
+		String s = "";
+		Iterator<Person> people = _people.iterator();
+		if (people.hasNext()) {
+			s += people.next().getName();
+		}
+		return s;
+	}
 
 }

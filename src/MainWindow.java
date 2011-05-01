@@ -46,7 +46,7 @@ public class MainWindow extends JFrame {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Preferences", new PreferencesTab());
 		tabbedPane.addTab("Results", new ResultsTab());
-		tabbedPane.addTab("Cart", new ListsTab());
+		tabbedPane.addTab("Cart", ListsTab.getInstance());
 		
 		this.add(tabbedPane);
 		
