@@ -177,7 +177,17 @@ public class House extends DraggablePositionableComponent implements Iterable<Su
 				width - 2 * Constants.INSET, height - 2 * Constants.INSET, 
 				10, 10);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setPaint(Constants.HOUSE_COLOR);
+		
+		// select color
+		if(Canvas.overTrashIcon(this)) { // if hovering over trash, draw this transparently
+			g2.setPaint(new Color(Constants.HOUSE_COLOR.getRed(), 
+					Constants.HOUSE_COLOR.getGreen(),
+					Constants.HOUSE_COLOR.getBlue(), 
+					Constants.TRASH_OVERLAY_ALPHA));
+		} else {
+			g2.setPaint(Constants.HOUSE_COLOR);
+		}
+		
 		g2.fill(houseBox);
 		
 		// if selected, draw border

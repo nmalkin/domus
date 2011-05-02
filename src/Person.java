@@ -75,7 +75,16 @@ public class Person extends DraggablePositionableComponent {
 		super.paintComponent(g);
 		
 		// draw image
-		g.drawImage(_gender.getImage(), 0, 0, null);
+		if(Canvas.overTrashIcon(this)) {
+			float[] scales = { 1f, 1f, 1f, Constants.TRASH_OVERLAY_ALPHA_FRACTION };
+			float[] offsets = new float[4];
+			java.awt.image.RescaleOp rop = new java.awt.image.RescaleOp(scales, offsets, null);
+		
+			java.awt.Graphics2D g2 = (java.awt.Graphics2D) g;
+			g2.drawImage((java.awt.image.BufferedImage) _gender.getImage(), rop, 0, 0);
+		} else {
+			g.drawImage(_gender.getImage(), 0, 0, null);
+		}
 	}
 	
 	@Override

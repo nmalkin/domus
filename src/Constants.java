@@ -38,6 +38,8 @@ public class Constants {
 	protected static final int TRASH_HEIGHT = 100; // pixels
 	protected static final int TRASH_X_POSITION = (0 + Constants.SIDEBAR_WIDTH) / 2 - TRASH_WIDTH / 2;
 	protected static final int TRASH_Y_POSITION = 500;
+	protected static final float TRASH_OVERLAY_ALPHA_FRACTION = 0.25f;
+	protected static final int TRASH_OVERLAY_ALPHA = (int) (TRASH_OVERLAY_ALPHA_FRACTION * 255);
 	
 	// House
 	protected static final Color HOUSE_COLOR = Color.BLUE;

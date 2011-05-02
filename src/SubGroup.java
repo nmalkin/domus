@@ -168,7 +168,17 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		
 		// draw box representing the subgroup
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setPaint(Constants.SUBGROUP_COLOR);
+		
+		// choose color
+		if(Canvas.overTrashIcon(this)) { // if hovering over trash, draw this transparently
+			g2.setPaint(new Color(Constants.SUBGROUP_COLOR.getRed(), 
+					Constants.SUBGROUP_COLOR.getGreen(),
+					Constants.SUBGROUP_COLOR.getBlue(), 
+					Constants.TRASH_OVERLAY_ALPHA));
+		} else {
+			g2.setPaint(Constants.SUBGROUP_COLOR);
+		}
+		
 		g2.fill(new RoundRectangle2D.Double(
 				Constants.INSET, Constants.INSET, 
 				width - 2 * Constants.INSET, height - 2 * Constants.INSET, 
