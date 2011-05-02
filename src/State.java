@@ -39,14 +39,6 @@ public class State {
 	
 	private State() {
 		_group = new Group();
-		SubGroup a = new SubGroup();
-		a.add(new Person("Nate", Gender.MALE));
-		SubGroup b = new SubGroup();
-		b.add(new Person("Miya", Gender.FEMALE));
-		House h = new House();
-		h.add(a);
-		h.add(b);
-		_group.add(h);
 		_results = TreeMultimap.create();
 		_roomLists = new LinkedList<RoomList>();
 		_selectedHouse = null;
@@ -61,7 +53,14 @@ public class State {
 		return true;
 	}
 	
+	public int getOptimism() {
+		//TODO: optimism in state
+		int optimism = Constants.PESSIMISTIC;
+		return optimism;
+	}
+	
 	public int[] getYears() {
+		//TODO: years in state
 		int[] years = {2006, 2007, 2008, 2009, 2010, 2011};
 		return years;
 	}

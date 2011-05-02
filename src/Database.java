@@ -127,6 +127,41 @@ public class Database {
 		return rooms;
 	}
 
+	public static int optimismFromLotteryNumber(int lotteryNumber) {
+		try {
+			int[] years = State.getInstance().getYears();
+			int semester = semesterFromLotteryNumber(lotteryNumber);
+
+			int sum = 0;
+
+			for(int i = 0; i < years.length; i++) {
+				ResultSet totalNums = statement.executeQuery("select count(number) as count from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + ";");
+				int total = totalNums.getInt("count");
+				totalNums.close();
+
+				ResultSet firstNumber = statement.executeQuery("select number as firstNum from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + " order by number limit 1;");
+				int firstNum = firstNumber.getInt("firstNum");
+				firstNumber.close();
+				
+				if(lotteryNumber < firstNum + total / 3) sum += Constants.OPTIMISTIC;
+				else if(lotteryNumber > firstNum + 2 * total / 3 + 1) sum += Constants.PESSIMISTIC;
+				else sum += Constants.AVERAGE;
+			}
+
+			/*String happy;
+			if(sum / years.length == Constants.AVERAGE) happy = ":|";
+			else if(sum / years.length == Constants.OPTIMISTIC) happy = ":)";
+			else happy = ":(";
+			
+			System.out.println("lottery number " + lotteryNumber + " is " + happy + " for semester " + semester);
+			*/
+			
+			return sum / years.length;
+		} catch (SQLException e) {
+			return -1;
+		}
+	}
+
 	/**
 	 * Given a lottery number,
 	 * returns the average semester level for groups with this lottery number.
@@ -138,9 +173,8 @@ public class Database {
 	 */
 	public static int semesterFromLotteryNumber(int lotteryNumber) {
 		try {
-			int[] years = {2006,2007,2008,2009,2010,2011}; //TODO: get years from State
+			int[] years = State.getInstance().getYears();
 
-			//TODO: getMaxLotteryNumber()
 			ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
 			semesters.next();
 
@@ -169,24 +203,50 @@ public class Database {
 	 * @throws SQLException 
 	 */
 	public static int lotteryNumberFromSemester(int semester) {
-		int[] years = {2006,2007,2008,2009,2010,2011}; //TODO: get years from State
+		int[] years = State.getInstance().getYears();
+		int optimism = State.getInstance().getOptimism();
 
-		// still need to incorporate happiness level
 		int count = 0;
 		int sum = 0;
 
+		int first, last;
+
 		try {
 			for(int i = 0; i < years.length; i++) {
-				ResultSet numbers = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + ";");
+				ResultSet totalNums = statement.executeQuery("select count(number) as count from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + ";");
+				int total = totalNums.getInt("count");
+				totalNums.close();
+
+				ResultSet firstNumber = statement.executeQuery("select number as firstNum from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + " order by number limit 1;");
+				int firstNum = firstNumber.getInt("firstNum");
+				firstNumber.close();
+
+				if(optimism == Constants.OPTIMISTIC) {
+					first = firstNum;
+					last = first + total / 3;
+				}
+				else if (optimism == Constants.AVERAGE) {
+					first = firstNum + total / 3 + 1;
+					last = first + 2 * total / 3;
+				}
+				else {
+					first = firstNum + 2 * total / 3 + 1;
+					last = first + total - 1;
+				}
+
+				ResultSet numbers = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester	+ " and number between " + first + " and " + last + ";");
 
 				while(numbers.next()) {
 					sum += numbers.getInt("number");
 					count++;
 				}
+
+				numbers.close();
 			}
 
 			return sum / count;
-		} catch(SQLException e) { //TODO
+		} catch(SQLException e) {
+			e.printStackTrace();
 			return -1; //TODO: fix this too
 		}
 	}
