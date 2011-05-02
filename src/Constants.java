@@ -62,4 +62,7 @@ public class Constants {
 	public final static String SOPHOMORE_TABLE = "sophomoreOnly";
 	public final static String SEMESTER_TABLE = "semester";
 	public final static String CAMPUS_AREA_TABLE = "campusArea";
+	
+	public final static int FIRST_YEAR = 2006;
+	public final static int LAST_YEAR = 2011;
 }
