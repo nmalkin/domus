@@ -185,18 +185,28 @@ public class House extends DraggablePositionableComponent implements Iterable<Su
 		}
 	}
 	
+	/**
+	 * Compares Houses based on creation order:
+	 * a House that was created earlier is "smaller" than a House that was created later.
+	 */
+	@Override
+	public int compareTo(House o) {
+		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
+	}
+	
 	private class HouseMouseListener extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			State.getInstance().setSelectedHouse((House) e.getSource());
 			getParent().repaint();
 		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			House source = (House) e.getSource();
+			
+			Canvas canvas = (Canvas) source.getParent();
+			canvas.dropHouse(source);
+		}
 	}
-
-	@Override
-	public int compareTo(House o) {
-		// TODO Auto-generated method stub
-		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
-	}
-
 }

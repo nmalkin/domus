@@ -25,15 +25,15 @@ public class Canvas extends JLayeredPane {
 //		SubGroup s = new SubGroup();
 //		Person p1 = new Person("Sumner", Gender.MALE);
 //		Person p2 = new Person("Miya", Gender.FEMALE);
-		
+//		
 //		State.getInstance().getGroup().add(h);
 //		h.addSubGroup(s);
 //		s.addPerson(p1);
 //		s.addPerson(p2);
-		
+//		
 //		h.setPosition(200,150);
 //		h.updateSubGroupPositions();
-		
+//		
 //		this.add(p1, Constants.PERSON_LAYER);
 //		this.add(p2, Constants.PERSON_LAYER);
 //		this.add(s, Constants.SUBGROUP_LAYER);
@@ -60,11 +60,8 @@ public class Canvas extends JLayeredPane {
 	 * This entails checking what subgroup the person was dropped inside:
 	 * if it's the subgroup it was already in, nothing's changed;
 	 * if it's a new subgroup, it is added there and removed from the old one.
-	 * 		TODO: strange behavior possible with overlapping subgroups
 	 * 
 	 * @param person
-	 * @param x
-	 * @param y
 	 */
 	public void dropPerson(Person person) {
 		SubGroup newSubGroup = null;
@@ -128,16 +125,9 @@ public class Canvas extends JLayeredPane {
 	}
 	
 	/**
-	 * Performs a drop of the given person at the given location.
-	 * 
-	 * This entails checking what subgroup the person was dropped inside:
-	 * if it's the subgroup it was already in, nothing's changed;
-	 * if it's a new subgroup, it is added there and removed from the old one.
-	 * 		TODO: strange behavior possible with overlapping subgroups
+	 * Performs a drop of the given subgroup at the given location.
 	 * 
 	 * @param subgroup
-	 * @param x
-	 * @param y
 	 */
 	public void dropSubGroup(SubGroup subgroup) {
 		House newHouse = null;
@@ -204,6 +194,53 @@ public class Canvas extends JLayeredPane {
 		State.getInstance().setSelectedHouse(newHouse);
 		
 		this.repaint();
+	}
+	
+	/**
+	 * Performs a drop of the given house at the given location
+	 * by checking if it is intersecting with any houses.
+	 * 
+	 * @param house
+	 */
+	public void dropHouse(House house) {
+		for(House h : State.getInstance().getGroup()) {
+			if(house != h &&
+			   intersecting(house, h)) 
+			{ // the houses are intersecting
+				// merge them!
+				// get all the subgroups in the current house
+					//see TODO in mergeSubGroups for why we do this
+				java.util.Collection<SubGroup> tmp = new java.util.LinkedList<SubGroup>();
+				for(SubGroup s : house) {
+					tmp.add(s);
+				}
+				
+				// add them to the new house
+				for(SubGroup s : tmp) {
+					h.addSubGroup(s); // this also removes them from the current house
+				}
+				
+				// add the old house's location preferences the new house
+				// (the new house's location preferences are the union of the two old ones)
+				LocationPreference newHousePreference = h.getLocationPreference();
+				for(Dorm d : house.getLocationPreference()) {
+					newHousePreference.add(d);
+				}
+				
+				// remove the dropped house
+				this.remove(house); // remove from view
+				State.getInstance().getGroup().remove(house); // remove from group
+				
+				// update the new house
+				h.updateSubGroupPositions();
+				
+				State.getInstance().setSelectedHouse(h);
+				
+				this.repaint();
+				
+				return;
+			}
+		}
 	}
 	
 	/**
