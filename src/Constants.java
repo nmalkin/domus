@@ -14,7 +14,7 @@ public class Constants {
 	
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
-	protected static final int CANVAS_HEIGHT = 400;
+	protected static final int CANVAS_HEIGHT = 650;
 	protected static final Color CANVAS_COLOR = Color.WHITE;
 	
 	protected static final Integer HOUSE_LAYER    = 1;
@@ -32,6 +32,12 @@ public class Constants {
 	
 	protected static final int NEW_FEMALE_X_POSITION = (0 + Constants.SIDEBAR_WIDTH) / 2 - Gender.FEMALE.getImageDimension().width / 2;
 	protected static final int NEW_FEMALE_Y_POSITION = 320;
+	
+	protected static final String TRASH_FILE = "img/trash.png";
+	protected static final int TRASH_WIDTH = 77; // pixels
+	protected static final int TRASH_HEIGHT = 100; // pixels
+	protected static final int TRASH_X_POSITION = (0 + Constants.SIDEBAR_WIDTH) / 2 - TRASH_WIDTH / 2;
+	protected static final int TRASH_Y_POSITION = 500;
 	
 	// House
 	protected static final Color HOUSE_COLOR = Color.BLUE;
