@@ -51,7 +51,14 @@ public class State {
 		return true;
 	}
 	
+	public int getOptimism() {
+		//TODO: optimism in state
+		int optimism = Constants.PESSIMISTIC;
+		return optimism;
+	}
+	
 	public int[] getYears() {
+		//TODO: years in state
 		int[] years = {2006, 2007, 2008, 2009, 2010, 2011};
 		return years;
 	}

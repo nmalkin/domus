@@ -21,7 +21,7 @@ public class DatabaseTest {
 		result.close();
 		connection.close();*/
 		
-		System.out.println(Database.getMaxLotteryNumber());
+		//System.out.println(Database.getMaxLotteryNumber());
 		
 		//ArrayList<CampusArea> areas = (ArrayList<CampusArea>) Database.getCampusAreas();
 		//for(int i = 0; i < areas.size(); i++) System.out.println(areas.get(i).toString());
@@ -57,8 +57,9 @@ public class DatabaseTest {
 					+ " " + result.getInt("y2010") + " " + result.getInt("y2011"));
 		}*/
 
-//		System.out.println(Database.semesterFromLotteryNumber(792));
-//		System.out.println(Database.lotteryNumberFromSemester(8));
+		//System.out.println(Database.semesterFromLotteryNumber(792));
+		//System.out.println(Database.lotteryNumberFromSemester(5));
+		//System.out.println(Database.optimismFromLotteryNumber(650));
 		
 		/*Class.forName("org.sqlite.JDBC");
 		Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Constants.DATABASE_NAME);
