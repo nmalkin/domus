@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.TreeSet;
 
 import com.google.common.collect.TreeMultiset;
 
@@ -188,6 +187,15 @@ public class House extends DraggablePositionableComponent implements Iterable<Su
 		}
 	}
 	
+	/**
+	 * Compares Houses based on creation order:
+	 * a House that was created earlier is "smaller" than a House that was created later.
+	 */
+	@Override
+	public int compareTo(House o) {
+		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
+	}
+	
 	private class HouseMouseListener extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -195,11 +203,4 @@ public class House extends DraggablePositionableComponent implements Iterable<Su
 			getParent().repaint();
 		}
 	}
-
-	@Override
-	public int compareTo(House o) {
-		// TODO Auto-generated method stub
-		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
-	}
-
 }

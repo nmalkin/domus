@@ -176,6 +176,25 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 				10, 10));
 	}
 	
+	@Override
+	public String toString() {
+		String s = "";
+		Iterator<Person> people = _people.iterator();
+		if (people.hasNext()) {
+			s += people.next().getName();
+		}
+		return s;
+	}
+
+	/**
+	 * Compares SubGroups based on creation order:
+	 * a SubGroup that was created earlier is "smaller" than a SubGroup that was created later.
+	 */
+	@Override
+	public int compareTo(SubGroup o) {
+		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
+	}
+	
 	private class SubGroupDropListener extends java.awt.event.MouseAdapter {
 		@Override
 		public void mouseReleased(MouseEvent e) {
@@ -191,21 +210,5 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 			State.getInstance().setSelectedHouse(myHouse);
 			getParent().repaint();
 		}
-	}
-	
-	@Override
-	public String toString() {
-		String s = "";
-		Iterator<Person> people = _people.iterator();
-		if (people.hasNext()) {
-			s += people.next().getName();
-		}
-		return s;
-	}
-
-	@Override
-	public int compareTo(SubGroup o) {
-		// TODO Auto-generated method stub
-		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
 	}
 }
