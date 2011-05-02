@@ -344,9 +344,7 @@ public class Canvas extends JLayeredPane {
 	 * @return true if the person was removed, false if the person was not removed
 	 */
 	private boolean tryRemove(Person p) {
-		if(GraphicsSupport.intersectionAreaFraction(p.getRectangle(), getTrashRectangle()) 
-				> Constants.INTERSECTION_FRACTION) 
-		{
+		if(overTrashIcon(p)) {
 			SubGroup currentParent = p.getSubGroup();
 			
 			// remove from view
@@ -372,9 +370,7 @@ public class Canvas extends JLayeredPane {
 	 * @return true if the subgroup was removed, false if the subgroup was not removed
 	 */
 	private boolean tryRemove(SubGroup s) {
-		if(GraphicsSupport.intersectionAreaFraction(s.getRectangle(), getTrashRectangle()) 
-				> Constants.INTERSECTION_FRACTION) 
-		{
+		if(overTrashIcon(s)) {
 			// remove the people from this subgroup
 			Iterator<Person> it = s.iterator();
 			while(it.hasNext()) {
@@ -403,9 +399,7 @@ public class Canvas extends JLayeredPane {
 	 * @return true if the house was removed, false if the house was not removed
 	 */
 	private boolean tryRemove(House h) {
-		if(GraphicsSupport.intersectionAreaFraction(h.getRectangle(), getTrashRectangle()) 
-				> Constants.INTERSECTION_FRACTION) 
-		{
+		if(overTrashIcon(h)) {
 			// remove the subgroups from this house
 			Iterator<SubGroup> it = h.iterator();
 			while(it.hasNext()) {
@@ -433,12 +427,17 @@ public class Canvas extends JLayeredPane {
 		return false;
 	}
 	
+	public static boolean overTrashIcon(DraggablePositionableComponent c) {
+		return GraphicsSupport.intersectionAreaFraction(c.getRectangle(), getTrashRectangle()) 
+		> Constants.INTERSECTION_FRACTION;
+	}
+	
 	/**
 	 * Returns a Rectangle mask for the trash image.
 	 * 
 	 * @return
 	 */
-	private Rectangle getTrashRectangle() {
+	private static Rectangle getTrashRectangle() {
 		return new Rectangle(
 				Constants.TRASH_X_POSITION, 
 				Constants.TRASH_Y_POSITION, 
