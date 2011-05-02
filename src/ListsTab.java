@@ -84,8 +84,6 @@ public class ListsTab extends JPanel implements Runnable {
 	@Override
 	public void run() {
 		while (_scrollLeft || _scrollRight) {
-			System.out.println("p " + _listsPanel.getSize().width);
-			System.out.println("s " + _scroller.getSize().width);
 			if (_listsPanel.getSize().width < _scroller.getSize().width) {
 				_scrollLeft = false;
 				_scrollRight = false;
@@ -93,7 +91,6 @@ public class ListsTab extends JPanel implements Runnable {
 			}
 			JViewport view = _scroller.getViewport();
 			if (_scrollRight) {
-				System.out.println("right");
 				Rectangle r = view.getViewRect();
 				if (r.x + r.width >= _listsPanel.getWidth()) {
 					_scrollLeft = false;
@@ -116,7 +113,6 @@ public class ListsTab extends JPanel implements Runnable {
 				}
 			}
 			else if (_scrollLeft) {
-				System.out.println("left");
 				Rectangle r = view.getViewRect();
 				if (r.x <= 0) {
 					_scrollLeft = false;
@@ -159,12 +155,10 @@ public class ListsTab extends JPanel implements Runnable {
 		public void mousePressed(MouseEvent e) {
 			JLabel button = (JLabel) e.getSource();
 			if (button.getText().equals("LEFT")) {
-				System.out.println("p left");
 				_scrollLeft = true;
 				_scrollRight = false;
 			}
 			else if (button.getText().equals("RIGHT")) {
-				System.out.println("p right");
 				_scrollRight = true;
 				_scrollLeft = false;
 			}
@@ -176,12 +170,10 @@ public class ListsTab extends JPanel implements Runnable {
 		public void mouseReleased(MouseEvent e) {
 			JLabel button = (JLabel) e.getSource();
 			if (button.getText().equals("LEFT")) {
-				System.out.println("r left");
 				_scrollLeft = false;
 				_scrollRight = false;
 			}
 			else if (button.getText().equals("RIGHT")) {
-				System.out.println("r right");
 				_scrollLeft = false;
 				_scrollRight = false;
 			}
