@@ -78,6 +78,12 @@ public class Database {
 		return sophomore.next();
 	}
 
+	public static int getMaxLotteryNumber() throws SQLException {
+		ResultSet maxNum = statement.executeQuery("select max(number) as maxNum from " + Constants.SEMESTER_TABLE + ";");
+		maxNum.next();
+
+		return maxNum.getInt("maxNum");
+	}
 	/**
 	 * Returns all the rooms that satisfy the given conditions.
 	 * 
@@ -133,7 +139,7 @@ public class Database {
 	public static int semesterFromLotteryNumber(int lotteryNumber) {
 		try {
 			int[] years = {2006,2007,2008,2009,2010,2011}; //TODO: get years from State
-			
+
 			//TODO: getMaxLotteryNumber()
 			ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
 			semesters.next();
@@ -164,22 +170,22 @@ public class Database {
 	 */
 	public static int lotteryNumberFromSemester(int semester) {
 		int[] years = {2006,2007,2008,2009,2010,2011}; //TODO: get years from State
-		
+
 		// still need to incorporate happiness level
 		int count = 0;
 		int sum = 0;
 
 		try {
-		for(int i = 0; i < years.length; i++) {
-			ResultSet numbers = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + ";");
+			for(int i = 0; i < years.length; i++) {
+				ResultSet numbers = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + ";");
 
-			while(numbers.next()) {
-				sum += numbers.getInt("number");
-				count++;
+				while(numbers.next()) {
+					sum += numbers.getInt("number");
+					count++;
+				}
 			}
-		}
 
-		return sum / count;
+			return sum / count;
 		} catch(SQLException e) { //TODO
 			return -1; //TODO: fix this too
 		}

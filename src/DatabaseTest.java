@@ -21,6 +21,8 @@ public class DatabaseTest {
 		result.close();
 		connection.close();*/
 		
+		System.out.println(Database.getMaxLotteryNumber());
+		
 		//ArrayList<CampusArea> areas = (ArrayList<CampusArea>) Database.getCampusAreas();
 		//for(int i = 0; i < areas.size(); i++) System.out.println(areas.get(i).toString());
 		
