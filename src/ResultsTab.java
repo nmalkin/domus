@@ -30,7 +30,8 @@ public class ResultsTab extends JPanel {
 		@Override
 		public void setVisible(boolean visible) {
 			super.setVisible(visible);
-			if (visible)
+			if (visible) {
 				updateResults();
+			}
 		}
 }
