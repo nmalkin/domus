@@ -27,7 +27,6 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		_people = new LinkedList<Person>();
 		_house = null;
 		_index = _subGroupCount++;
-		System.out.println(_index);
 		
 		this.setBounds(0,0,1,1);
 		

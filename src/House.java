@@ -29,7 +29,7 @@ public class House extends DraggablePositionableComponent implements Iterable<Su
 	public House() {
 		super();
 		
-		_subgroups = TreeMultiset.create();
+		_subgroups = new TreeSet<SubGroup>();
 		_locations = new LocationPreference();
 		_index = _houseCount++;
 		

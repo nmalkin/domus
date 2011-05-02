@@ -21,23 +21,23 @@ public class Canvas extends JLayeredPane {
 		this.addMouseMotionListener(listener);
 		
 		// sample data; TODO: remove
-		House h = new House();
-		SubGroup s = new SubGroup();
-		Person p1 = new Person("Sumner", Gender.MALE);
-		Person p2 = new Person("Miya", Gender.FEMALE);
+//		House h = new House();
+//		SubGroup s = new SubGroup();
+//		Person p1 = new Person("Sumner", Gender.MALE);
+//		Person p2 = new Person("Miya", Gender.FEMALE);
 		
-		State.getInstance().getGroup().add(h);
-		h.addSubGroup(s);
-		s.addPerson(p1);
-		s.addPerson(p2);
+//		State.getInstance().getGroup().add(h);
+//		h.addSubGroup(s);
+//		s.addPerson(p1);
+//		s.addPerson(p2);
 		
-		h.setPosition(200,150);
-		h.updateSubGroupPositions();
+//		h.setPosition(200,150);
+//		h.updateSubGroupPositions();
 		
-		this.add(p1, Constants.PERSON_LAYER);
-		this.add(p2, Constants.PERSON_LAYER);
-		this.add(s, Constants.SUBGROUP_LAYER);
-		this.add(h, Constants.HOUSE_LAYER);
+//		this.add(p1, Constants.PERSON_LAYER);
+//		this.add(p2, Constants.PERSON_LAYER);
+//		this.add(s, Constants.SUBGROUP_LAYER);
+//		this.add(h, Constants.HOUSE_LAYER);
 		
 		/*
 		 * NOTE:
