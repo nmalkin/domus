@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Iterator;
 
 import javax.swing.*;
 
@@ -139,6 +140,11 @@ public class Canvas extends JLayeredPane {
 	 * @param subgroup
 	 */
 	public void dropSubGroup(SubGroup subgroup) {
+		if(tryRemove(subgroup)) { // if the subgroup is over the trash, remove them
+			repaint();
+			return;
+		}
+		
 		House newHouse = null;
 		
 		for(House h : State.getInstance().getGroup()) {
@@ -209,6 +215,11 @@ public class Canvas extends JLayeredPane {
 	 * @param house
 	 */
 	public void dropHouse(House house) {
+		if(tryRemove(house)) { // if the house is over the trash, remove them
+			repaint();
+			return;
+		}
+		
 		for(House h : State.getInstance().getGroup()) {
 			if(house != h &&
 			   intersecting(house, h)) 
@@ -305,6 +316,11 @@ public class Canvas extends JLayeredPane {
 		if(house.isEmpty()) {
 			this.remove(house); // remove from view
 			State.getInstance().getGroup().remove(house); // remove from group
+			
+			// make sure the house is not listed as selected anymore
+			if(State.getInstance().getSelectedHouse() == house) {
+				State.getInstance().setSelectedHouse(null);
+			}
 		}
 	}
 	
@@ -342,6 +358,74 @@ public class Canvas extends JLayeredPane {
 				currentParent.updatePeoplePositions();
 				removeIfEmpty(currentParent);
 			}
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Removes a subgroup from the program if it is over the trash can.
+	 * 
+	 * @param s the subgroup to (possibly) be removed
+	 * @return true if the subgroup was removed, false if the subgroup was not removed
+	 */
+	private boolean tryRemove(SubGroup s) {
+		if(GraphicsSupport.intersectionAreaFraction(s.getRectangle(), getTrashRectangle()) 
+				> Constants.INTERSECTION_FRACTION) 
+		{
+			// remove the people from this subgroup
+			Iterator<Person> it = s.iterator();
+			while(it.hasNext()) {
+				Person currentPerson = it.next();
+				currentPerson.setSubGroup(null);
+				this.remove(currentPerson);
+				it.remove();
+			}
+			
+			// remove from view
+			this.remove(s);
+			
+			// remove from house
+			removeIfEmpty(s);
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Removes a house from the program if it is over the trash can.
+	 * 
+	 * @param h the house to (possibly) be removed
+	 * @return true if the house was removed, false if the house was not removed
+	 */
+	private boolean tryRemove(House h) {
+		if(GraphicsSupport.intersectionAreaFraction(h.getRectangle(), getTrashRectangle()) 
+				> Constants.INTERSECTION_FRACTION) 
+		{
+			// remove the subgroups from this house
+			Iterator<SubGroup> it = h.iterator();
+			while(it.hasNext()) {
+				SubGroup currentSubGroup = it.next();
+				
+				// remove the people from this subgroup
+				Iterator<Person> it2 = currentSubGroup.iterator();
+				while(it2.hasNext()) {
+					Person currentPerson = it2.next();
+					currentPerson.setSubGroup(null);
+					this.remove(currentPerson);
+					it2.remove();
+				}
+				
+				currentSubGroup.setHouse(null);
+				this.remove(currentSubGroup);
+				it.remove();
+			}
+			
+			removeIfEmpty(h);
 			
 			return true;
 		}
