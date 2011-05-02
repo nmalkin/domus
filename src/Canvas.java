@@ -128,6 +128,7 @@ public class Canvas extends JLayeredPane {
 		}
 		
 		newSubGroup.updatePeoplePositions();
+		newSubGroup.getHouse().updateSubGroupPositions();
 		
 		State.getInstance().setSelectedHouse(newSubGroup.getHouse());
 		
