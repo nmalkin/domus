@@ -71,4 +71,8 @@ public class Constants {
 	
 	public final static int FIRST_YEAR = 2006;
 	public final static int LAST_YEAR = 2011;
+	
+	public final static int OPTIMISTIC = 0;
+	public final static int AVERAGE = 1;
+	public final static int PESSIMISTIC = 2;
 }

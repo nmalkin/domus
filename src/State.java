@@ -1,4 +1,3 @@
-import java.awt.Component;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -6,7 +5,6 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 
@@ -39,14 +37,6 @@ public class State {
 	
 	private State() {
 		_group = new Group();
-		SubGroup a = new SubGroup();
-		a.add(new Person("Nate", Gender.MALE));
-		SubGroup b = new SubGroup();
-		b.add(new Person("Miya", Gender.FEMALE));
-		House h = new House();
-		h.add(a);
-		h.add(b);
-		_group.add(h);
 		_results = TreeMultimap.create();
 		_roomLists = new LinkedList<RoomList>();
 		_selectedHouse = null;
@@ -61,7 +51,14 @@ public class State {
 		return true;
 	}
 	
+	public int getOptimism() {
+		//TODO: optimism in state
+		int optimism = Constants.PESSIMISTIC;
+		return optimism;
+	}
+	
 	public int[] getYears() {
+		//TODO: years in state
 		int[] years = {2006, 2007, 2008, 2009, 2010, 2011};
 		return years;
 	}
@@ -94,7 +91,6 @@ public class State {
 		int[] years = getYears();
 		boolean sophomoreOnly = isSophomoreOnly();
 		for (House h : getGroup()) {
-			System.out.println("house " + h.getIndex());
 			Collection<Dorm> locations = h.getLocationPreference();
 			boolean genderNeutral = h.isGenderNeutral();
 			for (SubGroup sg : h) {

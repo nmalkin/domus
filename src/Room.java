@@ -41,6 +41,14 @@ public class Room implements Comparable<Room> {
 		return _averageResult;
 	}
 	
+	/** 
+	 * Returns the probability of receiving this room based
+	 * on group's lottery number
+	 */
+	public int getProbability() {
+		return (int) ((_averageResult / 790.0) * 100);
+	}
+	
 	public Room (Dorm dorm, String number) {
 		_dorm = dorm;
 		_number = number;

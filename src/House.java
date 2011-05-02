@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.TreeSet;
 
 import com.google.common.collect.TreeMultiset;
 
@@ -28,7 +29,7 @@ public class House extends DraggablePositionableComponent implements Iterable<Su
 	public House() {
 		super();
 		
-		_subgroups = TreeMultiset.create();
+		_subgroups = new TreeSet<SubGroup>();
 		_locations = new LocationPreference();
 		_index = _houseCount++;
 		

@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -33,6 +34,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private Insets _insets;
 	private static Font _unselectedFont = new Font("Verdana", Font.PLAIN, 12);
 	private static Font _selectedFont = new Font("Verdana", Font.BOLD, 12);
+	private static Color _unselectedBackgroundColor;
+	private static Color _selectedBackgroundColor;
 	
 	private final int _itemHeight = 15;
 	private final int _itemWidth = 350;
@@ -46,7 +49,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		this.setSize(size);
 		_numLists = 0;
 		_room = room;
-		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
+		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber() + " [" + _room.getProbability() + "%]");
 		_label.setFont(_unselectedFont);
 		this.add(_label);
 		this.add(Box.createHorizontalGlue());
@@ -54,6 +57,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_addButton.addMouseListener(new AddListener(this));
 		this.add(_addButton);
 		this.addMouseListener(new SelectedListener());
+		_unselectedBackgroundColor = this.getBackground();
+		_selectedBackgroundColor = _unselectedBackgroundColor.darker();
 	}
 	
 	/** Sets the insets for this item to match those of the tab */
@@ -89,10 +94,14 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	 */
 	@Override
 	public void setOpen(boolean open) {
-		if (open)
+		if (open) {
 			_label.setFont(_selectedFont);
-		else
+			this.setBackground(_selectedBackgroundColor);
+		}
+		else {
 			_label.setFont(_unselectedFont);
+			this.setBackground(_unselectedBackgroundColor);
+		}
 	}
 	
 	@Override
