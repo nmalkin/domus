@@ -26,29 +26,32 @@ import java.awt.event.MouseEvent;
  */
 public class ResultsListTab extends JPanel implements AccordionItem {
 	
+	private AccordionList<ResultsListTab, ResultsListItem> _parentList;
 	private JPanel _tab;
 	private JLabel _label;
 	private JLabel _addButton;
 	private JPanel _itemsPanel;
-	private JScrollPane _itemsScroller;
+	private JScrollPane _scroller;
 	private Dorm _dorm;
 	private SubGroup _subGroup;
 	private int _index;
 	private boolean _isOpen;
-	private static ImageIcon _openIcon = ImageIconLoader.getInstance().createImageIcon("images/open_results_tab_new.png", "open results list");
-	private static ImageIcon _closedIcon = ImageIconLoader.getInstance().createImageIcon("images/closed_results_tab_new.png", "closed results list");
-	private static ImageIcon _addToListIcon = ImageIconLoader.getInstance().createImageIcon("images/add_to_list_new.png", "add to list");
+	private static ImageIcon _openIcon = new ImageIcon(Constants.OPEN_FILE, "open results list");
+	private static ImageIcon _closedIcon = new ImageIcon(Constants.CLOSED_FILE, "closed results list");
+	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 	private static Font _font = new Font("Verdana", Font.PLAIN, 12);
 	
+	//constants
 	private final int _tabHeight = 25;
-	private final int _listWidth = 200;
+	private final int _listWidth = 350;
 	private final int _scrollPaneHeight = 100;
 	private final int _scrollBarWidth = 20;
 	
-	ResultsListTab(Dorm dorm, SubGroup sg) {
+	ResultsListTab(Dorm dorm, SubGroup sg, AccordionList<ResultsListTab, ResultsListItem> list) {
 		super();
 		_dorm = dorm;
 		_subGroup = sg;
+		_parentList = list;
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(_listWidth, _tabHeight));
 		this.setSize(new Dimension(_listWidth, _tabHeight));
@@ -82,10 +85,10 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		_itemsPanel.setSize(new Dimension(_listWidth, 0));
 		_itemsPanel.setVisible(true);
 		_itemsPanel.setLayout(new BoxLayout(_itemsPanel, BoxLayout.PAGE_AXIS));
-		_itemsScroller = new JScrollPane(_itemsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		_itemsScroller.setBounds(0, _tabHeight, _listWidth, _scrollPaneHeight);
-		_itemsScroller.setVisible(false);
-		this.add(_itemsScroller);
+		_scroller = new JScrollPane(_itemsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		_scroller.setBounds(0, _tabHeight, _listWidth, _scrollPaneHeight);
+		_scroller.setVisible(false);
+		this.add(_scroller);
 	}
 	
 	public Insets getBorderInsets() {
@@ -116,7 +119,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	public void setOpen(boolean open) {
 		_isOpen = open;
 	}
-	
+
 	@Override
 	public void addItem(AccordionItem item) {
 		_itemsPanel.add((JComponent) item);
@@ -128,7 +131,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 
 	@Override
 	public int compareTo(AccordionItem o) {
-		return (_index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0));
+		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
 	}
 	
 	private class ExpandListener extends MouseAdapter {
@@ -138,13 +141,13 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 			_isOpen = !_isOpen;
 			if (_isOpen) {
 				_label.setIcon(_openIcon);
-				_itemsScroller.setVisible(true);
+				_scroller.setVisible(true);
 				setPreferredSize(new Dimension(getWidth(), _tabHeight + _scrollPaneHeight));
 				revalidate();
 			}
 			else {
 				_label.setIcon(_closedIcon);
-				_itemsScroller.setVisible(false);
+				_scroller.setVisible(false);
 				setPreferredSize(new Dimension(getWidth(), _tabHeight));
 				revalidate();
 			}
@@ -152,6 +155,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		
 	}
 	
+	/** Handles adding this item to a specific user created list */
 	public class RoomListSelectionListener implements ActionListener {
 		
 		private JDialog _prompt;
@@ -164,10 +168,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		public void actionPerformed(ActionEvent e) {
 			JComboBox cb = (JComboBox) e.getSource();
 			String selected = (String) cb.getSelectedItem();
-			if (selected == null || selected.equals("")) {
-				System.out.println("cancel");
-			}
-			else {
+			if (selected != null && !selected.equals("")) {
 				boolean exists = false;
 				for (RoomList rl : State.getInstance().getRoomLists()) {
 					if (rl.getName().equals(selected)) {

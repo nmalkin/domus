@@ -1,5 +1,3 @@
-
-
 public interface AccordionItem extends Comparable<AccordionItem> {
 
 	/**

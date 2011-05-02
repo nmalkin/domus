@@ -1,3 +1,5 @@
+import java.awt.Component;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -6,6 +8,7 @@ import javax.swing.event.ChangeListener;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
 
 /**
  * Stores all variable, non-GUI data in the program.
@@ -44,7 +47,7 @@ public class State {
 		h.add(a);
 		h.add(b);
 		_group.add(h);
-		_results = LinkedListMultimap.create();
+		_results = TreeMultimap.create();
 		_roomLists = new LinkedList<RoomList>();
 		_selectedHouse = null;
 		_selectedHouseChangeListener = null;
@@ -87,21 +90,24 @@ public class State {
 	}
 	
 	public void updateResults() {
-		//TODO Move update code to here
-	}
-	
-	public void clearResults() {
 		_results.clear();
+		int[] years = getYears();
+		boolean sophomoreOnly = isSophomoreOnly();
+		for (House h : getGroup()) {
+			System.out.println("house " + h.getIndex());
+			Collection<Dorm> locations = h.getLocationPreference();
+			boolean genderNeutral = h.isGenderNeutral();
+			for (SubGroup sg : h) {
+				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, genderNeutral, sophomoreOnly);
+				for (Room r : results) {
+					_results.put(sg, r);
+				}
+			}
+		}
 	}
 	
 	public Multimap<SubGroup, Room> getResults() {
-		return LinkedListMultimap.create(_results);
-	}
-	
-	public void putResults(SubGroup sg, RoomList rl) {
-		for (Room r : rl) {
-			_results.put(sg, r);
-		}
+		return TreeMultimap.create(_results);
 	}
 	
 	public List<RoomList> getRoomLists() {
@@ -109,7 +115,14 @@ public class State {
 	}
 	
 	public void addRoomList(RoomList list) {
+		if (_roomLists.size() == 0) {
+			//TODO enable Cart tab
+		}
 		_roomLists.add(list);
+	}
+	
+	public void removeRoomList(RoomList list) {
+		_roomLists.remove(list);
 	}
 	
 	public void export(String filename) {

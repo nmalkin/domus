@@ -52,6 +52,12 @@ public class Constants {
 	protected static final int    WOMAN_WIDTH  = 46; // pixels
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
+	// Results and lists icons
+	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";
+	protected static final String OPEN_FILE = "img/open_results_tab_new.png";
+	protected static final String ADD_FILE = "img/add_to_list_new.png";
+	protected static final String REMOVE_FILE = "img/remove_from_list_black.png";
+	
 	// Database
 	/** database name **/
 	public final static String DATABASE_NAME = "data/housingdata.db";

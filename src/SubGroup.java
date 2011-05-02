@@ -1,29 +1,33 @@
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
-import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import javax.swing.*;
 
-
-public class SubGroup extends DraggablePositionableComponent implements Iterable<Person> {
-	/** the people that make up this sub-group */
+public class SubGroup extends DraggablePositionableComponent implements Iterable<Person>, Comparable<SubGroup> {
+	/** the people that make up this subgroup */
 	private Collection<Person> _people;
 	
 	/** the house that this subgroup is contained in */
 	private House _house;
+	
+	/** the index of this subgroup, used for comparing in results */
+	private int _index;
+	
+	/** used for comparing subgroups, strictly increasing */
+	private static int _subGroupCount = 0;
 		
 	public SubGroup() {
 		_people = new LinkedList<Person>();
 		_house = null;
+		_index = _subGroupCount++;
+		System.out.println(_index);
 		
 		this.setBounds(0,0,1,1);
 		
@@ -80,6 +84,11 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 	
 	public int getOccupancy() {
 		return _people.size();
+	}
+	
+	/** Used for sorting in results display */
+	public int getIndex() {
+		return _index;
 	}
 	
 	/**
@@ -192,5 +201,11 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 			s += people.next().getName();
 		}
 		return s;
+	}
+
+	@Override
+	public int compareTo(SubGroup o) {
+		// TODO Auto-generated method stub
+		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
 	}
 }

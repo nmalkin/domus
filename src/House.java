@@ -6,24 +6,32 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
-import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.TreeSet;
+
+import com.google.common.collect.TreeMultiset;
 
 
-public class House  extends DraggablePositionableComponent implements Iterable<SubGroup> {
+public class House extends DraggablePositionableComponent implements Iterable<SubGroup>, Comparable<House> {
 	/** the subgroups that make up this house */
 	private Collection<SubGroup> _subgroups;
 	
 	/** Where would we be okay living? */
 	private LocationPreference _locations;
 	
+	/** the index of this house, used for comparing in results */
+	private int _index;
+	
+	/** used for comparing house, strictly increasing */
+	private static int _houseCount = 0;
+	
 	public House() {
 		super();
 		
-		_subgroups = new LinkedList<SubGroup>();
+		_subgroups = TreeMultiset.create();
 		_locations = new LocationPreference();
+		_index = _houseCount++;
 		
 		this.setBounds(0,0,1,1);
 		
@@ -64,8 +72,11 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 				return true;
 			}
 		}
-		
 		return false;
+	}	
+	
+	public boolean isGenderNeutral() {
+		return true;
 	}
 	
 	/**
@@ -88,6 +99,11 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 	
 	public void setLocationPreference(LocationPreference l) {
 		_locations = l;
+	}
+	
+	/** Used for sorting in results display */
+	public int getIndex() {
+		return _index;
 	}
 	
 	protected void updateSubGroupPositions() {
@@ -179,8 +195,11 @@ public class House  extends DraggablePositionableComponent implements Iterable<S
 			getParent().repaint();
 		}
 	}
-	
-	public boolean isGenderNeutral() {
-		return true;
+
+	@Override
+	public int compareTo(House o) {
+		// TODO Auto-generated method stub
+		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
 	}
+
 }

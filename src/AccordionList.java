@@ -1,3 +1,4 @@
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.JComponent;
@@ -26,12 +27,19 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	private int _hiddenSpace;
 	private int _timeStep = 10;
 	
+	private int _listWidth = 350;
+	private int _listHeight = 500;
+	
 	/** A multimap of tabs to items */
 	private Multimap<K, V> _lists;
+	
+	/** Currently selected item, should only be one at a time */
+	private V _selectedItem;
 	
 	private AccordionList() {
 		super();
 		_lists = TreeMultimap.create();
+		this.setPreferredSize(new Dimension(_listWidth, _listHeight));
 		FlowLayout layout = (FlowLayout) this.getLayout();
 		layout.setVgap(0);
 		this.setAlignmentY(TOP_ALIGNMENT);
@@ -52,6 +60,17 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	public void addListItem(K tab, V item) {
 		_lists.put(tab, item);
 		tab.addItem(item);
+	}
+	
+	/** 
+	 * Sets the currently selected item. Only one should be
+	 * selected at once.
+	 */
+	public void setSelectedItem(V item) {
+		if (_selectedItem != null) {
+			_selectedItem.setOpen(false);
+		}
+		_selectedItem = item;
 	}
 	
 	// Maybe the tabs should do this themselves?

@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -47,6 +46,8 @@ public class MainWindow extends JFrame {
 		tabbedPane.addTab("Preferences", new PreferencesTab());
 		tabbedPane.addTab("Results", new ResultsTab());
 		tabbedPane.addTab("Cart", ListsTab.getInstance());
+//		tabbedPane.setEnabledAt(1, false);
+//		tabbedPane.setEnabledAt(2, false);
 		
 		this.add(tabbedPane);
 		

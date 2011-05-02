@@ -1,7 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.Collection;
 
 import javax.swing.JPanel;
 
@@ -24,23 +23,14 @@ public class ResultsTab extends JPanel {
 					this.remove(c);
 				}
 			}
-			State.getInstance().clearResults();
-			int[] years = State.getInstance().getYears();
-			boolean sophomoreOnly = State.getInstance().isSophomoreOnly();
-			for (House h : State.getInstance().getGroup()) {
-				Collection<Dorm> locations = h.getLocationPreference();
-				boolean genderNeutral = h.isGenderNeutral();
-				for (SubGroup sg : h) {
-					RoomList results = Database.getResults(locations, sg.getOccupancy(), years, genderNeutral, sophomoreOnly);
-					State.getInstance().putResults(sg, results);
-				}
-			}
+			State.getInstance().updateResults();
 			this.add(new ResultsPanel());
 		}
 		
 		@Override
 		public void setVisible(boolean visible) {
 			super.setVisible(visible);
-			updateResults();
+			if (visible)
+				updateResults();
 		}
 }

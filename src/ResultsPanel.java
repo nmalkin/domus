@@ -21,20 +21,19 @@ public class ResultsPanel extends JPanel {
 		_results = State.getInstance().getResults();
 		SetMultimap<SubGroup, Dorm> _dormMap = HashMultimap.create();
 		for (SubGroup sg : _results.keySet()) {
+			System.out.println("sg " + sg.getIndex());
 			for (Room r : _results.get(sg)) {
 				_dormMap.put(sg, r.getDorm());
 			}
 		}
 		for (SubGroup sg : _dormMap.keySet()) {
 			AccordionList<ResultsListTab, ResultsListItem> list = AccordionList.create();
-			list.setPreferredSize(new Dimension(200, 500));
-			list.setVisible(true);
 			for (Dorm d : _dormMap.get(sg)) {
-				ResultsListTab tab = new ResultsListTab(d, sg);
+				ResultsListTab tab = new ResultsListTab(d, sg, list);
 				list.addTab(tab);
 				for (Room r : _results.get(sg)) {
 					if (r.getDorm() == d) {
-						ResultsListItem item = new ResultsListItem(r);
+						ResultsListItem item = new ResultsListItem(r, list);
 						item.setInsets(tab.getBorderInsets());
 						list.addListItem(tab, item);
 					}

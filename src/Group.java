@@ -2,7 +2,7 @@ import java.awt.Point;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.TreeSet;
 
 public class Group extends AbstractCollection<House> {
 	
@@ -16,7 +16,7 @@ public class Group extends AbstractCollection<House> {
 	private Point _position;
 	
 	public Group() {
-		_houses = new LinkedList<House>();
+		_houses = new TreeSet<House>();
 		_position = new Point(0,0);
 	}
 	

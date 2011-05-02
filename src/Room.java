@@ -1,7 +1,7 @@
 import java.util.LinkedList;
 import java.util.List;
 
-public class Room {
+public class Room implements Comparable<Room> {
 	/** What dorm is this room in? */
 	private Dorm _dorm;
 	
@@ -67,5 +67,11 @@ public class Room {
 		for(int i = 0; i < _results.size(); i++) _averageResult += _results.get(i).getLotteryNumber();
 		
 		_averageResult /= _results.size();
+	}
+
+	@Override
+	public int compareTo(Room o) {
+		// TODO Auto-generated method stub
+		return _averageResult < o.getAverageResult() ? -1 : (_averageResult > o.getAverageResult() ? 1 : 0);
 	}
 }
