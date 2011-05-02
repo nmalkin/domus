@@ -220,6 +220,13 @@ public class Canvas extends JLayeredPane {
 					h.addSubGroup(s); // this also removes them from the current house
 				}
 				
+				// add the old house's location preferences the new house
+				// (the new house's location preferences are the union of the two old ones)
+				LocationPreference newHousePreference = h.getLocationPreference();
+				for(Dorm d : house.getLocationPreference()) {
+					newHousePreference.add(d);
+				}
+				
 				// remove the dropped house
 				this.remove(house); // remove from view
 				State.getInstance().getGroup().remove(house); // remove from group
