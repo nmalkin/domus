@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -311,19 +312,23 @@ public class Canvas extends JLayeredPane {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		// separator
-		g.drawLine(Constants.SEPARATOR_X_POSITION, 0, Constants.SEPARATOR_X_POSITION, this.getHeight());
+		// sidebar
+		g.setColor(Color.BLACK);
+		g.drawLine(Constants.SIDEBAR_WIDTH, 0, Constants.SIDEBAR_WIDTH, this.getHeight());
+		g.setColor(Constants.SIDEBAR_COLOR);
+		g.fillRect(0, 0, Constants.SIDEBAR_WIDTH, this.getHeight());
+		
 		
 		// new guy
 		String text = "New Guy";
 		int textWidth = g.getFontMetrics().stringWidth(text);
-		int textPosition = (0 + Constants.SEPARATOR_X_POSITION) / 2 - textWidth / 2; 
+		int textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2; 
 		g.drawString(text, textPosition, Constants.NEW_MALE_Y_POSITION - 20);
 		g.drawImage(Gender.MALE.getImage(), Constants.NEW_MALE_X_POSITION, Constants.NEW_MALE_Y_POSITION, null);
 		
 		text = "New Girl";
 		textWidth = g.getFontMetrics().stringWidth(text);
-		textPosition = (0 + Constants.SEPARATOR_X_POSITION) / 2 - textWidth / 2;
+		textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2;
 		g.drawString(text, textPosition, Constants.NEW_FEMALE_Y_POSITION - 20);
 		g.drawImage(Gender.FEMALE.getImage(), Constants.NEW_FEMALE_X_POSITION, Constants.NEW_FEMALE_Y_POSITION, null);
 	}
