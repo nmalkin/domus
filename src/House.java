@@ -202,5 +202,13 @@ public class House extends DraggablePositionableComponent implements Iterable<Su
 			State.getInstance().setSelectedHouse((House) e.getSource());
 			getParent().repaint();
 		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			House source = (House) e.getSource();
+			
+			Canvas canvas = (Canvas) source.getParent();
+			canvas.dropHouse(source);
+		}
 	}
 }
