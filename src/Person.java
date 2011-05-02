@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 
-public class Person extends DraggablePositionableComponent {
+public class Person extends CanvasComponent {
 	/** What is my name? */
 	private String _name;
 	

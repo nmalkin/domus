@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 
-public class SubGroup extends DraggablePositionableComponent implements Iterable<Person>, Comparable<SubGroup> {
+public class SubGroup extends CanvasComponent implements Iterable<Person>, Comparable<SubGroup> {
 	/** the people that make up this subgroup */
 	private Collection<Person> _people;
 	

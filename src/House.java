@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import com.google.common.collect.TreeMultiset;
 
 
-public class House extends DraggablePositionableComponent implements Iterable<SubGroup>, Comparable<House> {
+public class House extends CanvasComponent implements Iterable<SubGroup>, Comparable<House> {
 	/** the subgroups that make up this house */
 	private Collection<SubGroup> _subgroups;
 	
