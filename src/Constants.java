@@ -24,7 +24,7 @@ public class Constants {
 	/** what portion of an object is overlapping for the two to be considered intersecting */
 	protected static final double INTERSECTION_FRACTION = 0.5;
 	
-	protected static final int SIDEBAR_WIDTH = 100;
+	protected static final int SIDEBAR_WIDTH = 120;
 	protected static final Color SIDEBAR_COLOR = Color.GRAY;
 	
 	protected static final int NEW_MALE_X_POSITION = (0 + Constants.SIDEBAR_WIDTH) / 2 - Gender.MALE.getImageDimension().width / 2;
@@ -40,14 +40,14 @@ public class Constants {
 	protected static final int TRASH_Y_POSITION = 500;
 	
 	// House
-	protected static final Color HOUSE_COLOR = Color.BLUE;
+	protected static final Color HOUSE_COLOR = Color.YELLOW;
 	protected static final int HOUSE_PADDING = 45; // pixels
 	
-	protected static final Color SELECTED_HOUSE_BORDER_COLOR = Color.PINK;
+	protected static final Color SELECTED_HOUSE_BORDER_COLOR = Color.cyan;
 	protected static final float SELECTED_HOUSE_BORDER_WIDTH = INSET + 0f;
 	
 	// SubGroup
-	protected static final Color SUBGROUP_COLOR = Color.GREEN;
+	protected static final Color SUBGROUP_COLOR = Color.PINK;
 	protected static final int SUBGROUP_PADDING = 25; // pixels
 	
 	// Person images & dimensions
