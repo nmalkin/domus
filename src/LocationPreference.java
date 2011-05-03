@@ -17,6 +17,11 @@ public class LocationPreference extends AbstractSet<Dorm> {
 		_dorms = new HashSet<Dorm>();
 	}
 	
+	/** a copy constructor */
+	public LocationPreference(LocationPreference lp) {
+		_dorms = new HashSet<Dorm>(lp);
+	}
+	
 	@Override
 	public boolean add(Dorm e) {
 		return _dorms.add(e);

@@ -196,6 +196,11 @@ public class Canvas extends JLayeredPane {
 			
 			// display it
 			this.add(newHouse, Constants.HOUSE_LAYER);
+			
+			// get the preferences from the old house and copy them to the new house
+			if(currentHouse != null) {
+				newHouse.setLocationPreference(currentHouse.getLocationPreference());
+			}
 		} else if(newHouse == currentHouse) {
 			currentHouse.updateSubGroupPositions(); // move subgroup to its default location in house
 			this.repaint();
