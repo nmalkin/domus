@@ -76,8 +76,8 @@ public class Constants {
 	protected static final String OPEN_FILE = "img/open_results_tab_new.png";
 	protected static final String ADD_FILE = "img/add_to_list_new.png";
 	protected static final String REMOVE_FILE = "img/remove_from_list_black.png";
-	protected static final String LEFT_ARROW = "img/left_arrow.png";
-	protected static final String RIGHT_ARROW = "img/right_arrow.png";
+	protected static final String LEFT_ARROW = "img/left_arrow_smaller.png";
+	protected static final String RIGHT_ARROW = "img/right_arrow_smaller.png";
 	
 	// Database
 	/** database name **/

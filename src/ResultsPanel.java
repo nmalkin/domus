@@ -47,7 +47,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 	
 	public ResultsPanel() {
 		super();
-		this.setPreferredSize(new Dimension(1100, _listHeight));
+		this.setPreferredSize(new Dimension(1200, _listHeight));
 		_listsPanel = new JPanel();
 		_listsPanel.setPreferredSize(new Dimension(0, _listHeight));
 		_listsPanel.setSize(new Dimension(0, _listHeight));
