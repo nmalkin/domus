@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class House extends DraggablePositionableComponent implements Iterable<SubGroup>, Comparable<House> {
+public class House extends CanvasComponent implements Iterable<SubGroup>, Comparable<House> {
 	/** the subgroups that make up this house */
 	private Collection<SubGroup> _subgroups;
 	
@@ -153,6 +153,37 @@ public class House extends DraggablePositionableComponent implements Iterable<Su
 		return height;
 	}
 	
+	/**
+	 * Returns the appropriate color for this house based on its location.
+	 * 
+	 * If the house is over the trash icon, it will return a transparent version of its color. 
+	 * 
+	 * @return
+	 */
+	private Color getColor() {
+		if(Canvas.overTrashIcon(this)) { // if hovering over trash, draw this transparently
+			return Constants.HOUSE_COLOR_TRANSPARENT;
+		} else {
+			return Constants.HOUSE_COLOR;
+		}
+	}
+	
+	/**
+	 * Returns the appropriate color for this house's based on its location.
+	 * 
+	 * If the house is over the trash icon, it will return a transparent version of the border color. 
+	 * 
+	 * @return
+	 */
+	private Color getBorderColor() {
+		if(Canvas.overTrashIcon(this)) { // if hovering over trash, draw this transparently
+			return Constants.SELECTED_HOUSE_BORDER_COLOR_TRANSPARENT;
+		} else {
+			return Constants.SELECTED_HOUSE_BORDER_COLOR;
+		}
+	}
+	
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -174,12 +205,15 @@ public class House extends DraggablePositionableComponent implements Iterable<Su
 				width - 2 * Constants.INSET, height - 2 * Constants.INSET, 
 				10, 10);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setPaint(Constants.HOUSE_COLOR);
+		
+		// select color based on location (over trash can or not?)
+		g2.setPaint(getColor());
+		
 		g2.fill(houseBox);
 		
 		// if selected, draw border
 		if(this == State.getInstance().getSelectedHouse()) {
-			g2.setPaint(Constants.SELECTED_HOUSE_BORDER_COLOR);
+			g2.setPaint(getBorderColor());
 			g2.setStroke(new java.awt.BasicStroke(Constants.SELECTED_HOUSE_BORDER_WIDTH));
 			g2.draw(houseBox);
 		}

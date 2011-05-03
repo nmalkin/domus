@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 
-public class SubGroup extends DraggablePositionableComponent implements Iterable<Person>, Comparable<SubGroup> {
+public class SubGroup extends CanvasComponent implements Iterable<Person>, Comparable<SubGroup> {
 	/** the people that make up this subgroup */
 	private Collection<Person> _people;
 	
@@ -152,6 +152,23 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		return height;
 	}
 	
+	/**
+	 * Returns the appropriate color for this subgroup based on its location.
+	 * 
+	 * If the subgroup is over the trash icon, it will return a transparent version of its color. 
+	 * 
+	 * @return
+	 */
+	private Color getColor() {
+		if(Canvas.overTrashIcon(this) || // if hovering over trash, draw this transparently 
+			_house != null && Canvas.overTrashIcon(_house)) // if my house is over the trash, also draw transparently
+		{ 
+			return Constants.SUBGROUP_COLOR_TRANSPARENT;
+		} else {
+			return Constants.SUBGROUP_COLOR;
+		}
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -168,7 +185,10 @@ public class SubGroup extends DraggablePositionableComponent implements Iterable
 		
 		// draw box representing the subgroup
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setPaint(Constants.SUBGROUP_COLOR);
+		
+		// select color based on location (over trash can or not?)
+		g2.setPaint(getColor());
+		
 		g2.fill(new RoundRectangle2D.Double(
 				Constants.INSET, Constants.INSET, 
 				width - 2 * Constants.INSET, height - 2 * Constants.INSET, 

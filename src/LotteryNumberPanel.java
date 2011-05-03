@@ -63,10 +63,10 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		//TODO: make sure all the elements actually align
 		//numberSlider.setAlignmentX(CENTER_ALIGNMENT);
 		
-		this.add(new JLabel("Estimated semester level:"));
+		this.add(new JLabel("Semester level:"));
 		this.add(_semesterLevelBox);
 		
-		this.add(new JLabel("Estimated happiness level:"));
+		this.add(new JLabel("Level of optimism:"));
 		JComponent happiness = new JLabel("Happy");
 		happiness.setToolTipText("Brown students are always happy.");
 		happiness.setBorder(BorderFactory.createLineBorder(Color.black));

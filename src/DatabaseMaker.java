@@ -135,21 +135,22 @@ public class DatabaseMaker {
 	private void makeCampusMap() {
 		campusAreas = new HashMap<String, String>();
 
-		campusAreas.put("East Andrews", "Pembroke");
-		campusAreas.put("West Andrews", "Pembroke");
-		campusAreas.put("Metcalf", "Pembroke");
-		campusAreas.put("Miller", "Pembroke");
-		campusAreas.put("Machado", "Pembroke");
-		campusAreas.put("Emery", "Pembroke");
-		campusAreas.put("Woolley", "Pembroke");
-		campusAreas.put("Morriss Hall", "Pembroke");
-		campusAreas.put("Champlin", "Pembroke");
-		campusAreas.put("New Pembroke #1", "Pembroke");
-		campusAreas.put("New Pembroke #2", "Pembroke");
-		campusAreas.put("New Pembroke #3", "Pembroke");
-		campusAreas.put("New Pembroke #4", "Pembroke");
-		campusAreas.put("Plantations House", "Pembroke");
-		campusAreas.put("111 Brown Street", "Pembroke");
+		campusAreas.put("East Andrews", "Pembroke #2");
+		campusAreas.put("West Andrews", "Pembroke #2");
+		campusAreas.put("Metcalf", "Pembroke #2");
+		campusAreas.put("Miller", "Pembroke #2");
+		campusAreas.put("Emery", "Pembroke #2");
+		campusAreas.put("Woolley", "Pembroke #2");
+		campusAreas.put("Morriss Hall", "Pembroke #2");
+		campusAreas.put("Champlin", "Pembroke #2");
+		
+		campusAreas.put("Machado", "Pembroke #1");
+		campusAreas.put("New Pembroke #1", "Pembroke #1");
+		campusAreas.put("New Pembroke #2", "Pembroke #1");
+		campusAreas.put("New Pembroke #3", "Pembroke #1");
+		campusAreas.put("New Pembroke #4", "Pembroke #1");
+		campusAreas.put("Plantations House", "Pembroke #1");
+		campusAreas.put("111 Brown Street", "Pembroke #1");
 
 		campusAreas.put("Hope College", "Main Campus");
 		campusAreas.put("Slater Hall", "Main Campus");

@@ -24,7 +24,7 @@ public class Constants {
 	/** what portion of an object is overlapping for the two to be considered intersecting */
 	protected static final double INTERSECTION_FRACTION = 0.5;
 	
-	protected static final int SIDEBAR_WIDTH = 100;
+	protected static final int SIDEBAR_WIDTH = 120;
 	protected static final Color SIDEBAR_COLOR = Color.GRAY;
 	
 	protected static final int NEW_MALE_X_POSITION = (0 + Constants.SIDEBAR_WIDTH) / 2 - Gender.MALE.getImageDimension().width / 2;
@@ -38,17 +38,29 @@ public class Constants {
 	protected static final int TRASH_HEIGHT = 100; // pixels
 	protected static final int TRASH_X_POSITION = (0 + Constants.SIDEBAR_WIDTH) / 2 - TRASH_WIDTH / 2;
 	protected static final int TRASH_Y_POSITION = 500;
+	protected static final float TRASH_OVERLAY_ALPHA_FRACTION = 0.25f;
+	protected static final int TRASH_OVERLAY_ALPHA = (int) (TRASH_OVERLAY_ALPHA_FRACTION * 255);
 	
 	// House
-	protected static final Color HOUSE_COLOR = Color.BLUE;
 	protected static final int HOUSE_PADDING = 45; // pixels
+	protected static final Color HOUSE_COLOR = Color.YELLOW;
+	protected static final Color HOUSE_COLOR_TRANSPARENT = new Color(
+			HOUSE_COLOR.getRed(), HOUSE_COLOR.getGreen(), HOUSE_COLOR.getBlue(), 
+			TRASH_OVERLAY_ALPHA);
 	
-	protected static final Color SELECTED_HOUSE_BORDER_COLOR = Color.PINK;
 	protected static final float SELECTED_HOUSE_BORDER_WIDTH = INSET + 0f;
+	protected static final Color SELECTED_HOUSE_BORDER_COLOR = Color.CYAN;
+	protected static final Color SELECTED_HOUSE_BORDER_COLOR_TRANSPARENT = new Color(
+			SELECTED_HOUSE_BORDER_COLOR.getRed(), SELECTED_HOUSE_BORDER_COLOR.getGreen(), SELECTED_HOUSE_BORDER_COLOR.getBlue(), 
+			TRASH_OVERLAY_ALPHA);
+	
 	
 	// SubGroup
-	protected static final Color SUBGROUP_COLOR = Color.GREEN;
 	protected static final int SUBGROUP_PADDING = 25; // pixels
+	protected static final Color SUBGROUP_COLOR = Color.PINK;
+	protected static final Color SUBGROUP_COLOR_TRANSPARENT = new Color(
+			SUBGROUP_COLOR.getRed(), SUBGROUP_COLOR.getGreen(), SUBGROUP_COLOR.getBlue(), 
+			TRASH_OVERLAY_ALPHA);
 	
 	// Person images & dimensions
 	protected static final String MAN_FILE   = "img/man.png";
