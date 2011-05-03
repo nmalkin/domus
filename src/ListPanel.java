@@ -110,12 +110,9 @@ public class ListPanel extends JPanel {
 	public void removeRoom(Room r) {
 		_list.remove(r);
 		r.removeFromRoomList(_list);
-		ResultsListItem last = null;
 		for (ResultsListItem rli : r.getListItems()) {
-			rli.setValidatedLabels(false);
-			last = rli;
+			rli.validateListLabels();
 		}
-		last.validateListLabels();
 		updateList();
 	}
 	
