@@ -27,11 +27,10 @@ public class Room implements Comparable<Room> {
 	 */
 	private List<ResultsListItem> _listItems;
 	
-	public Room(Dorm dorm, String number, List<LotteryResult> results, int averageResult) {
+	public Room (Dorm dorm, String number) {
 		_dorm = dorm;
 		_number = number;
-		_results = results;
-		_averageResult = averageResult;
+		_results = new LinkedList<LotteryResult>();
 		_roomLists = new LinkedList<RoomList>();
 		_listItems = new LinkedList<ResultsListItem>();
 	}
@@ -61,17 +60,17 @@ public class Room implements Comparable<Room> {
 	 * on group's lottery number
 	 */
 	public int getProbability() {
-		return (int) ((_averageResult / 790.0) * 100);
+		int lotteryNum = State.getInstance().getGroup().getLotteryNumber();
+		
+		int sum = 0;
+		
+		for(LotteryResult res : _results) {
+			if(res.getLotteryNumber() > lotteryNum) sum += 1;
+		}
+		
+		return sum * 100 / _results.size();
 	}
-	
-	public Room (Dorm dorm, String number) {
-		_dorm = dorm;
-		_number = number;
-		_results = new LinkedList<LotteryResult>();
-		_roomLists = new LinkedList<RoomList>();
-		_listItems = new LinkedList<ResultsListItem>();
-	}
-	
+
 	public String toString() {
 		String resultString = "[ ";
 		
@@ -124,7 +123,6 @@ public class Room implements Comparable<Room> {
 
 	@Override
 	public int compareTo(Room o) {
-		// TODO Auto-generated method stub
 		return _averageResult < o.getAverageResult() ? -1 : (_averageResult > o.getAverageResult() ? 1 : 0);
 	}
 }

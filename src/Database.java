@@ -78,11 +78,15 @@ public class Database {
 		return sophomore.next();
 	}
 
-	public static int getMaxLotteryNumber() throws SQLException {
+	public static int getMaxLotteryNumber() {
+		try {
 		ResultSet maxNum = statement.executeQuery("select max(number) as maxNum from " + Constants.SEMESTER_TABLE + ";");
 		maxNum.next();
 
-		return maxNum.getInt("maxNum");
+		return maxNum.getInt("maxNum"); 
+		} catch (SQLException e) {
+			return -1;
+		}
 	}
 	/**
 	 * Returns all the rooms that satisfy the given conditions.
@@ -189,6 +193,7 @@ public class Database {
 			return sum / count;
 		} catch(SQLException e) {
 			//TODO: better handling
+			e.printStackTrace();
 			return -1;
 		}
 	}

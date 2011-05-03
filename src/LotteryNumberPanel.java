@@ -30,14 +30,14 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 	
 	public LotteryNumberPanel() {
 		// slider
-		_numberSlider = new JSlider(JSlider.VERTICAL, 1, Constants.MAX_LOTTERY_NUMBER, Constants.DEFAULT_LOTTERY_NUMBER);
+		_numberSlider = new JSlider(JSlider.VERTICAL, 1, Database.getMaxLotteryNumber(), Constants.DEFAULT_LOTTERY_NUMBER);
 		_numberSlider.addChangeListener(this);
 		_numberSlider.setMajorTickSpacing(50);
 		_numberSlider.setPaintTicks(true);
 		_numberSlider.setPaintLabels(true);
 		
 		// semester level
-		Integer[] semesterLevels = {3, 4, 5, 6, 7, 8, 9}; 
+		Integer[] semesterLevels = {3, 4, 5, 6, 7, 8, 9, 10}; 
 			//TODO: rather than ints, have these be objects, so we can include a string description (e.g., "sophomore") as well
 		
 		_semesterLevelBox = new JComboBox(semesterLevels);
@@ -72,6 +72,8 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		happiness.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.add(happiness);
 		this.addAncestorListener(this);
+		
+		_numberSlider.setValue(Database.getMaxLotteryNumber() / 2);
 	}
 	
 	/**
