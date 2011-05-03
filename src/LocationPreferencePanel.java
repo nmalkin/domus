@@ -1,3 +1,6 @@
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashMap;
@@ -32,10 +35,15 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		
 		CheckBoxListener myListener = new CheckBoxListener();
 		
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		
 		for(CampusArea area : Database.getCampusAreas()) {
+			JPanel j = new JPanel();
+			j.setLayout(new BoxLayout(j, BoxLayout.Y_AXIS));
+			
 			ParentCheckBox areaBox = new ParentCheckBox(area.getName());
 			areaBox.setSelected(true);
-			this.add(areaBox);
+			j.add(areaBox);
 			
 			for(Dorm dorm : area) {
 				DormCheckBox dormBox = new DormCheckBox(dorm);
@@ -47,8 +55,12 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 				areaBox.addChild(dormBox);
 				
 				_dormBoxes.put(dorm, dormBox);
-				this.add(dormBox);
+				
+				j.add(dormBox);
 			}
+			
+			j.add(Box.createVerticalGlue());
+			this.add(j);
 		}
 	}
 	
