@@ -1,9 +1,18 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -32,12 +41,43 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		
 		CheckBoxListener myListener = new CheckBoxListener();
 		
+		this.setLayout(new BorderLayout());
+		
+		JTextPane title = new JTextPane();
+		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
+		title.setText("LOCATION PREFERENCES");
+		
+		JPanel locations = new JPanel();
+		locations.setLayout(new BoxLayout(locations, BoxLayout.X_AXIS));
+		
 		for(CampusArea area : Database.getCampusAreas()) {
+			JPanel areaPanel = new JPanel();
+			areaPanel.setLayout(new BoxLayout(areaPanel, BoxLayout.Y_AXIS));
+			areaPanel.setPreferredSize(new Dimension(200,260));
+			areaPanel.setMinimumSize(new Dimension(200,260));
+			areaPanel.setBorder(new LineBorder(Color.black));
+			
+			JPanel areaNamePanel = new JPanel();
+			areaNamePanel.setLayout(new BoxLayout(areaNamePanel, BoxLayout.X_AXIS));
+			MatteBorder line = new MatteBorder(0, 0, 1, 0, Color.black);
+			
+			areaNamePanel.setBorder(line);
+			areaNamePanel.setPreferredSize(new Dimension(200,25));
+			areaNamePanel.setMinimumSize(new Dimension(200,25));
+			
 			ParentCheckBox areaBox = new ParentCheckBox(area.getName());
 			areaBox.setSelected(true);
-			this.add(areaBox);
+			
+			areaNamePanel.add(areaBox);
+			areaNamePanel.add(Box.createHorizontalGlue());
+			areaPanel.add(areaNamePanel);
 			
 			for(Dorm dorm : area) {
+				JPanel dormPanel = new JPanel();
+				dormPanel.setLayout(new BoxLayout(dormPanel, BoxLayout.X_AXIS));
+				dormPanel.setPreferredSize(new Dimension(200, 25));
+				dormPanel.setMinimumSize(new Dimension(200,25));
+				
 				DormCheckBox dormBox = new DormCheckBox(dorm);
 				
 				dormBox.setSelected(true);
@@ -47,9 +87,20 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 				areaBox.addChild(dormBox);
 				
 				_dormBoxes.put(dorm, dormBox);
-				this.add(dormBox);
+				
+				dormPanel.add(Box.createRigidArea(new Dimension(15,0)));
+				dormPanel.add(dormBox);
+				dormPanel.add(Box.createHorizontalGlue());
+				
+				areaPanel.add(dormPanel);
 			}
+			
+			areaPanel.add(Box.createVerticalGlue());
+			locations.add(areaPanel);
 		}
+		
+		this.add(title, BorderLayout.WEST);
+		this.add(locations, BorderLayout.SOUTH);
 	}
 	
 	/**
