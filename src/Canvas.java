@@ -118,7 +118,7 @@ public class Canvas extends JLayeredPane {
 			newSubGroup.addPerson(person);
 			
 			// place the subgroup into a house
-			dropSubGroup(newSubGroup);
+			placeSubGroup(newSubGroup);
 			
 			// display it
 			this.add(newSubGroup, Constants.SUBGROUP_LAYER);
@@ -136,7 +136,7 @@ public class Canvas extends JLayeredPane {
 	}
 	
 	/**
-	 * Performs a drop of the given subgroup at the given location.
+	 * Performs a drop of the given subgroup at its current location.
 	 * 
 	 * @param subgroup
 	 */
@@ -146,6 +146,10 @@ public class Canvas extends JLayeredPane {
 			return;
 		}
 		
+		placeSubGroup(subgroup);
+	}
+	
+	public void placeSubGroup(SubGroup subgroup) {
 		House newHouse = null;
 		
 		for(House h : State.getInstance().getGroup()) {
@@ -181,11 +185,11 @@ public class Canvas extends JLayeredPane {
 			// save the new house to State
 			State.getInstance().getGroup().add(newHouse);
 			
-			// place the new house wherever the subgroup is right now
+			// set the position of the new house to wherever the subgroup is right now
 			newHouse.setPosition(
 					subgroup.getPosition().x - Constants.HOUSE_PADDING, 
 					subgroup.getPosition().y - Constants.HOUSE_PADDING);
-						
+			
 			// display it
 			this.add(newHouse, Constants.HOUSE_LAYER);
 		} else if(newHouse == currentHouse) {
@@ -206,12 +210,18 @@ public class Canvas extends JLayeredPane {
 		
 		State.getInstance().setSelectedHouse(newHouse);
 		
+		// verify house status on the canvas (merge/move if necessary)
+		placeHouse(newHouse);
+		
 		this.repaint();
 	}
 	
 	/**
-	 * Performs a drop of the given house at the given location
-	 * by checking if it is intersecting with any houses.
+	 * Performs a drop of the given house at its current location.
+	 * 
+	 * Specifically,
+	 * Checks if it is over the trash can (if it is, it is removed).
+	 * Places the house on the canvas (@see {@link #placeHouse(House)})
 	 * 
 	 * @param house
 	 */
@@ -219,6 +229,24 @@ public class Canvas extends JLayeredPane {
 		if(tryRemove(house)) { // if the house is over the trash, remove them
 			repaint();
 			return;
+		}
+		
+		placeHouse(house);
+	}
+	
+	/**
+	 * Establishes the location/status of a house on the canvas.
+	 * 
+	 * Specifically,
+	 * Checks if the house is over the sidebar (if it is, moves it off).
+	 * Checks if it is intersecting any house (if it is, they are merged).
+	 * 
+	 * @param house
+	 */
+	protected void placeHouse(House house) {
+		if(house.getPosition().x < Constants.SIDEBAR_WIDTH) {
+			house.setPosition(Constants.SIDEBAR_WIDTH, house.getPosition().y);
+			house.updateSubGroupPositions();
 		}
 		
 		for(House h : State.getInstance().getGroup()) {
