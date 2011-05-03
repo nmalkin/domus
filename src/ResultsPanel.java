@@ -56,8 +56,10 @@ public class ResultsPanel extends JPanel {
 			Collection<ResultsListTab> tabs = list.getTabs();
 			for (Dorm d : dormMap.get(sg)) {
 				ResultsListTab tab = null;
-				if ((tab = containsDormTab(tabs, d)) != null)
+				if ((tab = containsDormTab(tabs, d)) != null) {
 					intersectResultsWithTab(sg, d, list, tab);
+					System.out.println("dorm tab exists already");
+				}
 				else {
 					System.out.println("new tab");
 					tab = new ResultsListTab(d, sg, list);
