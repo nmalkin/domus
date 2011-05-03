@@ -1,4 +1,11 @@
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -6,24 +13,59 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.border.EmptyBorder;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.TreeMultimap;
 
-public class ResultsPanel extends JPanel {
+public class ResultsPanel extends JPanel implements Runnable {
 	
 	private Map<SubGroup, AccordionList<ResultsListTab, ResultsListItem>> _listsMap;
 	private Multimap<SubGroup, Room> _results;
 	private Map<Dorm, DormAverage> _dormAverages;
+	private JScrollPane _scroller;
+	private JPanel _listsPanel;
+	private JLabel _leftButton, _rightButton;
+	private boolean _scrollLeft, _scrollRight, _scrollOnce;
+	private int _scrollWidth, _scrollDelay, _hGap = 5;
+	
+	private int _listHeight = 550;
+	private int _listWidth = 300;
+	private int _numListsDisplayed = 3;
 	
 	public ResultsPanel() {
 		super();
-		Dimension size = new Dimension(500, 550);
-		this.setPreferredSize(size);
+		this.setPreferredSize(new Dimension(1000, _listHeight));
+		_listsPanel = new JPanel();
+		_listsPanel.setPreferredSize(new Dimension(0, _listHeight));
+		_listsPanel.setSize(new Dimension(0, _listHeight));
+		_listsPanel.setLayout(new BoxLayout(_listsPanel, BoxLayout.LINE_AXIS));
+		_listsPanel.setBorder(new EmptyBorder(new Insets(0, 0, 0, 0)));
+		_scroller = new JScrollPane(_listsPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		_scroller.setPreferredSize(new Dimension(0, _listHeight));
+		_scroller.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
+		_scroller.getHorizontalScrollBar().setBorder(new EmptyBorder(0, 0, 0, 0));
+		_leftButton = new JLabel("LEFT");
+		_leftButton.setFont(new Font("Verdana", Font.BOLD, 24));
+		_rightButton = new JLabel("RIGHT");
+		_rightButton.setFont(new Font("Verdana", Font.BOLD, 24));
+		MouseListener listener = new ScrollButtonListener();
+		_leftButton.addMouseListener(listener);
+		_rightButton.addMouseListener(listener);
+		this.add(_leftButton);
+		this.add(_scroller);
+		this.add(_rightButton);
 		_listsMap = new HashMap<SubGroup, AccordionList<ResultsListTab, ResultsListItem>>();
 		updateResultsLists();
 	}
@@ -48,6 +90,7 @@ public class ResultsPanel extends JPanel {
 				dormMap.put(sg, r.getDorm());
 			}
 		}
+		int i = 0;
 		for (SubGroup sg : dormMap.keySet()) {
 			AccordionList<ResultsListTab, ResultsListItem> list = null;
 			if ((list = _listsMap.get(sg)) == null) {
@@ -76,8 +119,16 @@ public class ResultsPanel extends JPanel {
 				}
 			}
 			_listsMap.put(sg, list);
-			this.add(list);
+			_listsPanel.add(list);	
 		}
+		int numLists = _listsMap.values().size();
+		int displayLists = Math.min(numLists, _numListsDisplayed);
+		Dimension size = new Dimension(numLists * _listWidth + ((numLists - 1) * _hGap), _listHeight);
+		_listsPanel.setPreferredSize(size);
+		_listsPanel.setSize(size);
+		size = new Dimension(displayLists * _listWidth + ((displayLists -1) * _hGap), _listHeight);
+		_scroller.setPreferredSize(size);
+		_scroller.setSize(size);
 	}
 	
 	private ResultsListTab containsDormTab(Collection<ResultsListTab> tabs, Dorm d) {
@@ -161,5 +212,132 @@ public class ResultsPanel extends JPanel {
 			return ave1 < ave2 ? -1 : (ave1 > ave2 ? 1 : 0); 
 		}
 		
+	}
+	
+	@Override
+	public void run() {
+		// this ensures that if a mouseClicked event fires, the mousePressed
+		// and mouseReleased scrolling does not take place
+//		if (!_scrollOnce) {
+//			try {
+//				Thread.sleep(10);
+//				if (_scrollOnce)
+//					return;
+//			}
+//			catch (Exception e) {
+//				// do nothing
+//			}
+//		}
+		int count = 0;
+		while (_scrollLeft || _scrollRight) {
+			if (_scrollOnce && count > (_listWidth / _scrollWidth)) {
+				break;
+			}
+			if (_scrollWidth == _hGap) {
+				break;
+			}
+			if (count == (_listWidth / _scrollWidth)) {
+				_scrollWidth = _hGap;
+			}
+			if (_listsPanel.getSize().width < _scroller.getSize().width) {
+				_scrollLeft = false;
+				_scrollRight = false;
+				break;
+			}
+			JViewport view = _scroller.getViewport();
+			if (_scrollRight) {
+				Rectangle r = view.getViewRect();
+//				if (r.x + r.width >= _listsPanel.getWidth()) {
+//					_scrollLeft = false;
+//					_scrollRight = false;
+//					break;
+//				}
+				if (r.x + r.width + _scrollWidth >= _listsPanel.getWidth()) {
+					view.setViewPosition(new Point(_listsPanel.getWidth() - r.width, r.y));
+					_scrollRight = false;
+					_scrollLeft = false;
+					break;
+				}
+				else {
+					view.setViewPosition(new Point(r.x + _scrollWidth, r.y));
+				}
+			}
+			else if (_scrollLeft) {
+				Rectangle r = view.getViewRect();
+//				if (r.x <= 0) {
+//					_scrollLeft = false;
+//					_scrollRight = false;
+//					break;
+//				}
+				if (r.x - _scrollWidth <= 0) {
+					view.setViewPosition(new Point(0, r.y));
+					_scrollLeft = false;
+					_scrollRight = false;
+					break;
+				}
+				else {
+					view.setViewPosition(new Point(r.x - _scrollWidth, r.y));
+				}
+			}
+			try {
+				Thread.sleep(_scrollDelay);
+			}
+			catch (Exception e) {
+				// do nothing
+			}
+			++count;
+		}
+	}
+	
+	private class ScrollButtonListener extends MouseAdapter {
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			JLabel button = (JLabel) e.getSource();
+			if (button.getText().equals("LEFT")) {
+				_scrollLeft = true;
+				_scrollRight = false;
+			}
+			else if (button.getText().equals("RIGHT")) {
+				_scrollRight = true;
+				_scrollLeft = false;
+			}
+			_scrollWidth = 50;
+			_scrollDelay = 50;
+			_scrollOnce = true;
+			Executor exec = Executors.newSingleThreadExecutor();
+			exec.execute(ResultsPanel.this);
+		}
+		
+//		@Override
+//		public void mousePressed(MouseEvent e) {
+//			JLabel button = (JLabel) e.getSource();
+//			if (button.getText().equals("LEFT")) {
+//				_scrollLeft = true;
+//				_scrollRight = false;
+//			}
+//			else if (button.getText().equals("RIGHT")) {
+//				_scrollRight = true;
+//				_scrollLeft = false;
+//			}
+//			_scrollWidth = 25;
+//			_scrollDelay = 25;
+//			_scrollOnce = false;
+//			Executor exec = Executors.newSingleThreadExecutor();
+//			exec.execute(ResultsPanel.this);
+//		}
+//		
+//		@Override
+//		public void mouseReleased(MouseEvent e) {
+//			JLabel button = (JLabel) e.getSource();
+//			if (button.getText().equals("LEFT")) {
+//				_scrollLeft = false;
+//				_scrollRight = false;
+//			}
+//			else if (button.getText().equals("RIGHT")) {
+//				_scrollLeft = false;
+//				_scrollRight = false;
+//			}
+//		}
 	}
 }
