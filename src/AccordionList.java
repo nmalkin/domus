@@ -1,5 +1,6 @@
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.util.Collection;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -62,6 +63,11 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		tab.addItem(item);
 	}
 	
+	public void removeListItem(K tab, V item) {
+		_lists.remove(tab, item);
+		tab.removeItem(item);
+	}
+	
 	/** 
 	 * Sets the currently selected item. Only one should be
 	 * selected at once.
@@ -71,6 +77,14 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 			_selectedItem.setOpen(false);
 		}
 		_selectedItem = item;
+	}
+	
+	public Collection<K> getTabs() {
+		return _lists.keySet();
+	}
+	
+	public Collection<V> getItemsFromTab(K tab) {
+		return _lists.get(tab);
 	}
 	
 	// Maybe the tabs should do this themselves?

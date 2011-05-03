@@ -24,5 +24,10 @@ public interface AccordionItem extends Comparable<AccordionItem> {
 	 * Adds an AccordionItem to this AccordionItem's list.
 	 */
 	public void addItem(AccordionItem item);
+	
+	/**
+	 * Remves an AccordionItem from this AccordionItem's list.
+	 */
+	public void removeItem(AccordionItem item);
 
 }

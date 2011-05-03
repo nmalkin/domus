@@ -1,11 +1,17 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,7 +33,10 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private AccordionList<ResultsListTab, ResultsListItem> _parentList;
 	private Room _room;
 	private JLabel _label;
+	private JLabel _probLabel;
 	private JLabel _addButton;
+	private JPanel _labelsPanel;
+	private boolean _labelsValidated;
 	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 	private int _index;
 	private int _numLists;
@@ -49,16 +58,59 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		this.setSize(size);
 		_numLists = 0;
 		_room = room;
-		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber() + " [" + _room.getProbability() + "%]");
+		_room.addToListItem(this);
+		_labelsValidated = false;
+		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
 		_label.setFont(_unselectedFont);
 		this.add(_label);
+		_labelsPanel = new JPanel();
+		_labelsPanel.setLayout(new BoxLayout(_labelsPanel, BoxLayout.LINE_AXIS));
+		_labelsPanel.setBackground(new Color(255, 255, 255, 0));
+		validateListLabels();
+		this.add(Box.createRigidArea(new Dimension(5, 0)));
+		this.add(_labelsPanel);
 		this.add(Box.createHorizontalGlue());
+		_probLabel = new JLabel("[" + _room.getProbability() + "%]");
+		_probLabel.setFont(_unselectedFont);
+		this.add(_probLabel);
 		_addButton = new JLabel(_addToListIcon);
 		_addButton.addMouseListener(new AddListener(this));
 		this.add(_addButton);
 		this.addMouseListener(new SelectedListener());
 		_unselectedBackgroundColor = this.getBackground();
 		_selectedBackgroundColor = _unselectedBackgroundColor.darker();
+	}
+	
+	/** Makes sure the list labels for this item are updated */
+	private void validateListLabels() {
+		_labelsValidated = true;
+		_labelsPanel.removeAll();
+		if (_room.getRoomLists() != null) {
+			for (RoomList rl : _room.getRoomLists()) {
+				addListLabel(rl);
+			}
+		}
+		for (ResultsListItem rli : _room.getListItems()) {
+			if (!rli.equals(this) && !rli.hasValidatedLabels())
+				rli.validateListLabels();
+		}
+	}
+	
+	/** Adds a list label for this item */
+	private void addListLabel(RoomList list) {
+		if (list.getColor() == null) {
+			list.setColor(null);
+			System.out.println(list.getColor());
+			BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
+			Graphics2D g = image.createGraphics();
+			g.setColor(list.getColor());
+			g.fillRect(0, 0, 10, 10);
+			ImageIcon icon = new ImageIcon(image);
+			JLabel label = new JLabel(icon);
+			_labelsPanel.add(label);
+			_labelsPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+			validate();
+		}
 	}
 	
 	/** Sets the insets for this item to match those of the tab */
@@ -70,6 +122,14 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	/** Returns the room associated with this item */
 	public Room getRoom() {
 		return _room;
+	}
+	
+	/**
+	 * Returns whether or not the list labels for this item
+	 * have been updated.
+	 */
+	public boolean hasValidatedLabels() {
+		return _labelsValidated;
 	}
 	
 	@Override
@@ -96,16 +156,21 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	public void setOpen(boolean open) {
 		if (open) {
 			_label.setFont(_selectedFont);
+			_probLabel.setFont(_selectedFont);
 			this.setBackground(_selectedBackgroundColor);
 		}
 		else {
 			_label.setFont(_unselectedFont);
+			_probLabel.setFont(_unselectedFont);
 			this.setBackground(_unselectedBackgroundColor);
 		}
 	}
 	
 	@Override
 	public void addItem(AccordionItem item) { }
+	
+	@Override
+	public void removeItem(AccordionItem item) { }
 	
 	@Override
 	public int compareTo(AccordionItem o) {
@@ -143,6 +208,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 					ListsTab.getInstance().updateLists();
 				}
 			}
+			_labelsValidated = false;
+			validateListLabels();
 			_prompt.setVisible(false);
 			_prompt.dispose();
 		}
@@ -150,12 +217,14 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	}
 	
 	/** Bolds the item when clicked */
-	public class SelectedListener extends MouseAdapter {
+	private class SelectedListener extends MouseAdapter {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			setOpen(true);
-			_parentList.setSelectedItem(ResultsListItem.this);
+			if (!isOpen()) {
+				setOpen(true);
+				_parentList.setSelectedItem(ResultsListItem.this);
+			}
 		}
 	}
 	

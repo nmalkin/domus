@@ -63,8 +63,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		_tab.setBounds(0, 0, _listWidth, _tabHeight);
 		
 		//Set up label on tag (with expansion icon)
-		_label = new JLabel();
-		_label.setText(_dorm.getName());
+		_label = new JLabel(_dorm.getName());
 		_label.setFont(_font);
 		_label.setIcon(_closedIcon);
 		_tab.addMouseListener(new ExpandListener());
@@ -99,6 +98,10 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		i.bottom = 0;
 		return i;
 	}
+	
+	public Dorm getDorm() {
+		return _dorm;
+	}
 
 	@Override
 	public int getIndex() {
@@ -127,6 +130,15 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		size = new Dimension(size.width, size.height + ((JComponent) item).getHeight());
 		_itemsPanel.setPreferredSize(size);
 		_itemsPanel.setSize(size);
+	}
+	
+	@Override
+	public void removeItem(AccordionItem item) {
+		_itemsPanel.remove((JComponent) item);
+		Dimension size = _itemsPanel.getPreferredSize();
+		size = new Dimension(size.width, size.height - ((JComponent) item).getHeight());
+		_itemsPanel.setPreferredSize(size);
+		_itemsPanel.setSize(size);		
 	}
 
 	@Override
