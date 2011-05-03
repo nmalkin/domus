@@ -178,10 +178,11 @@ public class DatabaseMaker {
 		campusAreas.put("Harkness House", "Wriston");
 		campusAreas.put("Chapin House", "Wriston");
 
-		campusAreas.put("Grad Center A", "East Campus");
-		campusAreas.put("Grad Center B", "East Campus");
-		campusAreas.put("Grad Center C", "East Campus");
-		campusAreas.put("Grad Center D", "East Campus");
+		campusAreas.put("Grad Center A", "Grad Center");
+		campusAreas.put("Grad Center B", "Grad Center");
+		campusAreas.put("Grad Center C", "Grad Center");
+		campusAreas.put("Grad Center D", "Grad Center");
+		
 		campusAreas.put("Young Orchard #10", "East Campus");
 		campusAreas.put("Young Orchard #2", "East Campus");
 		campusAreas.put("Young Orchard #4", "East Campus");

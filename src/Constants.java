@@ -40,14 +40,14 @@ public class Constants {
 	protected static final int TRASH_Y_POSITION = 500;
 	
 	// House
-	protected static final Color HOUSE_COLOR = Color.YELLOW;
+	protected static final Color HOUSE_COLOR = new Color(30,144,255);
 	protected static final int HOUSE_PADDING = 45; // pixels
 	
-	protected static final Color SELECTED_HOUSE_BORDER_COLOR = Color.cyan;
+	protected static final Color SELECTED_HOUSE_BORDER_COLOR = new Color(154,205,50);
 	protected static final float SELECTED_HOUSE_BORDER_WIDTH = INSET + 0f;
 	
 	// SubGroup
-	protected static final Color SUBGROUP_COLOR = Color.PINK;
+	protected static final Color SUBGROUP_COLOR = new Color(255,127,0);
 	protected static final int SUBGROUP_PADDING = 25; // pixels
 	
 	// Person images & dimensions

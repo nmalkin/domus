@@ -189,6 +189,7 @@ public class Database {
 			return sum / count;
 		} catch(SQLException e) {
 			//TODO: better handling
+			e.printStackTrace();
 			return -1;
 		}
 	}
