@@ -210,6 +210,11 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 					ListsTab.getInstance().updateLists();
 				}
 			}
+			for (Component c : _itemsPanel.getComponents()) {
+				ResultsListItem listItem = (ResultsListItem) c;
+				for (ResultsListItem rli : listItem.getRoom().getListItems())
+					rli.validateListLabels();
+			}
 			_prompt.setVisible(false);
 			_prompt.dispose();
 		}

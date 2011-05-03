@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,12 +30,14 @@ public class ListsTab extends JPanel implements Runnable {
 	private JScrollPane _scroller;
 	private List<ListPanel> _lists;
 	private JLabel _leftButton, _rightButton;
+	private ImageIcon _leftButtonIcon = new ImageIcon(Constants.LEFT_ARROW, "scroll left");
+	private ImageIcon _rightButtonIcon = new ImageIcon(Constants.RIGHT_ARROW, "scroll right");
 	private boolean _scrollLeft, _scrollRight, _scrollOnce;
 	private int _scrollWidth, _scrollDelay;
 	
 	private int _listWidth = 350;
 	private int _listHeight = 525;
-	private int _numListsDisplayed = 3;
+	private int _numDisplayLists = 3;
 	private int _hGap = 5;
 	
 	public static ListsTab getInstance() {
@@ -53,10 +56,10 @@ public class ListsTab extends JPanel implements Runnable {
 		_scroller.setPreferredSize(new Dimension(0, _listHeight));
 		_scroller.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
 		_scroller.getHorizontalScrollBar().setBorder(new EmptyBorder(0, 0, 0, 0));
-		_leftButton = new JLabel("LEFT");
-		_leftButton.setFont(new Font("Verdana", Font.BOLD, 24));
-		_rightButton = new JLabel("RIGHT");
-		_rightButton.setFont(new Font("Verdana", Font.BOLD, 24));
+		_leftButton = new JLabel(_leftButtonIcon);
+		_leftButton.setVisible(false);
+		_rightButton = new JLabel(_rightButtonIcon);
+		_rightButton.setVisible(false);
 		MouseListener listener = new ScrollButtonListener();
 		_leftButton.addMouseListener(listener);
 		_rightButton.addMouseListener(listener);
@@ -82,7 +85,7 @@ public class ListsTab extends JPanel implements Runnable {
 				Dimension size = _listsPanel.getPreferredSize();
 				_listsPanel.setPreferredSize(new Dimension(size.width + _listWidth + extra, size.height));
 				_listsPanel.setSize(new Dimension(size.width + _listWidth + extra, size.height));
-				if (i < _numListsDisplayed) {
+				if (i < _numDisplayLists) {
 					size = _scroller.getPreferredSize();
 					_scroller.setPreferredSize(new Dimension(size.width + _listWidth + extra, size.height));
 					_scroller.setSize(new Dimension(size.width + _listWidth + extra, size.height));
@@ -90,6 +93,7 @@ public class ListsTab extends JPanel implements Runnable {
 			}
 			i++;
 		}
+		setButtonVisibility();
 		for (ListPanel lp : _lists) {
 			lp.updateList();
 		}
@@ -115,13 +119,21 @@ public class ListsTab extends JPanel implements Runnable {
 			extra = _hGap;
 		_listsPanel.setPreferredSize(new Dimension(size.width - _listWidth - extra, size.height));
 		_listsPanel.setSize(new Dimension(size.width - _listWidth - extra, size.height));
-		if (_lists.size() < _numListsDisplayed) {
+		if (_lists.size() < _numDisplayLists) {
 			size = _scroller.getPreferredSize();
 			_scroller.setPreferredSize(new Dimension(size.width - _listWidth - extra, size.height));
 			_scroller.setSize(new Dimension(size.width - _listWidth - extra, size.height));
 		}
+		setButtonVisibility();
 		validate();
-		System.out.println();
+	}
+	
+	public void setButtonVisibility() {
+		boolean buttonsVisible = false;
+		if (_lists.size() > _numDisplayLists)
+			buttonsVisible = true;
+		_leftButton.setVisible(buttonsVisible);
+		_rightButton.setVisible(buttonsVisible);
 	}
 	
 	@Override
@@ -204,11 +216,11 @@ public class ListsTab extends JPanel implements Runnable {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			JLabel button = (JLabel) e.getSource();
-			if (button.getText().equals("LEFT")) {
+			if (button == _leftButton) {
 				_scrollLeft = true;
 				_scrollRight = false;
 			}
-			else if (button.getText().equals("RIGHT")) {
+			else if (button == _rightButton) {
 				_scrollRight = true;
 				_scrollLeft = false;
 			}

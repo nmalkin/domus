@@ -32,7 +32,6 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private JLabel _probLabel;
 	private JLabel _addButton;
 	private JPanel _labelsPanel;
-	private boolean _labelsValidated;
 	private boolean _isOpen;
 	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 	private int _index;
@@ -57,7 +56,6 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_room = room;
 		_room.addToListItem(this);
 		_index = _room.getAverageResult();
-		_labelsValidated = false;
 		_isOpen = false;
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
 		_label.setFont(_unselectedFont);
@@ -82,16 +80,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	
 	/** Makes sure the list labels for this item are updated */
 	public void validateListLabels() {
-		_labelsValidated = true;
 		_labelsPanel.removeAll();
 		if (_room.getRoomLists() != null) {
 			for (RoomList rl : _room.getRoomLists()) {
 				addListLabel(rl);
 			}
-		}
-		for (ResultsListItem rli : _room.getListItems()) {
-			if (rli != this && !rli.hasValidatedLabels())
-				rli.validateListLabels();
 		}
 	}
 	
@@ -120,22 +113,6 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	/** Returns the room associated with this item */
 	public Room getRoom() {
 		return _room;
-	}
-	
-	/**
-	 * Returns whether or not the list labels for this item
-	 * have been updated.
-	 */
-	public boolean hasValidatedLabels() {
-		return _labelsValidated;
-	}
-	
-	/**
-	 * Sets whether or not the list labels for this item
-	 * have been updated.
-	 */
-	public void setValidatedLabels(boolean validated) {
-		_labelsValidated = validated;
 	}
 	
 	@Override
@@ -216,8 +193,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 					ListsTab.getInstance().updateLists();
 				}
 			}
-			_labelsValidated = false;
-			validateListLabels();
+			for (ResultsListItem rli : getRoom().getListItems())
+				rli.validateListLabels();
 			_prompt.setVisible(false);
 			_prompt.dispose();
 		}
