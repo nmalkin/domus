@@ -89,9 +89,9 @@ public class Canvas extends JLayeredPane {
 			}
 		}
 		
-		// remove this person from his/her old subgroup
 		SubGroup currentSubGroup = person.getSubGroup();
 		
+		// remove this person from his/her old subgroup
 		if(currentSubGroup != null) {
 			if(currentSubGroup == newSubGroup) { // ...unless he's staying in the same subgroup
 				currentSubGroup.updatePeoplePositions(); // move the person pack to his/her spot
@@ -120,12 +120,18 @@ public class Canvas extends JLayeredPane {
 			
 			// add the person to the subgroup
 			newSubGroup.addPerson(person);
+						
+			// display it
+			this.add(newSubGroup, Constants.SUBGROUP_LAYER);
 			
 			// place the subgroup into a house
 			placeSubGroup(newSubGroup);
 			
-			// display it
-			this.add(newSubGroup, Constants.SUBGROUP_LAYER);
+			/* when being placed, the subgroup could have been merged with a different one, 
+			 * and therefore deleted. to account for this possibility, 
+			 * let's make sure newSubGroup really is the subgroup that the person has been added to.
+			 */
+			newSubGroup = person.getSubGroup();
 		} else {
 			// add the person to the (already-existing) subgroup
 			newSubGroup.addPerson(person);
