@@ -44,7 +44,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		this.setLayout(new BorderLayout());
 		
 		JTextPane title = new JTextPane();
-		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
+		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
 		title.setText("LOCATION PREFERENCES");
 		
 		JPanel locations = new JPanel();
@@ -55,11 +55,11 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 			areaPanel.setLayout(new BoxLayout(areaPanel, BoxLayout.Y_AXIS));
 			areaPanel.setPreferredSize(new Dimension(200,260));
 			areaPanel.setMinimumSize(new Dimension(200,260));
-			areaPanel.setBorder(new LineBorder(Color.black));
+			areaPanel.setBorder(new LineBorder(Color.GRAY));
 			
 			JPanel areaNamePanel = new JPanel();
 			areaNamePanel.setLayout(new BoxLayout(areaNamePanel, BoxLayout.X_AXIS));
-			MatteBorder line = new MatteBorder(0, 0, 1, 0, Color.black);
+			MatteBorder line = new MatteBorder(0, 0, 1, 0, Color.GRAY);
 			
 			areaNamePanel.setBorder(line);
 			areaNamePanel.setPreferredSize(new Dimension(200,25));

@@ -2,10 +2,6 @@ import java.awt.Color;
 
 
 public class Constants {
-	// lottery numbers
-	/** the maximum lottery number one is allowed to enter */
-	protected static final int MAX_LOTTERY_NUMBER = 789;
-	
 	/** the value that the slider starts with */
 	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	
