@@ -152,6 +152,23 @@ public class SubGroup extends CanvasComponent implements Iterable<Person>, Compa
 		return height;
 	}
 	
+	/**
+	 * Returns the appropriate color for this subgroup based on its location.
+	 * 
+	 * If the subgroup is over the trash icon, it will return a transparent version of its color. 
+	 * 
+	 * @return
+	 */
+	private Color getColor() {
+		if(Canvas.overTrashIcon(this) || // if hovering over trash, draw this transparently 
+			_house != null && Canvas.overTrashIcon(_house)) // if my house is over the trash, also draw transparently
+		{ 
+			return Constants.SUBGROUP_COLOR_TRANSPARENT;
+		} else {
+			return Constants.SUBGROUP_COLOR;
+		}
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -169,15 +186,8 @@ public class SubGroup extends CanvasComponent implements Iterable<Person>, Compa
 		// draw box representing the subgroup
 		Graphics2D g2 = (Graphics2D) g;
 		
-		// choose color
-		if(Canvas.overTrashIcon(this)) { // if hovering over trash, draw this transparently
-			g2.setPaint(new Color(Constants.SUBGROUP_COLOR.getRed(), 
-					Constants.SUBGROUP_COLOR.getGreen(),
-					Constants.SUBGROUP_COLOR.getBlue(), 
-					Constants.TRASH_OVERLAY_ALPHA));
-		} else {
-			g2.setPaint(Constants.SUBGROUP_COLOR);
-		}
+		// select color based on location (over trash can or not?)
+		g2.setPaint(getColor());
 		
 		g2.fill(new RoundRectangle2D.Double(
 				Constants.INSET, Constants.INSET, 

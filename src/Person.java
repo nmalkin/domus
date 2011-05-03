@@ -70,13 +70,32 @@ public class Person extends CanvasComponent {
 		return _gender.getImageDimension().height;
 	}
 	
+	/**
+	 * Returns the appropriate alpha value for this person based on its location.
+	 * 
+	 * If the person is over the trash can, it will return an alpha value corresponding to transparency.
+	 * 
+	 * @return
+	 */
+	private float getAlphaValue() {
+		if(Canvas.overTrashIcon(this) || // if hovering over trash, draw this transparently
+			_subgroup != null && Canvas.overTrashIcon(_subgroup) || // if my subgroup is over the trash, also draw transparently
+			_subgroup != null && _subgroup.getHouse() != null && Canvas.overTrashIcon(_subgroup.getHouse()))  // same for house
+		{ 
+			return Constants.TRASH_OVERLAY_ALPHA_FRACTION;
+		} else {
+			return 1.0f;
+		}
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
 		// draw image
-		if(Canvas.overTrashIcon(this)) {
-			float[] scales = { 1f, 1f, 1f, Constants.TRASH_OVERLAY_ALPHA_FRACTION };
+		float alpha = getAlphaValue();
+		if(alpha < 1) {
+			float[] scales = { 1f, 1f, 1f, alpha };
 			float[] offsets = new float[4];
 			java.awt.image.RescaleOp rop = new java.awt.image.RescaleOp(scales, offsets, null);
 		

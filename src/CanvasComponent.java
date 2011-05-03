@@ -12,7 +12,7 @@ import java.awt.Rectangle;
  * @author nmalkin
  *
  */
-public class CanvasComponent extends DraggablePositionableComponent {
+public abstract class CanvasComponent extends DraggablePositionableComponent {
 	/**
 	 * Given how much you want this component to move,
 	 * returns how much you can *actually* move this component

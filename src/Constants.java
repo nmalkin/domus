@@ -42,15 +42,25 @@ public class Constants {
 	protected static final int TRASH_OVERLAY_ALPHA = (int) (TRASH_OVERLAY_ALPHA_FRACTION * 255);
 	
 	// House
-	protected static final Color HOUSE_COLOR = Color.BLUE;
 	protected static final int HOUSE_PADDING = 45; // pixels
+	protected static final Color HOUSE_COLOR = Color.BLUE;
+	protected static final Color HOUSE_COLOR_TRANSPARENT = new Color(
+			HOUSE_COLOR.getRed(), HOUSE_COLOR.getGreen(), HOUSE_COLOR.getBlue(), 
+			TRASH_OVERLAY_ALPHA);
 	
-	protected static final Color SELECTED_HOUSE_BORDER_COLOR = Color.PINK;
 	protected static final float SELECTED_HOUSE_BORDER_WIDTH = INSET + 0f;
+	protected static final Color SELECTED_HOUSE_BORDER_COLOR = Color.PINK;
+	protected static final Color SELECTED_HOUSE_BORDER_COLOR_TRANSPARENT = new Color(
+			SELECTED_HOUSE_BORDER_COLOR.getRed(), SELECTED_HOUSE_BORDER_COLOR.getGreen(), SELECTED_HOUSE_BORDER_COLOR.getBlue(), 
+			TRASH_OVERLAY_ALPHA);
+	
 	
 	// SubGroup
-	protected static final Color SUBGROUP_COLOR = Color.GREEN;
 	protected static final int SUBGROUP_PADDING = 25; // pixels
+	protected static final Color SUBGROUP_COLOR = Color.GREEN;
+	protected static final Color SUBGROUP_COLOR_TRANSPARENT = new Color(
+			SUBGROUP_COLOR.getRed(), SUBGROUP_COLOR.getGreen(), SUBGROUP_COLOR.getBlue(), 
+			TRASH_OVERLAY_ALPHA);
 	
 	// Person images & dimensions
 	protected static final String MAN_FILE   = "img/man.png";
