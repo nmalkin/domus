@@ -1,3 +1,4 @@
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,11 +15,25 @@ public class Room implements Comparable<Room> {
 	/** The average lottery number, calculated depending on defined years of interest. */
 	private int _averageResult;
 	
+	/** 
+	 * The RoomLists that this room is a part of.
+	 * Used for displaying list labels on results page.
+	 */
+	private List<RoomList> _roomLists;
+	
+	/**
+	 * The ResultsListItems that this room is a part of.
+	 * Used for updating list labels on results tab.
+	 */
+	private List<ResultsListItem> _listItems;
+	
 	public Room(Dorm dorm, String number, List<LotteryResult> results, int averageResult) {
 		_dorm = dorm;
 		_number = number;
 		_results = results;
 		_averageResult = averageResult;
+		_roomLists = new LinkedList<RoomList>();
+		_listItems = new LinkedList<ResultsListItem>();
 	}
 	
 	/** Returns the Dorm to which this Room belongs */
@@ -53,6 +68,8 @@ public class Room implements Comparable<Room> {
 		_dorm = dorm;
 		_number = number;
 		_results = new LinkedList<LotteryResult>();
+		_roomLists = new LinkedList<RoomList>();
+		_listItems = new LinkedList<ResultsListItem>();
 	}
 	
 	public String toString() {
@@ -67,6 +84,34 @@ public class Room implements Comparable<Room> {
 	public void addResult(LotteryResult result) {
 		_results.add(result);
 		updateAverage();
+	}
+	
+	public Collection<RoomList> getRoomLists() {
+		return _roomLists;
+	}
+	
+	public void addToRoomList(RoomList list) {
+		if (!_roomLists.contains(list))
+			_roomLists.add(list);
+	}
+	
+	public void removeFromRoomList(RoomList list) {
+		if (_roomLists.contains(list))
+			_roomLists.remove(list);
+	}
+	
+	public Collection<ResultsListItem> getListItems() {
+		return _listItems;
+	}
+	
+	public void addToListItem(ResultsListItem item) {
+		if (!_listItems.contains(item))
+			_listItems.add(item);
+	}
+	
+	public void removeFromListItem(ResultsListItem item) {
+		if (_listItems.contains(item))
+			_listItems.remove(item);
 	}
 	
 	public void updateAverage() {

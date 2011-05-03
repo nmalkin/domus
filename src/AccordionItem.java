@@ -3,7 +3,7 @@ public interface AccordionItem extends Comparable<AccordionItem> {
 	/**
 	 * Returns the index of the AccordionItem in its parent list.
 	 */
-	public int getIndex();
+	public int getComparisonValue();
 	
 	/**
 	 * Returns the state of the AccordionItem.
@@ -13,7 +13,7 @@ public interface AccordionItem extends Comparable<AccordionItem> {
 	/**
 	 * Sets the index of the AccordionItem in its parent list.
 	 */
-	public void setIndex(int index);
+	public void setComparisonValue(int index);
 	
 	/**
 	 * Sets the state of the AccordionItem.
@@ -24,5 +24,10 @@ public interface AccordionItem extends Comparable<AccordionItem> {
 	 * Adds an AccordionItem to this AccordionItem's list.
 	 */
 	public void addItem(AccordionItem item);
+	
+	/**
+	 * Remves an AccordionItem from this AccordionItem's list.
+	 */
+	public void removeItem(AccordionItem item);
 
 }

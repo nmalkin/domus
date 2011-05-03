@@ -1,16 +1,17 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -26,6 +27,7 @@ public class ListPanel extends JPanel {
 	private JList _panel;
 	private JScrollPane _scroller;
 	private static Font _font = new Font("Verdana", Font.PLAIN, 12);
+	private static Insets _insets = new Insets(0, 5, 0, 5);
 	
 	private final int _listWidth = 350;
 	private final int _listHeight = 500;
@@ -43,13 +45,24 @@ public class ListPanel extends JPanel {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 		panel.setBounds(0, 0, _listWidth, _itemHeight);
 		JLabel label = new JLabel(_list.getName());
-//		label.setBounds(0, 0, _listWidth, _itemHeight);
 		label.setFont(new Font(_font.getFontName(), Font.BOLD, _font.getSize()));
+		if (_list.getColor() == null) {
+			_list.setColor(null);
+		}
+		BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g = image.createGraphics();
+		g.setColor(_list.getColor());
+		g.fillRect(0, 0, 10, 10);
+		ImageIcon icon = new ImageIcon(image);
+		label.setIcon(icon);
+		label.setHorizontalTextPosition(JLabel.LEADING);
+		label.setIconTextGap(10);
 		panel.add(label);
 		JLabel removeLabel = new JLabel(_removeIcon);
 		removeLabel.addMouseListener(new RemoveListListener());;
 		panel.add(Box.createHorizontalGlue());
 		panel.add(removeLabel);
+		panel.setBorder(new EmptyBorder(new Insets(_insets.top, _insets.left + 1, _insets.bottom, _insets.right + 1)));
 		this.add(panel);
 		_panel = new JList();
 		_panel.setPreferredSize(new Dimension(_listWidth, 0));
@@ -78,8 +91,7 @@ public class ListPanel extends JPanel {
 			JLabel removeLabel = new JLabel(_removeIcon);
 			removeLabel.addMouseListener(new RemoveListener());
 			p.add(removeLabel);
-			Insets insets = new Insets(0, 5, 0, 5);
-			p.setBorder(new EmptyBorder(insets));
+			p.setBorder(new EmptyBorder(_insets));
 			_map.put(removeLabel, r);
 			Dimension size = _panel.getPreferredSize();
 			_panel.setPreferredSize(new Dimension(size.width, size.height + _itemHeight));
@@ -97,6 +109,13 @@ public class ListPanel extends JPanel {
 	/** Remove a room from list */
 	public void removeRoom(Room r) {
 		_list.remove(r);
+		r.removeFromRoomList(_list);
+		ResultsListItem last = null;
+		for (ResultsListItem rli : r.getListItems()) {
+			rli.setValidatedLabels(false);
+			last = rli;
+		}
+		last.validateListLabels();
 		updateList();
 	}
 	
@@ -116,10 +135,15 @@ public class ListPanel extends JPanel {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			Room[] rooms = _list.toArray(new Room[0]);
+			for (int i = 0; i < rooms.length; ++i) {
+				removeRoom(rooms[i]);
+			}
 			State.getInstance().removeRoomList(_list);
 			_list = null;
 			ListsTab.getInstance().removeList(ListPanel.this);
 			ListsTab.getInstance().updateLists();
 		}
+		
 	}
 }

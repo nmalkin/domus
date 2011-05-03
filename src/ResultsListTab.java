@@ -63,8 +63,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		_tab.setBounds(0, 0, _listWidth, _tabHeight);
 		
 		//Set up label on tag (with expansion icon)
-		_label = new JLabel();
-		_label.setText(_dorm.getName());
+		_label = new JLabel(_dorm.getName());
 		_label.setFont(_font);
 		_label.setIcon(_closedIcon);
 		_tab.addMouseListener(new ExpandListener());
@@ -99,14 +98,18 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		i.bottom = 0;
 		return i;
 	}
+	
+	public Dorm getDorm() {
+		return _dorm;
+	}
 
 	@Override
-	public int getIndex() {
+	public int getComparisonValue() {
 		return _index;
 	}
 	
 	@Override
-	public void setIndex(int index) {
+	public void setComparisonValue(int index) {
 		_index = index;
 	}
 
@@ -128,10 +131,24 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		_itemsPanel.setPreferredSize(size);
 		_itemsPanel.setSize(size);
 	}
+	
+	@Override
+	public void removeItem(AccordionItem item) {
+		_itemsPanel.remove((JComponent) item);
+		Dimension size = _itemsPanel.getPreferredSize();
+		size = new Dimension(size.width, size.height - ((JComponent) item).getHeight());
+		_itemsPanel.setPreferredSize(size);
+		_itemsPanel.setSize(size);		
+	}
 
 	@Override
 	public int compareTo(AccordionItem o) {
-		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
+		return _index < o.getComparisonValue() ? -1 : (_index > o.getComparisonValue() ? 1 : 0);
+	}
+	
+	@Override
+	public String toString() {
+		return _dorm.getName();
 	}
 	
 	private class ExpandListener extends MouseAdapter {
@@ -175,6 +192,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 						for (Component c : _itemsPanel.getComponents()) {
 							ResultsListItem rli = (ResultsListItem) c;
 							rl.add(rli.getRoom());
+							rli.getRoom().addToRoomList(rl);
 						}
 						ListsTab.getInstance().updateLists();
 						exists = true;
@@ -187,6 +205,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 					for (Component c : _itemsPanel.getComponents()) {
 						ResultsListItem rli = (ResultsListItem) c;
 						list.add(rli.getRoom());
+						rli.getRoom().addToRoomList(list);
 					}
 					ListsTab.getInstance().updateLists();
 				}

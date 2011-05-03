@@ -1,11 +1,13 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,7 +29,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private AccordionList<ResultsListTab, ResultsListItem> _parentList;
 	private Room _room;
 	private JLabel _label;
+	private JLabel _probLabel;
 	private JLabel _addButton;
+	private JPanel _labelsPanel;
+	private boolean _labelsValidated;
+	private boolean _isOpen;
 	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 	private int _index;
 	private int _numLists;
@@ -49,16 +55,60 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		this.setSize(size);
 		_numLists = 0;
 		_room = room;
-		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber() + " [" + _room.getProbability() + "%]");
+		_room.addToListItem(this);
+		_index = _room.getAverageResult();
+		_labelsValidated = false;
+		_isOpen = false;
+		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
 		_label.setFont(_unselectedFont);
 		this.add(_label);
+		_labelsPanel = new JPanel();
+		_labelsPanel.setLayout(new BoxLayout(_labelsPanel, BoxLayout.LINE_AXIS));
+		_labelsPanel.setBackground(new Color(255, 255, 255, 0));
+		this.add(Box.createRigidArea(new Dimension(5, 0)));
+		this.add(_labelsPanel);
 		this.add(Box.createHorizontalGlue());
+		_probLabel = new JLabel("[" + _room.getProbability() + "%]");
+		_probLabel.setFont(_unselectedFont);
+		this.add(_probLabel);
 		_addButton = new JLabel(_addToListIcon);
 		_addButton.addMouseListener(new AddListener(this));
 		this.add(_addButton);
 		this.addMouseListener(new SelectedListener());
 		_unselectedBackgroundColor = this.getBackground();
 		_selectedBackgroundColor = _unselectedBackgroundColor.darker();
+		validateListLabels();
+	}
+	
+	/** Makes sure the list labels for this item are updated */
+	public void validateListLabels() {
+		_labelsValidated = true;
+		_labelsPanel.removeAll();
+		if (_room.getRoomLists() != null) {
+			for (RoomList rl : _room.getRoomLists()) {
+				addListLabel(rl);
+			}
+		}
+		for (ResultsListItem rli : _room.getListItems()) {
+			if (rli != this && !rli.hasValidatedLabels())
+				rli.validateListLabels();
+		}
+	}
+	
+	/** Adds a list label for this item */
+	private void addListLabel(RoomList list) {
+		if (list.getColor() == null) {
+			list.setColor(null);
+		}
+		BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g = image.createGraphics();
+		g.setColor(list.getColor());
+		g.fillRect(0, 0, 10, 10);
+		ImageIcon icon = new ImageIcon(image);
+		JLabel label = new JLabel(icon);
+		_labelsPanel.add(label);
+		_labelsPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+		validate();
 	}
 	
 	/** Sets the insets for this item to match those of the tab */
@@ -72,20 +122,34 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		return _room;
 	}
 	
+	/**
+	 * Returns whether or not the list labels for this item
+	 * have been updated.
+	 */
+	public boolean hasValidatedLabels() {
+		return _labelsValidated;
+	}
+	
+	/**
+	 * Sets whether or not the list labels for this item
+	 * have been updated.
+	 */
+	public void setValidatedLabels(boolean validated) {
+		_labelsValidated = validated;
+	}
+	
 	@Override
-	public int getIndex() {
+	public int getComparisonValue() {
 		return _index;
 	}
 
 	@Override
 	public boolean isOpen() {
-		return false;
+		return _isOpen;
 	}
 
 	@Override
-	public void setIndex(int index) {
-		_index = index;
-	}
+	public void setComparisonValue(int index) { }
 	
 	/** 
 	 * ResultsListItems cannot be open, so instead this
@@ -96,11 +160,15 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	public void setOpen(boolean open) {
 		if (open) {
 			_label.setFont(_selectedFont);
+			_probLabel.setFont(_selectedFont);
 			this.setBackground(_selectedBackgroundColor);
+			_isOpen = true;
 		}
 		else {
 			_label.setFont(_unselectedFont);
+			_probLabel.setFont(_unselectedFont);
 			this.setBackground(_unselectedBackgroundColor);
+			_isOpen = false;
 		}
 	}
 	
@@ -108,8 +176,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	public void addItem(AccordionItem item) { }
 	
 	@Override
+	public void removeItem(AccordionItem item) { }
+	
+	@Override
 	public int compareTo(AccordionItem o) {
-		return _index < o.getIndex() ? -1 : (_index > o.getIndex() ? 1 : 0);
+		return _index < o.getComparisonValue() ? -1 : (_index > o.getComparisonValue() ? 1 : 0);
 	}
 	
 	/** Handles adding this item to a specific user created list */
@@ -130,6 +201,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 				for (RoomList rl : State.getInstance().getRoomLists()) {
 					if (rl.getName().equals(selected)) {
 						rl.add(_room);
+						_room.addToRoomList(rl);
 						ListsTab.getInstance().updateLists();
 						exists = true;
 						break;
@@ -139,10 +211,13 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 					RoomList list = new RoomList(selected);
 					State.getInstance().addRoomList(list);
 					list.add(_room);
+					_room.addToRoomList(list);
 					++_numLists;
 					ListsTab.getInstance().updateLists();
 				}
 			}
+			_labelsValidated = false;
+			validateListLabels();
 			_prompt.setVisible(false);
 			_prompt.dispose();
 		}
@@ -150,12 +225,15 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	}
 	
 	/** Bolds the item when clicked */
-	public class SelectedListener extends MouseAdapter {
+	private class SelectedListener extends MouseAdapter {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			setOpen(true);
-			_parentList.setSelectedItem(ResultsListItem.this);
+			setOpen(!isOpen());
+			if (isOpen())
+				_parentList.setSelectedItem(ResultsListItem.this);
+			else
+				_parentList.setSelectedItem(null);
 		}
 	}
 	
