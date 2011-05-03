@@ -57,12 +57,20 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		tab.setVisible(true);
 	}
 	
+	/** Remove a tab from the list */
+	public void removeTab(K tab) {
+		_lists.removeAll(tab);
+		this.remove(tab);
+		tab.setVisible(false);
+	}
+	
 	/** Add an item to a tab in the list */
 	public void addListItem(K tab, V item) {
 		_lists.put(tab, item);
 		tab.addItem(item);
 	}
 	
+	/** Remove an item from the list */
 	public void removeListItem(K tab, V item) {
 		_lists.remove(tab, item);
 		tab.removeItem(item);
@@ -79,10 +87,12 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		_selectedItem = item;
 	}
 	
+	/** Return a set of the tabs in this list */
 	public Collection<K> getTabs() {
 		return _lists.keySet();
 	}
 	
+	/** Return a collection of the items under specified tab */
 	public Collection<V> getItemsFromTab(K tab) {
 		return _lists.get(tab);
 	}

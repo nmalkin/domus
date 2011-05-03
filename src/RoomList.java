@@ -54,8 +54,15 @@ public class RoomList extends AbstractCollection<Room> {
 	@Override
 	public boolean add(Room e) {
 		if (!_rooms.contains(e)) {
-			e.addToRoomList(this);
 			return _rooms.add(e);
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean remove(Object e) {
+		if (_rooms.contains(e)) {
+			return _rooms.remove(e);
 		}
 		return false;
 	}

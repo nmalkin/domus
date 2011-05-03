@@ -54,15 +54,19 @@ public class ResultsPanel extends JPanel {
 				list = AccordionList.create();
 			}
 			Collection<ResultsListTab> tabs = list.getTabs();
+			for (ResultsListTab rlt : tabs) {
+				if (!_dormAverages.containsKey(rlt.getDorm()))
+					list.removeTab(rlt);
+			}
 			for (Dorm d : dormMap.get(sg)) {
 				ResultsListTab tab = null;
 				if ((tab = containsDormTab(tabs, d)) != null) {
+					tab.setComparisonValue((int) _dormAverages.get(d).getAverage());
 					intersectResultsWithTab(sg, d, list, tab);
-					System.out.println("dorm tab exists already");
 				}
 				else {
-					System.out.println("new tab");
 					tab = new ResultsListTab(d, sg, list);
+					tab.setComparisonValue((int) _dormAverages.get(d).getAverage());
 					list.addTab(tab);
 					for (Room r : _results.get(sg)) {
 						if (r.getDorm() == d) {
@@ -90,7 +94,6 @@ public class ResultsPanel extends JPanel {
 		Collection<Room> roomResults = _results.get(sg);
 		SortedSet<ResultsListItem> tabItems = (SortedSet<ResultsListItem>) list.getItemsFromTab(tab);
 		List<Room> tabRooms = new LinkedList<Room>();
-		System.out.println("intersect " + "rR: " + roomResults.size() + " tR: " + tabRooms.size());
 		if (tabItems != null) {
 			for (ResultsListItem rli : tabItems) {
 				tabRooms.add(rli.getRoom());
@@ -98,20 +101,28 @@ public class ResultsPanel extends JPanel {
 		}
 		else {
 			for (Room r : roomResults) {
-				addListItem(list, tab, r);
+				if (r.getDorm() == tab.getDorm())
+					addListItem(list, tab, r);
 			}
 			return;
 		}
 		for (Room r : roomResults) {
-			if (!tabRooms.contains(r)) {
-				addListItem(list, tab, r);
+			if (r.getDorm() == tab.getDorm()) {
+				if (!tabRooms.contains(r)) {
+					addListItem(list, tab, r);
+				}
 			}
 		}
 		for (Room r : tabRooms) {
-			if (!tabRooms.contains(r)) {
-				ResultsListItem[] tabs = tabItems.toArray(new ResultsListItem[0]);
-				list.removeListItem(tab, tabs[tabRooms.indexOf(r)]);
+			if (r.getDorm() == tab.getDorm()) {
+				if (!tabRooms.contains(r)) {
+					ResultsListItem[] tabs = tabItems.toArray(new ResultsListItem[0]);
+					list.removeListItem(tab, tabs[tabRooms.indexOf(r)]);
+				}	
 			}
+		}
+		if (list.getItemsFromTab(tab).size() == 0) {
+			list.removeTab(tab);
 		}
 	}
 	

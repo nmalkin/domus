@@ -1,9 +1,11 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +46,17 @@ public class ListPanel extends JPanel {
 		panel.setBounds(0, 0, _listWidth, _itemHeight);
 		JLabel label = new JLabel(_list.getName());
 		label.setFont(new Font(_font.getFontName(), Font.BOLD, _font.getSize()));
+		if (_list.getColor() == null) {
+			_list.setColor(null);
+		}
+		BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g = image.createGraphics();
+		g.setColor(_list.getColor());
+		g.fillRect(0, 0, 10, 10);
+		ImageIcon icon = new ImageIcon(image);
+		label.setIcon(icon);
+		label.setHorizontalTextPosition(JLabel.LEADING);
+		label.setIconTextGap(10);
 		panel.add(label);
 		JLabel removeLabel = new JLabel(_removeIcon);
 		removeLabel.addMouseListener(new RemoveListListener());;
@@ -96,6 +109,13 @@ public class ListPanel extends JPanel {
 	/** Remove a room from list */
 	public void removeRoom(Room r) {
 		_list.remove(r);
+		r.removeFromRoomList(_list);
+		ResultsListItem last = null;
+		for (ResultsListItem rli : r.getListItems()) {
+			rli.setValidatedLabels(false);
+			last = rli;
+		}
+		last.validateListLabels();
 		updateList();
 	}
 	
@@ -115,10 +135,15 @@ public class ListPanel extends JPanel {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			Room[] rooms = _list.toArray(new Room[0]);
+			for (int i = 0; i < rooms.length; ++i) {
+				removeRoom(rooms[i]);
+			}
 			State.getInstance().removeRoomList(_list);
 			_list = null;
 			ListsTab.getInstance().removeList(ListPanel.this);
 			ListsTab.getInstance().updateLists();
 		}
+		
 	}
 }
