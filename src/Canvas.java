@@ -132,6 +132,16 @@ public class Canvas extends JLayeredPane {
 			 * let's make sure newSubGroup really is the subgroup that the person has been added to.
 			 */
 			newSubGroup = person.getSubGroup();
+			
+			// if an entirely new house was created for this person,
+			// get the preferences from the old house and copy them to the new house
+			if(		currentSubGroup != null &&
+					currentSubGroup.getHouse() != null &&
+					newSubGroup.getOccupancy() == 1 &&
+					newSubGroup.getHouse().numberOfSubGroups() == 1)
+			{
+				newSubGroup.getHouse().setLocationPreference(currentSubGroup.getHouse().getLocationPreference());
+			}
 		} else {
 			// add the person to the (already-existing) subgroup
 			newSubGroup.addPerson(person);
