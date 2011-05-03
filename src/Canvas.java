@@ -1,11 +1,17 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Iterator;
 
 import javax.swing.*;
 
 public class Canvas extends JLayeredPane {
+	private Image _trashImage;
+	
 	public Canvas() {
 		this.setLayout(null);
 		
@@ -20,32 +26,31 @@ public class Canvas extends JLayeredPane {
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
 		
+		// load trash icon
+		try {
+			_trashImage = javax.imageio.ImageIO.read(new java.io.File(Constants.TRASH_FILE));
+		} catch(java.io.IOException e) {
+			//TODO: yell, or break silently?
+		}
+		
 		// sample data; TODO: remove
 //		House h = new House();
 //		SubGroup s = new SubGroup();
 //		Person p1 = new Person("Sumner", Gender.MALE);
 //		Person p2 = new Person("Miya", Gender.FEMALE);
-		
+//		
 //		State.getInstance().getGroup().add(h);
 //		h.addSubGroup(s);
 //		s.addPerson(p1);
 //		s.addPerson(p2);
-		
+//		
 //		h.setPosition(200,150);
 //		h.updateSubGroupPositions();
-		
+//		
 //		this.add(p1, Constants.PERSON_LAYER);
 //		this.add(p2, Constants.PERSON_LAYER);
 //		this.add(s, Constants.SUBGROUP_LAYER);
 //		this.add(h, Constants.HOUSE_LAYER);
-		
-		/*
-		 * NOTE:
-		 * For some reason I have yet to understand,
-		 * the order in which you add components to the JPanel matters.
-		 * If you don't add them in the order [Person, SubGroup, House],
-		 * then the lower-level components won't be individually draggable.
-		 */
 	}
 	
 	private boolean intersecting(DraggablePositionableComponent a, DraggablePositionableComponent b) {
@@ -60,13 +65,15 @@ public class Canvas extends JLayeredPane {
 	 * This entails checking what subgroup the person was dropped inside:
 	 * if it's the subgroup it was already in, nothing's changed;
 	 * if it's a new subgroup, it is added there and removed from the old one.
-	 * 		TODO: strange behavior possible with overlapping subgroups
 	 * 
 	 * @param person
-	 * @param x
-	 * @param y
 	 */
 	public void dropPerson(Person person) {
+		if(tryRemove(person)) { // if the person is over the trash, remove them
+			repaint();
+			return;
+		}
+		
 		SubGroup newSubGroup = null;
 		
 		// if this person can be put in any existing subgroup, add him to it
@@ -128,18 +135,16 @@ public class Canvas extends JLayeredPane {
 	}
 	
 	/**
-	 * Performs a drop of the given person at the given location.
-	 * 
-	 * This entails checking what subgroup the person was dropped inside:
-	 * if it's the subgroup it was already in, nothing's changed;
-	 * if it's a new subgroup, it is added there and removed from the old one.
-	 * 		TODO: strange behavior possible with overlapping subgroups
+	 * Performs a drop of the given subgroup at the given location.
 	 * 
 	 * @param subgroup
-	 * @param x
-	 * @param y
 	 */
 	public void dropSubGroup(SubGroup subgroup) {
+		if(tryRemove(subgroup)) { // if the subgroup is over the trash, remove them
+			repaint();
+			return;
+		}
+		
 		House newHouse = null;
 		
 		for(House h : State.getInstance().getGroup()) {
@@ -192,10 +197,7 @@ public class Canvas extends JLayeredPane {
 			currentHouse.removeSubGroup(subgroup);
 			currentHouse.updateSubGroupPositions();
 			
-			if(currentHouse.isEmpty()) {
-				this.remove(currentHouse); // remove from view
-				State.getInstance().getGroup().remove(currentHouse); // remove from group
-			}
+			removeIfEmpty(currentHouse);
 		}
 		
 		newHouse.addSubGroup(subgroup);
@@ -204,6 +206,57 @@ public class Canvas extends JLayeredPane {
 		State.getInstance().setSelectedHouse(newHouse);
 		
 		this.repaint();
+	}
+	
+	/**
+	 * Performs a drop of the given house at the given location
+	 * by checking if it is intersecting with any houses.
+	 * 
+	 * @param house
+	 */
+	public void dropHouse(House house) {
+		if(tryRemove(house)) { // if the house is over the trash, remove them
+			repaint();
+			return;
+		}
+		
+		for(House h : State.getInstance().getGroup()) {
+			if(house != h &&
+			   intersecting(house, h)) 
+			{ // the houses are intersecting
+				// merge them!
+				// get all the subgroups in the current house
+					//see TODO in mergeSubGroups for why we do this
+				java.util.Collection<SubGroup> tmp = new java.util.LinkedList<SubGroup>();
+				for(SubGroup s : house) {
+					tmp.add(s);
+				}
+				
+				// add them to the new house
+				for(SubGroup s : tmp) {
+					h.addSubGroup(s); // this also removes them from the current house
+				}
+				
+				// add the old house's location preferences the new house
+				// (the new house's location preferences are the union of the two old ones)
+				LocationPreference newHousePreference = h.getLocationPreference();
+				for(Dorm d : house.getLocationPreference()) {
+					newHousePreference.add(d);
+				}
+				
+				// remove the dropped house
+				removeIfEmpty(house);
+				
+				// update the new house
+				h.updateSubGroupPositions();
+				
+				State.getInstance().setSelectedHouse(h);
+				
+				this.repaint();
+				
+				return;
+			}
+		}
 	}
 	
 	/**
@@ -239,20 +292,34 @@ public class Canvas extends JLayeredPane {
 	 * Removes the given SubGroup from its House, and from view, if it is empty.
 	 * If the container House becomes empty, it is removed as well.
 	 * 
-	 * @param currentSubGroup
+	 * @param subgroup
 	 */
-	private void removeIfEmpty(SubGroup currentSubGroup) {
-		if(currentSubGroup.isEmpty()) {
-			this.remove(currentSubGroup); // remove from view
+	private void removeIfEmpty(SubGroup subgroup) {
+		if(subgroup.isEmpty()) {
+			this.remove(subgroup); // remove from view
 			
-			House currentHouse = currentSubGroup.getHouse();
+			House currentHouse = subgroup.getHouse();
 			if(currentHouse != null) {
-				currentHouse.removeSubGroup(currentSubGroup); // remove from house
+				currentHouse.removeSubGroup(subgroup); // remove from house
 				
-				if(currentHouse.isEmpty()) {
-					this.remove(currentHouse); // remove from view
-					State.getInstance().getGroup().remove(currentHouse); // remove from group
-				}	
+				removeIfEmpty(currentHouse);
+			}
+		}
+	}
+	
+	/**
+	 * Removes the given House from view and from State if it is empty.
+	 * 
+	 * @param house
+	 */
+	private void removeIfEmpty(House house) {
+		if(house.isEmpty()) {
+			this.remove(house); // remove from view
+			State.getInstance().getGroup().remove(house); // remove from group
+			
+			// make sure the house is not listed as selected anymore
+			if(State.getInstance().getSelectedHouse() == house) {
+				State.getInstance().setSelectedHouse(null);
 			}
 		}
 	}
@@ -270,25 +337,142 @@ public class Canvas extends JLayeredPane {
 			y <= c.getPosition().y + c.getHeight();
 	}
 	
+	/**
+	 * Removes a person from the program if he/she is over the trash can.
+	 * 
+	 * @param p the person to (possibly) be removed
+	 * @return true if the person was removed, false if the person was not removed
+	 */
+	private boolean tryRemove(Person p) {
+		if(GraphicsSupport.intersectionAreaFraction(p.getRectangle(), getTrashRectangle()) 
+				> Constants.INTERSECTION_FRACTION) 
+		{
+			SubGroup currentParent = p.getSubGroup();
+			
+			// remove from view
+			this.remove(p);
+			
+			// remove from subgroup
+			if(currentParent != null) {
+				currentParent.removePerson(p);
+				currentParent.updatePeoplePositions();
+				removeIfEmpty(currentParent);
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Removes a subgroup from the program if it is over the trash can.
+	 * 
+	 * @param s the subgroup to (possibly) be removed
+	 * @return true if the subgroup was removed, false if the subgroup was not removed
+	 */
+	private boolean tryRemove(SubGroup s) {
+		if(GraphicsSupport.intersectionAreaFraction(s.getRectangle(), getTrashRectangle()) 
+				> Constants.INTERSECTION_FRACTION) 
+		{
+			// remove the people from this subgroup
+			Iterator<Person> it = s.iterator();
+			while(it.hasNext()) {
+				Person currentPerson = it.next();
+				currentPerson.setSubGroup(null);
+				this.remove(currentPerson);
+				it.remove();
+			}
+			
+			// remove from view
+			this.remove(s);
+			
+			// remove from house
+			removeIfEmpty(s);
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Removes a house from the program if it is over the trash can.
+	 * 
+	 * @param h the house to (possibly) be removed
+	 * @return true if the house was removed, false if the house was not removed
+	 */
+	private boolean tryRemove(House h) {
+		if(GraphicsSupport.intersectionAreaFraction(h.getRectangle(), getTrashRectangle()) 
+				> Constants.INTERSECTION_FRACTION) 
+		{
+			// remove the subgroups from this house
+			Iterator<SubGroup> it = h.iterator();
+			while(it.hasNext()) {
+				SubGroup currentSubGroup = it.next();
+				
+				// remove the people from this subgroup
+				Iterator<Person> it2 = currentSubGroup.iterator();
+				while(it2.hasNext()) {
+					Person currentPerson = it2.next();
+					currentPerson.setSubGroup(null);
+					this.remove(currentPerson);
+					it2.remove();
+				}
+				
+				currentSubGroup.setHouse(null);
+				this.remove(currentSubGroup);
+				it.remove();
+			}
+			
+			removeIfEmpty(h);
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Returns a Rectangle mask for the trash image.
+	 * 
+	 * @return
+	 */
+	private Rectangle getTrashRectangle() {
+		return new Rectangle(
+				Constants.TRASH_X_POSITION, 
+				Constants.TRASH_Y_POSITION, 
+				Constants.TRASH_WIDTH, 
+				Constants.TRASH_HEIGHT);
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		// separator
-		g.drawLine(Constants.SEPARATOR_X_POSITION, 0, Constants.SEPARATOR_X_POSITION, this.getHeight());
+		// sidebar
+		g.setColor(Color.BLACK);
+		g.drawLine(Constants.SIDEBAR_WIDTH, 0, Constants.SIDEBAR_WIDTH, this.getHeight());
+		g.setColor(Constants.SIDEBAR_COLOR);
+		g.fillRect(0, 0, Constants.SIDEBAR_WIDTH, this.getHeight());
+		
 		
 		// new guy
 		String text = "New Guy";
 		int textWidth = g.getFontMetrics().stringWidth(text);
-		int textPosition = (0 + Constants.SEPARATOR_X_POSITION) / 2 - textWidth / 2; 
+		int textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2; 
 		g.drawString(text, textPosition, Constants.NEW_MALE_Y_POSITION - 20);
 		g.drawImage(Gender.MALE.getImage(), Constants.NEW_MALE_X_POSITION, Constants.NEW_MALE_Y_POSITION, null);
 		
+		// new girl
 		text = "New Girl";
 		textWidth = g.getFontMetrics().stringWidth(text);
-		textPosition = (0 + Constants.SEPARATOR_X_POSITION) / 2 - textWidth / 2;
+		textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2;
 		g.drawString(text, textPosition, Constants.NEW_FEMALE_Y_POSITION - 20);
 		g.drawImage(Gender.FEMALE.getImage(), Constants.NEW_FEMALE_X_POSITION, Constants.NEW_FEMALE_Y_POSITION, null);
+		
+		// trash can
+		g.drawImage(_trashImage, Constants.TRASH_X_POSITION, Constants.TRASH_Y_POSITION, null);
 	}
 	
 	private class AddPersonListener extends MouseAdapter {

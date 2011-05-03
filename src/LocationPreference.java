@@ -1,7 +1,7 @@
-import java.util.AbstractCollection;
-import java.util.Collection;
+import java.util.Set;
+import java.util.AbstractSet;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * Groups can express their preferences for locations by listing which
@@ -10,15 +10,11 @@ import java.util.LinkedList;
  * (that are acceptable to a group).
  *
  */
-public class LocationPreference extends AbstractCollection<Dorm> {
-	private Collection<Dorm> _dorms;
+public class LocationPreference extends AbstractSet<Dorm> {
+	private Set<Dorm> _dorms;
 	
 	public LocationPreference() {
-		_dorms = new LinkedList<Dorm>();
-	}
-	
-	public LocationPreference(Collection<Dorm> dorms) {
-		_dorms = dorms;
+		_dorms = new HashSet<Dorm>();
 	}
 	
 	@Override
