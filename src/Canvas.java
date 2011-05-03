@@ -98,12 +98,16 @@ public class Canvas extends JLayeredPane {
 				return; // otherwise, no changes are needed
 			}
 			
+			House currentHouse = currentSubGroup.getHouse();
+			
 			currentSubGroup.removePerson(person);
-			if(currentSubGroup.isEmpty()) {
-				removeIfEmpty(currentSubGroup); // (may require cleaning up subgroup/house, if they have been left empty)
-			} else {
-				currentSubGroup.updatePeoplePositions();
-			}	
+			currentSubGroup.updatePeoplePositions();
+			
+			removeIfEmpty(currentSubGroup); // (may require cleaning up subgroup/house, if they have been left empty)
+			
+			if(currentHouse != null) {
+				currentHouse.updateSubGroupPositions();
+			}
 		}
 		
 		if(newSubGroup == null) { // no subgroup was found for this person. create a new one.
