@@ -67,7 +67,7 @@ public class Constants {
 	
 	// Database
 	/** database name **/
-	public final static String DATABASE_NAME = "data/housingdata.sqlite";
+	public final static String DATABASE_NAME = "data/housingdata.db";
 	
 	/** table names in database */
 	public final static String ROOM_TABLE = "rooms";
