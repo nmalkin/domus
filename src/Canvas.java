@@ -90,6 +90,7 @@ public class Canvas extends JLayeredPane {
 		}
 		
 		SubGroup currentSubGroup = person.getSubGroup();
+		House currentHouse = null;
 		
 		// remove this person from his/her old subgroup
 		if(currentSubGroup != null) {
@@ -98,7 +99,7 @@ public class Canvas extends JLayeredPane {
 				return; // otherwise, no changes are needed
 			}
 			
-			House currentHouse = currentSubGroup.getHouse();
+			currentHouse = currentSubGroup.getHouse();
 			
 			currentSubGroup.removePerson(person);
 			currentSubGroup.updatePeoplePositions();
@@ -135,12 +136,11 @@ public class Canvas extends JLayeredPane {
 			
 			// if an entirely new house was created for this person,
 			// get the preferences from the old house and copy them to the new house
-			if(		currentSubGroup != null &&
-					currentSubGroup.getHouse() != null &&
+			if(		currentHouse != null &&
 					newSubGroup.getOccupancy() == 1 &&
 					newSubGroup.getHouse().numberOfSubGroups() == 1)
 			{
-				newSubGroup.getHouse().setLocationPreference(currentSubGroup.getHouse().getLocationPreference());
+				newSubGroup.getHouse().setLocationPreference(currentHouse.getLocationPreference());
 			}
 		} else {
 			// add the person to the (already-existing) subgroup
