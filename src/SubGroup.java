@@ -197,10 +197,9 @@ public class SubGroup extends CanvasComponent implements Iterable<Person>, Compa
 	
 	@Override
 	public String toString() {
-		String s = "";
-		Iterator<Person> people = _people.iterator();
-		if (people.hasNext()) {
-			s += people.next().getName();
+		String s = "Subgroup: |";
+		for(Person p : _people) {
+			s += p + " |";
 		}
 		return s;
 	}

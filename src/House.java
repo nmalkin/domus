@@ -70,9 +70,14 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 			}
 		}
 		return false;
-	}	
+	}
+	
+	public int numberOfSubGroups() {
+		return _subgroups.size();
+	}
 	
 	public boolean isGenderNeutral() {
+		//TODO: implement
 		return true;
 	}
 	
