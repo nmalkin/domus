@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,10 +20,10 @@ public class DomusXML {
 	 * @param filename
 	 * @throws IOException if there was a problem writing to the file
 	 */
-	public static void writeXML(String filename) throws IOException {
+	public static void writeXML(File file) throws IOException {
 		Document document = makeXMLDocument();
 		
-		FileWriter outStream = new FileWriter(filename); // set up the output stream
+		FileWriter outStream = new FileWriter(file); // set up the output stream
 		XMLWriter fileWriter = new XMLWriter(outStream, OutputFormat.createPrettyPrint()); // output using "pretty" formatting
 		fileWriter.write(document); // write!
 		outStream.flush();
@@ -131,7 +132,7 @@ public class DomusXML {
 	 * @throws IOException if there was a problem reading from file
 	 * @throws DocumentException if there was a problem with the structure of the document
 	 */
-	public static void readXML(String filename) throws IOException, DocumentException {
+	public static void readXML(File file) throws IOException, DocumentException {
 		// to prevent problematic inputs from corrupting the State,
 		// we will create a new Group and new RoomLists for the data we're reading in,
 		// and then copy them to State at the end, when we've ascertained the lack of issues
@@ -140,7 +141,7 @@ public class DomusXML {
 		
 		// read document
 		SAXReader reader = new SAXReader();
-		Document document = reader.read(new FileReader(filename));
+		Document document = reader.read(new FileReader(file));
 		
 		// parse document
 		Element root = document.getRootElement();
