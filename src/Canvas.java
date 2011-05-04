@@ -5,12 +5,14 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.Iterator;
 
 import javax.swing.*;
 
 public class Canvas extends JLayeredPane {
 	private Image _trashImage;
+	private Image _domusImage;
 	
 	public Canvas() {
 		this.setLayout(null);
@@ -26,11 +28,12 @@ public class Canvas extends JLayeredPane {
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
 		
-		// load trash icon
+		// load trash icon and watermark
 		try {
 			_trashImage = javax.imageio.ImageIO.read(new java.io.File(Constants.TRASH_FILE));
+			_domusImage = javax.imageio.ImageIO.read(new java.io.File(Constants.DOMUS_FILE));
 		} catch(java.io.IOException e) {
-			//TODO: yell, or break silently?
+			//TODO: yell, or break silently? break silently..duh..
 		}
 		
 		// sample data; TODO: remove
@@ -455,6 +458,10 @@ public class Canvas extends JLayeredPane {
 		g.drawLine(Constants.SIDEBAR_WIDTH, 0, Constants.SIDEBAR_WIDTH, this.getHeight());
 		g.setColor(Constants.SIDEBAR_COLOR);
 		g.fillRect(0, 0, Constants.SIDEBAR_WIDTH, this.getHeight());
+		
+		// watermark
+		g.drawImage(_domusImage, (this.getWidth() + Constants.SIDEBAR_WIDTH) / 2 - _domusImage.getWidth(null)/ 2 , (this.getHeight() - _domusImage.getHeight(null)) / 2, null);
+		
 		
 		
 		// new guy

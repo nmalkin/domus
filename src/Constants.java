@@ -67,6 +67,9 @@ public class Constants {
 	protected static final int    WOMAN_WIDTH  = 46; // pixels
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
+	// watermark
+	protected static final String DOMUS_FILE = "img/domus.png";
+	
 	// Results and lists icons
 	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";
 	protected static final String OPEN_FILE = "img/open_results_tab_new.png";
@@ -77,19 +80,24 @@ public class Constants {
 	
 	// Database
 	/** database name **/
-	public final static String DATABASE_NAME = "data/housingdata.db";
+	protected final static String DATABASE_NAME = "data/housingdata.db";
 	
 	/** table names in database */
-	public final static String ROOM_TABLE = "rooms";
-	public final static String GENDER_TABLE = "genderNeutral";
-	public final static String SOPHOMORE_TABLE = "sophomoreOnly";
-	public final static String SEMESTER_TABLE = "semester";
-	public final static String CAMPUS_AREA_TABLE = "campusArea";
+	protected final static String ROOM_TABLE = "rooms";
+	protected final static String GENDER_TABLE = "genderNeutral";
+	protected final static String SOPHOMORE_TABLE = "sophomoreOnly";
+	protected final static String SEMESTER_TABLE = "semester";
+	protected final static String CAMPUS_AREA_TABLE = "campusArea";
 	
-	public final static int FIRST_YEAR = 2006;
-	public final static int LAST_YEAR = 2011;
+	protected final static int FIRST_YEAR = 2006;
+	protected final static int LAST_YEAR = 2011;
 	
-	public final static int OPTIMISTIC = 0;
-	public final static int AVERAGE = 1;
-	public final static int PESSIMISTIC = 2;
+	protected final static int OPTIMISTIC = 0;
+	protected final static int AVERAGE = 1;
+	protected final static int PESSIMISTIC = 2;
+	
+	protected final static int LOTTERY_PANEL_WIDTH = 200;
+	protected final static int LOTTERY_PANEL_HEIGHT = 500;
+	
+	protected final static int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
 }

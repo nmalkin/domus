@@ -29,7 +29,7 @@ public class Person extends CanvasComponent {
 		
 		this.addMouseListener(new PersonDropListener());
 		
-		this.setBorder(BorderFactory.createLineBorder(Color.BLACK)); //TODO: remove
+		//this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
 		this.setVisible(true);
 	}

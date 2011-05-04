@@ -99,7 +99,7 @@ public class Database {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public static RoomList getResults(Collection<Dorm> locations, int occupancy, int[] years, boolean genderNeutral, boolean sophomoreEligible) {
+	public static RoomList getResults(Collection<Dorm> locations, int occupancy, Integer[] years, boolean genderNeutral, boolean sophomoreEligible) {
 		RoomList rooms = new RoomList();
 
 		try {
@@ -133,7 +133,7 @@ public class Database {
 
 	public static int optimismFromLotteryNumber(int lotteryNumber) {
 		try {
-			int[] years = State.getInstance().getYears();
+			Integer[] years = State.getInstance().getYears();
 			int semester = semesterFromLotteryNumber(lotteryNumber);
 
 			int sum = 0;
@@ -177,7 +177,7 @@ public class Database {
 	 */
 	public static int semesterFromLotteryNumber(int lotteryNumber) {
 		try {
-			int[] years = State.getInstance().getYears();
+			Integer[] years = State.getInstance().getYears();
 
 			ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
 			semesters.next();
@@ -193,7 +193,6 @@ public class Database {
 			return sum / count;
 		} catch(SQLException e) {
 			//TODO: better handling
-			e.printStackTrace();
 			return -1;
 		}
 	}
@@ -208,7 +207,7 @@ public class Database {
 	 * @throws SQLException 
 	 */
 	public static int lotteryNumberFromSemester(int semester) {
-		int[] years = State.getInstance().getYears();
+		Integer[] years = State.getInstance().getYears();
 		int optimism = State.getInstance().getOptimism();
 
 		int count = 0;
@@ -251,7 +250,6 @@ public class Database {
 
 			return sum / count;
 		} catch(SQLException e) {
-			e.printStackTrace();
 			return -1; //TODO: fix this too
 		}
 	}

@@ -52,7 +52,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		_semesterLevelBox.setSelectedIndex(semesterIndex);
 		
 		// set panel size and add elements to it
-		Dimension size = new Dimension(200,500);
+		Dimension size = new Dimension(Constants.LOTTERY_PANEL_WIDTH,Constants.LOTTERY_PANEL_HEIGHT);
 		this.setPreferredSize(size);
 		this.setSize(size);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -109,7 +109,6 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		if(_semesterLevelBox.hasFocus()) {
 			// get the semester level from the box
 			int semester = (Integer) _semesterLevelBox.getSelectedItem();
-			System.out.println(semester);
 			
 			// get an estimated lottery number from the database
 			int lotteryNumber = Database.lotteryNumberFromSemester(semester);
