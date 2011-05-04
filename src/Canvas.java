@@ -399,16 +399,22 @@ public class Canvas extends JLayeredPane {
 	 */
 	private boolean tryRemove(Person p) {
 		if(overTrashIcon(p)) {
-			SubGroup currentParent = p.getSubGroup();
+			SubGroup currentSubGroup = p.getSubGroup();
 			
 			// remove from view
 			this.remove(p);
 			
 			// remove from subgroup
-			if(currentParent != null) {
-				currentParent.removePerson(p);
-				currentParent.updatePeoplePositions();
-				removeIfEmpty(currentParent);
+			if(currentSubGroup != null) {
+				currentSubGroup.removePerson(p);
+				currentSubGroup.updatePeoplePositions();
+				
+				House currentHouse = currentSubGroup.getHouse();
+				removeIfEmpty(currentSubGroup);
+
+				if(currentHouse != null) {
+					currentHouse.updateSubGroupPositions();
+				}
 			}
 			
 			return true;
@@ -438,7 +444,12 @@ public class Canvas extends JLayeredPane {
 			this.remove(s);
 			
 			// remove from house
+			House currentHouse = s.getHouse();
 			removeIfEmpty(s);
+
+			if(currentHouse != null) {
+				currentHouse.updateSubGroupPositions();
+			}
 			
 			return true;
 		}
