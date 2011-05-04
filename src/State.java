@@ -14,7 +14,11 @@ import com.google.common.collect.TreeMultimap;
  * @author nmalkin, jswarren
  */
 public class State {
-	public static final State INSTANCE = new State();
+	// State is a singleton
+	private static final State INSTANCE = new State();
+	public static State getInstance() {
+		return INSTANCE;
+	}
 	
 	/** the (current) group */
 	private Group _group;
@@ -31,10 +35,6 @@ public class State {
 	/** listener for whether or not the house is changing */
 	private ChangeListener _selectedHouseChangeListener;
 	
-	public static State getInstance() {
-		return INSTANCE;
-	}
-	
 	private State() {
 		_group = new Group();
 		_results = TreeMultimap.create();
@@ -45,6 +45,10 @@ public class State {
 	
 	public Group getGroup() {
 		return _group;
+	}
+	
+	protected void setGroup(Group group) { //TODO: do we want to expose it like this?
+		_group = group;
 	}
 	
 	public boolean isSophomoreOnly() {

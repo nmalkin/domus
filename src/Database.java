@@ -27,6 +27,15 @@ public class Database {
 			System.err.println("ERROR: unable to connect to database " + Constants.DATABASE_NAME);
 		}
 	}
+	
+	/**
+	 * Given a string with a dorm name, returns the Dorm object associated with it.
+	 * @param dormName
+	 * @return
+	 */
+	protected static Dorm getDorm(String dormName) {
+		return INSTANCE._dorms.get(dormName);
+	}
 
 	/**
 	 * Returns a Collection with all the CampusAreas (and Dorms)
@@ -256,7 +265,7 @@ public class Database {
 		}
 	}
 
-	public static void closeDatabase() {
+	protected static void closeDatabase() {
 		INSTANCE.close();
 	}
 

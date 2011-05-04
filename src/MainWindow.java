@@ -1,7 +1,10 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.*;
+
+import org.dom4j.DocumentException;
 
 
 public class MainWindow extends JFrame {
@@ -18,8 +21,16 @@ public class MainWindow extends JFrame {
 		loadMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO
-				showMessage("load state (TODO)");
+				try {
+					DomusXML.readXML("test.xml");
+					Canvas.getInstance().redrawFromState();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (DocumentException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -27,8 +38,12 @@ public class MainWindow extends JFrame {
 		saveMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO
-				showMessage("save state (TODO)");
+				try {
+					DomusXML.writeXML("test.xml");
+				} catch(java.io.IOException err) {
+					System.err.println("an error occurred writing to output");
+					//TODO: display a message
+				}
 			}
 		});
 		
