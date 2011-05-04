@@ -47,6 +47,12 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
 		title.setText("LOCATION PREFERENCES");
 		
+		ParentCheckBox masterBox = new ParentCheckBox("Toggle Preferences");
+		
+		JPanel topPanel = new JPanel(new BorderLayout());
+		topPanel.add(title, BorderLayout.WEST);
+		topPanel.add(masterBox, BorderLayout.EAST);
+		
 		JPanel locations = new JPanel();
 		locations.setLayout(new BoxLayout(locations, BoxLayout.X_AXIS));
 		
@@ -66,7 +72,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 			areaNamePanel.setMinimumSize(new Dimension(200,25));
 			
 			ParentCheckBox areaBox = new ParentCheckBox(area.getName());
-			areaBox.setSelected(true);
+			areaBox.setSelected(false);
 			
 			areaNamePanel.add(areaBox);
 			areaNamePanel.add(Box.createHorizontalGlue());
@@ -80,11 +86,12 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 				
 				DormCheckBox dormBox = new DormCheckBox(dorm);
 				
-				dormBox.setSelected(true);
+				dormBox.setSelected(false);
 				dormBox.addItemListener(myListener);
 				
 				dormBox.setParent(areaBox);
 				areaBox.addChild(dormBox);
+				masterBox.addChild(dormBox);
 				
 				_dormBoxes.put(dorm, dormBox);
 				
@@ -99,7 +106,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 			locations.add(areaPanel);
 		}
 		
-		this.add(title, BorderLayout.WEST);
+		this.add(topPanel, BorderLayout.NORTH);
 		this.add(locations, BorderLayout.SOUTH);
 	}
 	

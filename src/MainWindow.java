@@ -7,7 +7,6 @@ import javax.swing.*;
 
 import org.dom4j.DocumentException;
 
-
 public class MainWindow extends JFrame {
 	protected MainWindow() {
 		super("Domus");
@@ -86,8 +85,21 @@ public class MainWindow extends JFrame {
 		fileMenu.add(loadMenuItem);
 		fileMenu.add(saveMenuItem);
 		
+		JMenu optionsMenu = new JMenu("Options");
+		
+		JMenuItem yearsMenuItem = new JMenuItem("Choose years");
+		yearsMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new YearWindow();
+			}
+		});
+		
+		optionsMenu.add(yearsMenuItem);
+		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(fileMenu);
+		menuBar.add(optionsMenu);
 		
 		this.setJMenuBar(menuBar);
 		

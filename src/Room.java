@@ -68,6 +68,7 @@ public class Room implements Comparable<Room> {
 			if(res.getLotteryNumber() > lotteryNum) sum += 1;
 		}
 		
+		if(_results.size() == 0) return 0;
 		return sum * 100 / _results.size();
 	}
 
