@@ -1,8 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
-
 
 public class MainWindow extends JFrame {
 	protected MainWindow() {
@@ -36,8 +34,21 @@ public class MainWindow extends JFrame {
 		fileMenu.add(loadMenuItem);
 		fileMenu.add(saveMenuItem);
 		
+		JMenu optionsMenu = new JMenu("Options");
+		
+		JMenuItem yearsMenuItem = new JMenuItem("Choose years");
+		yearsMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new YearWindow();
+			}
+		});
+		
+		optionsMenu.add(yearsMenuItem);
+		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(fileMenu);
+		menuBar.add(optionsMenu);
 		
 		this.setJMenuBar(menuBar);
 		
