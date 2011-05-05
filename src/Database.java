@@ -78,18 +78,16 @@ public class Database {
 	}
 
 	private boolean isGenderNeutral(Dorm d) throws SQLException {
-		ResultSet neutral = statement.executeQuery("select building='" + d.getName() + "' from " + Constants.GENDER_TABLE + ";");
-		boolean genderNeutral = neutral.getFetchSize() != 0;
+		ResultSet neutral = statement.executeQuery("select * from " + Constants.GENDER_TABLE + " where building='" + d.getName() + "';");
+		boolean genderNeutral = neutral.next();
 		neutral.close();
-		
 		return genderNeutral;
 	}
 
 	private boolean isSophomoreOnly(Dorm d) throws SQLException {
-		ResultSet sophomore = statement.executeQuery("select building='" + d.getName() + "' from " + Constants.SOPHOMORE_TABLE + ";");
-		boolean sophomoreOnly = sophomore.getFetchSize() != 0;
+		ResultSet sophomore = statement.executeQuery("select * from " + Constants.SOPHOMORE_TABLE + " where building='" + d.getName() + "';");
+		boolean sophomoreOnly = sophomore.next();
 		sophomore.close();
-		
 		return sophomoreOnly;
 	}
 
