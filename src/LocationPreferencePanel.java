@@ -118,6 +118,8 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		
 		this.add(topPanel, BorderLayout.NORTH);
 		this.add(locations, BorderLayout.SOUTH);
+		
+		stateChanged(null);
 	}
 	
 	/**
