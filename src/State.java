@@ -34,6 +34,8 @@ public class State {
 	private List<Integer> _years;
 	private List<Integer> _ignoredYears;
 	
+	private Boolean _sophomoreOnly;
+	
 	public static State getInstance() {
 		return INSTANCE;
 	}
@@ -46,6 +48,7 @@ public class State {
 		_selectedHouseChangeListener = null;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
+		_sophomoreOnly = false;
 		
 		for(int year: Constants.YEARS) _years.add((Integer) year);
 	}
@@ -54,8 +57,11 @@ public class State {
 		return _group;
 	}
 	
+	public void setSophomoreOnly(Boolean soph) {
+		_sophomoreOnly = soph;
+	}
 	public boolean isSophomoreOnly() {
-		return true;
+		return _sophomoreOnly;
 	}
 	
 	public int getOptimism() {

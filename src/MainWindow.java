@@ -3,6 +3,8 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class MainWindow extends JFrame {
+	
+	private JCheckBoxMenuItem sophomoreOnlyMenuItem;
 	protected MainWindow() {
 		super("Domus");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -44,7 +46,17 @@ public class MainWindow extends JFrame {
 			}
 		});
 		
+		sophomoreOnlyMenuItem = new JCheckBoxMenuItem("Sophomore Only");
+		sophomoreOnlyMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(sophomoreOnlyMenuItem.isSelected()) State.getInstance().setSophomoreOnly(true);
+				else State.getInstance().setSophomoreOnly(false);
+			}
+		});
+		
 		optionsMenu.add(yearsMenuItem);
+		optionsMenu.add(sophomoreOnlyMenuItem);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(fileMenu);

@@ -15,7 +15,7 @@ public class DatabaseMaker {
 			connection = DriverManager.getConnection("jdbc:sqlite:" + Constants.DATABASE_NAME);
 			statement = connection.createStatement();
 
-			String roomParams = " (building, roomNumber, occupancy, y2006, y2007, y2008, y2009, y2010, y2011)";
+			String roomParams = " (building, roomNumber, occupancy, apartmentRate, y2006, y2007, y2008, y2009, y2010, y2011)";
 			String semesterParams = " (number, y2006, y2007, y2008, y2009, y2010, y2011)";
 
 			statement.executeUpdate("drop table if exists " + Constants.ROOM_TABLE + ";");
@@ -54,12 +54,13 @@ public class DatabaseMaker {
 				prep.execute();
 			}
 			else {
-				prep = connection.prepareStatement("insert into " + Constants.ROOM_TABLE + " values (?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				prep = connection.prepareStatement("insert into " + Constants.ROOM_TABLE + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 
-				prep.setInt(Integer.parseInt(year) - 2002, Integer.parseInt(values[0]));
+				prep.setInt(Integer.parseInt(year) - 2001, Integer.parseInt(values[0]));
 				prep.setString(1, values[1]);
 				prep.setString(2, values[2]);
 				prep.setInt(3, Integer.parseInt(values[3]));
+				if(isApartmentRate(values[1]) && Integer.parseInt(values[3]) > 2) prep.setInt(4,1);
 
 				addToCampusAreas(values[1]);
 				
@@ -73,6 +74,14 @@ public class DatabaseMaker {
 		}
 	}
 
+	public Boolean isApartmentRate (String building) {
+		for(int i = 0; i < DatabaseConstants.APARTMENT_RATE_DORMS.length; i++) {
+			if(building.equals(DatabaseConstants.APARTMENT_RATE_DORMS[i])) return true;
+		}
+		
+		return false;
+	}
+	
 	public void addToCampusAreas(String building) throws SQLException {
 		ResultSet result = statement.executeQuery("select * from " + Constants.CAMPUS_AREA_TABLE + " where building='" + building + "';");
 	
@@ -205,7 +214,7 @@ public class DatabaseMaker {
 		String[] files = path.list();
 
 		for(int i = 0; i < files.length; i++) {
-			if(!files[i].contains("~")) {
+			if(!files[i].contains("~") && files[i].contains(".csv")) {
 				String year = files[i].replaceAll(".csv", "");
 				System.out.println("reading " + year + " data........");
 
