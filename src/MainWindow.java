@@ -38,6 +38,7 @@ public class MainWindow extends JFrame {
 						} else {
 							DomusXML.readXML(file);
 							Canvas.getInstance().redrawFromState();
+							ListsTab.getInstance().updateLists();
 						}
 					}
 				} catch (IOException e1) {
