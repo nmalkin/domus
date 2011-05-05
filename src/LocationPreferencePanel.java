@@ -47,7 +47,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
 		title.setText("LOCATION PREFERENCES");
 		
-		ParentCheckBox masterBox = new ParentCheckBox("Toggle Preferences");
+		ParentCheckBox masterBox = new ParentCheckBox("I'm willing to live anywhere!");
 		
 		JPanel topPanel = new JPanel(new BorderLayout());
 		topPanel.add(title, BorderLayout.WEST);
@@ -90,6 +90,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 				dormBox.addItemListener(myListener);
 				
 				dormBox.addParent(areaBox);
+				dormBox.addParent(masterBox);
 				areaBox.addChild(dormBox);
 				masterBox.addChild(dormBox);
 				
