@@ -2,6 +2,9 @@ import java.awt.Color;
 
 
 public class Constants {
+	protected static final int VERSION = 1;
+	protected static final int FILE_FORMAT_VERSION = 1;
+	
 	/** the value that the slider starts with */
 	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	

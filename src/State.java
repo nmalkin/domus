@@ -14,7 +14,11 @@ import com.google.common.collect.TreeMultimap;
  * @author nmalkin, jswarren
  */
 public class State {
-	public static final State INSTANCE = new State();
+	// State is a singleton
+	private static final State INSTANCE = new State();
+	public static State getInstance() {
+		return INSTANCE;
+	}
 	
 	/** the (current) group */
 	private Group _group;
@@ -35,11 +39,7 @@ public class State {
 	private List<Integer> _ignoredYears;
 	
 	private Boolean _sophomoreOnly;
-	
-	public static State getInstance() {
-		return INSTANCE;
-	}
-	
+
 	private State() {
 		_group = new Group();
 		_results = TreeMultimap.create();
@@ -60,6 +60,11 @@ public class State {
 	public void setSophomoreOnly(Boolean soph) {
 		_sophomoreOnly = soph;
 	}
+
+	protected void setGroup(Group group) { //TODO: do we want to expose it like this?
+		_group = group;
+	}
+	
 	public boolean isSophomoreOnly() {
 		return _sophomoreOnly;
 	}

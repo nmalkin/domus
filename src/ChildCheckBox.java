@@ -1,15 +1,17 @@
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import javax.swing.JCheckBox;
 
 /**
  * A ChildCheckBox is a JCheckBox with a special behavior:
- * when it is unselected, the parent checkbox will also be unselected;
+ * when it is unselected, the parent checkboxes will also be unselected;
  * when it is selected, if all of the parent's children are selected,
  * the parent checkbox will also be selected.
  * 
- * To accomodate this behavior, the ChildCheckBox holds a reference
+ * To accommodate this behavior, the ChildCheckBox holds a reference
  * to its ParentCheckBox.
  * 
  * Note that for this behavior to work, you must either use one of the custom constructors,
@@ -19,16 +21,20 @@ import javax.swing.JCheckBox;
  *
  */
 public class ChildCheckBox extends JCheckBox implements ItemListener {
-	private ParentCheckBox _parent = null;
+	private Collection<ParentCheckBox> _parents;
 	
 	public ChildCheckBox(String text) {
 		super(text);
 		super.addItemListener(this);
+		
+		_parents = new LinkedList<ParentCheckBox>();
 	}
 	
 	public ChildCheckBox(String text, boolean selected) {
 		super(text, selected);
 		super.addItemListener(this);
+		
+		_parents = new LinkedList<ParentCheckBox>();
 	}
 	
 	/**
@@ -36,8 +42,8 @@ public class ChildCheckBox extends JCheckBox implements ItemListener {
 	 * 
 	 * @param parent
 	 */
-	public void setParent(ParentCheckBox parent) {
-		_parent = parent;
+	public void addParent(ParentCheckBox parent) {
+		_parents.add(parent);
 	}
 	
 	/**
@@ -47,13 +53,13 @@ public class ChildCheckBox extends JCheckBox implements ItemListener {
 	 */
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		if(_parent != null) {
+		for(ParentCheckBox parent : _parents) {
 			if(this.isSelected()) {
-				if(_parent.allChildrenSelected()) {
-					_parent.setSelected(true);
+				if(parent.allChildrenSelected()) {
+					parent.setSelected(true);
 				}
 			} else {
-				_parent.setSelected(false);
+				parent.setSelected(false);
 			}
 		}
 	}

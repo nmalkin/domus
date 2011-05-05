@@ -11,10 +11,13 @@ import java.util.Iterator;
 import javax.swing.*;
 
 public class Canvas extends JLayeredPane {
+	private static final Canvas INSTANCE = new Canvas();
+	public static Canvas getInstance() { return INSTANCE; }
+	
 	private Image _trashImage;
 	private Image _domusImage;
 	
-	public Canvas() {
+	private Canvas() {
 		this.setLayout(null);
 		
 		Dimension d = new Dimension(Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
@@ -54,6 +57,25 @@ public class Canvas extends JLayeredPane {
 //		this.add(p2, Constants.PERSON_LAYER);
 //		this.add(s, Constants.SUBGROUP_LAYER);
 //		this.add(h, Constants.HOUSE_LAYER);
+	}
+	
+	/**
+	 * Redraws the Canvas and all components based on the objects currently in State.
+	 */
+	public void redrawFromState() {
+		this.removeAll(); // remove all current child components
+		
+		for(House h : State.getInstance().getGroup()) {
+			this.add(h, Constants.HOUSE_LAYER);
+			
+			for(SubGroup s : h) {
+				this.add(s, Constants.SUBGROUP_LAYER);
+				
+				for(Person p : s) {
+					this.add(p, Constants.PERSON_LAYER);
+				}
+			}
+		}
 	}
 	
 	private boolean intersecting(DraggablePositionableComponent a, DraggablePositionableComponent b) {

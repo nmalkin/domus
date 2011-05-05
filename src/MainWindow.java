@@ -1,6 +1,11 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.*;
+
+import org.dom4j.DocumentException;
 
 public class MainWindow extends JFrame {
 	
@@ -13,13 +18,38 @@ public class MainWindow extends JFrame {
 		try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
 		catch (Exception e) { e.printStackTrace(); }
 		
+		// file chooser
+		final JFileChooser fc = new JFileChooser();
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		
 		// menu bar
 		JMenuItem loadMenuItem = new JMenuItem("Open");
 		loadMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO
-				showMessage("load state (TODO)");
+				try {
+					int returnVal = fc.showOpenDialog(MainWindow.this);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						File file = fc.getSelectedFile();
+						
+						if(! file.exists()) {
+							JOptionPane.showMessageDialog(MainWindow.this, 
+									"Domus can't open this file: it doesn't exist!", 
+									"Domus", 
+									JOptionPane.WARNING_MESSAGE);
+						} else {
+							DomusXML.readXML(file);
+							Canvas.getInstance().redrawFromState();
+							ListsTab.getInstance().updateLists();
+						}
+					}
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (DocumentException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -27,8 +57,30 @@ public class MainWindow extends JFrame {
 		saveMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO
-				showMessage("save state (TODO)");
+				try {
+					int returnVal = fc.showSaveDialog(MainWindow.this);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						File file = fc.getSelectedFile();
+						
+						if(file.exists()) {
+							int option = JOptionPane.showConfirmDialog(MainWindow.this, 
+									"This file already exists. Are you sure you want to overwrite it?", 
+									"Domus", 
+									JOptionPane.OK_CANCEL_OPTION);
+							
+							if(option == JOptionPane.OK_OPTION) {
+								DomusXML.writeXML(file);
+							}
+						} else {
+							DomusXML.writeXML(file);
+						}
+					}
+					
+					
+				} catch(java.io.IOException err) {
+					System.err.println("an error occurred writing to output");
+					//TODO: display a message
+				}
 			}
 		});
 		

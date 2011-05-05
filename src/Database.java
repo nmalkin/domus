@@ -27,6 +27,15 @@ public class Database {
 			System.err.println("ERROR: unable to connect to database " + Constants.DATABASE_NAME);
 		}
 	}
+	
+	/**
+	 * Given a string with a dorm name, returns the Dorm object associated with it.
+	 * @param dormName
+	 * @return
+	 */
+	protected static Dorm getDorm(String dormName) {
+		return INSTANCE._dorms.get(dormName);
+	}
 
 	/**
 	 * Returns a Collection with all the CampusAreas (and Dorms)
@@ -109,7 +118,7 @@ public class Database {
 							+ " and building='" + d.getName() + "';");
 
 					while(subRooms.next()) {
-						Room room = RoomFactory.getRoom(INSTANCE._dorms.get(subRooms.getString("building")), subRooms.getString("roomNumber"));
+						Room room = Room.getRoom(INSTANCE._dorms.get(subRooms.getString("building")), subRooms.getString("roomNumber"));
 
 						for(int i = 0; i < years.length; i++) {
 							if(subRooms.getInt("y" + years[i]) != 0) {
@@ -254,7 +263,7 @@ public class Database {
 		}
 	}
 
-	public static void closeDatabase() {
+	protected static void closeDatabase() {
 		INSTANCE.close();
 	}
 
