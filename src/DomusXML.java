@@ -236,7 +236,7 @@ public class DomusXML {
 					
 					String roomNumber = room.attributeValue("number");
 					
-					Room newRoom = RoomFactory.getRoom(dorm, roomNumber);
+					Room newRoom = Room.getRoom(dorm, roomNumber);
 					rl.add(newRoom);
 					newRoom.addToRoomList(rl); //TODO: is it really necessary to call both?
 				}

@@ -118,7 +118,7 @@ public class Database {
 							+ " and building='" + d.getName() + "';");
 
 					while(subRooms.next()) {
-						Room room = RoomFactory.getRoom(INSTANCE._dorms.get(subRooms.getString("building")), subRooms.getString("roomNumber"));
+						Room room = Room.getRoom(INSTANCE._dorms.get(subRooms.getString("building")), subRooms.getString("roomNumber"));
 
 						for(int i = 0; i < years.length; i++) {
 							if(subRooms.getInt("y" + years[i]) != 0) {

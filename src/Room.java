@@ -1,8 +1,23 @@
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Room implements Comparable<Room> {
+	/* factory methods for room */
+	private static Map<String, Room> _roomMap = new HashMap<String, Room>();
+	
+	public static Room getRoom(Dorm dorm, String roomNumber) {
+		String roomName = dorm.getName() + roomNumber;
+		Room room = null;
+		if ((room = _roomMap.get(roomName)) == null) {
+			room = new Room(dorm, roomNumber);
+			_roomMap.put(roomName, room);
+		}
+		return room;
+	}
+	
 	/** What dorm is this room in? */
 	private Dorm _dorm;
 	
@@ -27,7 +42,7 @@ public class Room implements Comparable<Room> {
 	 */
 	private List<ResultsListItem> _listItems;
 	
-	public Room (Dorm dorm, String number) {
+	private Room (Dorm dorm, String number) {
 		_dorm = dorm;
 		_number = number;
 		_results = new LinkedList<LotteryResult>();
