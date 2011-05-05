@@ -76,11 +76,6 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 		return _subgroups.size();
 	}
 	
-	public boolean isGenderNeutral() {
-		//TODO: implement
-		return false;
-	}
-	
 	/**
 	 * Returns true if there are no subgroups in this house.
 	 * 
