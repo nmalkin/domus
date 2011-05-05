@@ -103,7 +103,7 @@ public class Database {
 	 * @param locations
 	 * @param occupancy
 	 * @param years
-	 * @param genderNeutral
+	 * @param genderNeutral gender-neutral housing is REQUIRED for this subgroup
 	 * @param sophomoreEligible
 	 * @return
 	 * @throws SQLException 

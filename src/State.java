@@ -119,9 +119,8 @@ public class State {
 		boolean sophomoreOnly = isSophomoreOnly();
 		for (House h : getGroup()) {
 			Collection<Dorm> locations = h.getLocationPreference();
-			boolean genderNeutral = h.isGenderNeutral();
 			for (SubGroup sg : h) {
-				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, genderNeutral, sophomoreOnly);
+				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, (! sg.sameGender()), sophomoreOnly);
 				for (Room r : results) {
 					_results.put(sg, r);
 				}
