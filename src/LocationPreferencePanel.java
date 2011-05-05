@@ -89,7 +89,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 				dormBox.setSelected(false);
 				dormBox.addItemListener(myListener);
 				
-				dormBox.setParent(areaBox);
+				dormBox.addParent(areaBox);
 				areaBox.addChild(dormBox);
 				masterBox.addChild(dormBox);
 				
