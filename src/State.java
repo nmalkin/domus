@@ -38,7 +38,7 @@ public class State {
 	private List<Integer> _years;
 	private List<Integer> _ignoredYears;
 	
-	private Boolean _sophomoreOnly;
+	private boolean _sophomoreOnly;
 
 	private State() {
 		_group = new Group();
@@ -57,7 +57,7 @@ public class State {
 		return _group;
 	}
 	
-	public void setSophomoreOnly(Boolean soph) {
+	public void setSophomoreOnly(boolean soph) {
 		_sophomoreOnly = soph;
 	}
 

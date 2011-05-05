@@ -79,12 +79,18 @@ public class Database {
 
 	private boolean isGenderNeutral(Dorm d) throws SQLException {
 		ResultSet neutral = statement.executeQuery("select building='" + d.getName() + "' from " + Constants.GENDER_TABLE + ";");
-		return neutral.next();
+		boolean genderNeutral = neutral.getFetchSize() != 0;
+		neutral.close();
+		
+		return genderNeutral;
 	}
 
 	private boolean isSophomoreOnly(Dorm d) throws SQLException {
 		ResultSet sophomore = statement.executeQuery("select building='" + d.getName() + "' from " + Constants.SOPHOMORE_TABLE + ";");
-		return sophomore.next();
+		boolean sophomoreOnly = sophomore.getFetchSize() != 0;
+		sophomore.close();
+		
+		return sophomoreOnly;
 	}
 
 	public static int getMaxLotteryNumber() {
@@ -134,6 +140,7 @@ public class Database {
 				}
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
 			System.err.println("ERROR: unable to retrieve results");
 		}
 

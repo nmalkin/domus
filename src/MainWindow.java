@@ -98,7 +98,7 @@ public class MainWindow extends JFrame {
 			}
 		});
 		
-		sophomoreOnlyMenuItem = new JCheckBoxMenuItem("Sophomore Only");
+		sophomoreOnlyMenuItem = new JCheckBoxMenuItem("Sophomore-Only Eligible");
 		sophomoreOnlyMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

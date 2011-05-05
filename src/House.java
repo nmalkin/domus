@@ -78,7 +78,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	
 	public boolean isGenderNeutral() {
 		//TODO: implement
-		return true;
+		return false;
 	}
 	
 	/**
