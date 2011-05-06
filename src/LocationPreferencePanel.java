@@ -48,6 +48,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		CheckBoxListener myListener = new CheckBoxListener();
 		
 		this.setLayout(new BorderLayout());
+		this.setBorder(new MatteBorder(1,0,0,0,Color.BLACK));
 		
 		JTextPane title = new JTextPane();
 		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));

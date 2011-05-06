@@ -38,6 +38,8 @@ public class State {
 	private List<Integer> _years;
 	private List<Integer> _ignoredYears;
 	
+	private int _optimism;
+	
 	private boolean _sophomoreOnly;
 
 	private State() {
@@ -49,6 +51,7 @@ public class State {
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
 		_sophomoreOnly = false;
+		_optimism = Constants.AVERAGE;
 		
 		for(int year: Constants.YEARS) _years.add((Integer) year);
 	}
@@ -69,10 +72,12 @@ public class State {
 		return _sophomoreOnly;
 	}
 	
+	public void setOptimism(int optimism) {
+		_optimism = optimism;
+	}
+	
 	public int getOptimism() {
-		//TODO: optimism in state
-		int optimism = Constants.PESSIMISTIC;
-		return optimism;
+		return _optimism;
 	}
 	
 	public Integer[] getYears() {

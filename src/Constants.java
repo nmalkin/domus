@@ -102,6 +102,7 @@ public class Constants {
 	protected final static String HAPPY_FILE = "img/Grin.png";
 	protected final static String OKAY_FILE = "img/Undecided.png";
 	protected final static String SAD_FILE = "img/Crying.png";
+	protected final static int OPTIMISM_BUTTON_WIDTH = 18;
 	
 	protected final static int LOTTERY_PANEL_WIDTH = 200;
 	protected final static int LOTTERY_PANEL_HEIGHT = 500;
