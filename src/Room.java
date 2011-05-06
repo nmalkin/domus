@@ -1,8 +1,23 @@
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Room implements Comparable<Room> {
+	/* factory methods for room */
+	private static Map<String, Room> _roomMap = new HashMap<String, Room>();
+	
+	public static Room getRoom(Dorm dorm, String roomNumber) {
+		String roomName = dorm.getName() + roomNumber;
+		Room room = null;
+		if ((room = _roomMap.get(roomName)) == null) {
+			room = new Room(dorm, roomNumber);
+			_roomMap.put(roomName, room);
+		}
+		return room;
+	}
+	
 	/** What dorm is this room in? */
 	private Dorm _dorm;
 	
@@ -27,11 +42,10 @@ public class Room implements Comparable<Room> {
 	 */
 	private List<ResultsListItem> _listItems;
 	
-	public Room(Dorm dorm, String number, List<LotteryResult> results, int averageResult) {
+	private Room (Dorm dorm, String number) {
 		_dorm = dorm;
 		_number = number;
-		_results = results;
-		_averageResult = averageResult;
+		_results = new LinkedList<LotteryResult>();
 		_roomLists = new LinkedList<RoomList>();
 		_listItems = new LinkedList<ResultsListItem>();
 	}
@@ -61,17 +75,18 @@ public class Room implements Comparable<Room> {
 	 * on group's lottery number
 	 */
 	public int getProbability() {
-		return (int) ((_averageResult / 790.0) * 100);
+		int lotteryNum = State.getInstance().getGroup().getLotteryNumber();
+		
+		int sum = 0;
+		
+		for(LotteryResult res : _results) {
+			if(res.getLotteryNumber() > lotteryNum) sum += 1;
+		}
+		
+		if(_results.size() == 0) return 0;
+		return sum * 100 / _results.size();
 	}
-	
-	public Room (Dorm dorm, String number) {
-		_dorm = dorm;
-		_number = number;
-		_results = new LinkedList<LotteryResult>();
-		_roomLists = new LinkedList<RoomList>();
-		_listItems = new LinkedList<ResultsListItem>();
-	}
-	
+
 	public String toString() {
 		String resultString = "[ ";
 		
@@ -124,7 +139,6 @@ public class Room implements Comparable<Room> {
 
 	@Override
 	public int compareTo(Room o) {
-		// TODO Auto-generated method stub
 		return _averageResult < o.getAverageResult() ? -1 : (_averageResult > o.getAverageResult() ? 1 : 0);
 	}
 }

@@ -23,8 +23,24 @@ public class DatabaseTest {
 		
 		//System.out.println(Database.getMaxLotteryNumber());
 		
-		ArrayList<CampusArea> areas = (ArrayList<CampusArea>) Database.getCampusAreas();
-		for(int i = 0; i < areas.size(); i++) System.out.println(areas.get(i).toString());
+		//ArrayList<CampusArea> areas = (ArrayList<CampusArea>) Database.getCampusAreas();
+		//for(int i = 0; i < areas.size(); i++) System.out.println(areas.get(i).toString());
+		
+		/*Class.forName("org.sqlite.JDBC");
+		Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Constants.DATABASE_NAME);
+		Statement statement = connection.createStatement();
+		
+		ResultSet result = statement.executeQuery("select * from " + Constants.GENDER_TABLE + " where building='Hegeman B';");
+		System.out.println(result.next());
+		while(result.next()) System.out.println(result.getString("building"));*/
+		
+		Class.forName("org.sqlite.JDBC");
+		Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Constants.DATABASE_NAME);
+		Statement statement = connection.createStatement();
+		
+		ResultSet result = statement.executeQuery("select * from " + Constants.GENDER_TABLE + " where building='Hegeman B';");
+		System.out.println(result.next());
+		while(result.next()) System.out.println(result.getString("building"));
 		
 		//LinkedList<Dorm> locations = (LinkedList<Dorm>) areas.get(0).getDorms();
 		

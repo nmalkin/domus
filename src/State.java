@@ -14,7 +14,11 @@ import com.google.common.collect.TreeMultimap;
  * @author nmalkin, jswarren
  */
 public class State {
-	public static final State INSTANCE = new State();
+	// State is a singleton
+	private static final State INSTANCE = new State();
+	public static State getInstance() {
+		return INSTANCE;
+	}
 	
 	/** the (current) group */
 	private Group _group;
@@ -31,24 +35,38 @@ public class State {
 	/** listener for whether or not the house is changing */
 	private ChangeListener _selectedHouseChangeListener;
 	
-	public static State getInstance() {
-		return INSTANCE;
-	}
+	private List<Integer> _years;
+	private List<Integer> _ignoredYears;
 	
+	private boolean _sophomoreOnly;
+
 	private State() {
 		_group = new Group();
 		_results = TreeMultimap.create();
 		_roomLists = new LinkedList<RoomList>();
 		_selectedHouse = null;
 		_selectedHouseChangeListener = null;
+		_years = new LinkedList<Integer>();
+		_ignoredYears = new LinkedList<Integer>();
+		_sophomoreOnly = false;
+		
+		for(int year: Constants.YEARS) _years.add((Integer) year);
 	}
 	
 	public Group getGroup() {
 		return _group;
 	}
 	
+	public void setSophomoreOnly(boolean soph) {
+		_sophomoreOnly = soph;
+	}
+
+	protected void setGroup(Group group) { //TODO: do we want to expose it like this?
+		_group = group;
+	}
+	
 	public boolean isSophomoreOnly() {
-		return true;
+		return _sophomoreOnly;
 	}
 	
 	public int getOptimism() {
@@ -57,10 +75,26 @@ public class State {
 		return optimism;
 	}
 	
-	public int[] getYears() {
-		//TODO: years in state
-		int[] years = {2006, 2007, 2008, 2009, 2010, 2011};
+	public Integer[] getYears() {
+		Integer[] years = new Integer[_years.size()];
+		for(int i = 0; i < years.length; i++) years[i] = _years.get(i);
 		return years;
+	}
+	
+	public Integer[] getIgnoredYears() {
+		Integer[] years = new Integer[_ignoredYears.size()];
+		for(int i = 0; i < years.length; i++) years[i] = _ignoredYears.get(i);
+		return years;
+	}
+	
+	public void addYear (Integer year) {
+		_years.add(year);
+		_ignoredYears.remove(year);
+	}
+	
+	public void removeYear (Integer year) {
+		_years.remove(year);
+		_ignoredYears.add(year);
 	}
 	
 	public void setSelectedHouse(House h) {
@@ -88,13 +122,12 @@ public class State {
 	
 	public void updateResults() {
 		_results.clear();
-		int[] years = getYears();
+		Integer[] years = getYears();
 		boolean sophomoreOnly = isSophomoreOnly();
 		for (House h : getGroup()) {
 			Collection<Dorm> locations = h.getLocationPreference();
-			boolean genderNeutral = h.isGenderNeutral();
 			for (SubGroup sg : h) {
-				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, genderNeutral, sophomoreOnly);
+				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, (! sg.sameGender()), sophomoreOnly);
 				for (Room r : results) {
 					_results.put(sg, r);
 				}

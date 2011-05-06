@@ -98,6 +98,28 @@ public class SubGroup extends CanvasComponent implements Iterable<Person>, Compa
 		return _people.isEmpty();
 	}
 	
+	/**
+	 * Returns true if the occupants of the subgroup are of the same gender.
+	 * 
+	 * @return
+	 */
+	public boolean sameGender() {
+		boolean sameGender = true;
+		
+		Gender g;
+		if(isEmpty()) {
+			return true; // if the room is empty, return true. this is meaningless.
+		} else {
+			g = _people.iterator().next().getGender();
+		}
+		
+		for(Person p : _people) {
+			sameGender &= (p.getGender().equals(g));
+		}
+		
+		return sameGender;
+	}
+	
 	public Iterator<Person> iterator() {
 		return _people.iterator();
 	}
@@ -197,10 +219,9 @@ public class SubGroup extends CanvasComponent implements Iterable<Person>, Compa
 	
 	@Override
 	public String toString() {
-		String s = "";
-		Iterator<Person> people = _people.iterator();
-		if (people.hasNext()) {
-			s += people.next().getName();
+		String s = "Subgroup: |";
+		for(Person p : _people) {
+			s += p + " |";
 		}
 		return s;
 	}

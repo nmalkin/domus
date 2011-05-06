@@ -27,6 +27,15 @@ public class Database {
 			System.err.println("ERROR: unable to connect to database " + Constants.DATABASE_NAME);
 		}
 	}
+	
+	/**
+	 * Given a string with a dorm name, returns the Dorm object associated with it.
+	 * @param dormName
+	 * @return
+	 */
+	protected static Dorm getDorm(String dormName) {
+		return INSTANCE._dorms.get(dormName);
+	}
 
 	/**
 	 * Returns a Collection with all the CampusAreas (and Dorms)
@@ -69,20 +78,28 @@ public class Database {
 	}
 
 	private boolean isGenderNeutral(Dorm d) throws SQLException {
-		ResultSet neutral = statement.executeQuery("select building='" + d.getName() + "' from " + Constants.GENDER_TABLE + ";");
-		return neutral.next();
+		ResultSet neutral = statement.executeQuery("select * from " + Constants.GENDER_TABLE + " where building='" + d.getName() + "';");
+		boolean genderNeutral = neutral.next();
+		neutral.close();
+		return genderNeutral;
 	}
 
 	private boolean isSophomoreOnly(Dorm d) throws SQLException {
-		ResultSet sophomore = statement.executeQuery("select building='" + d.getName() + "' from " + Constants.SOPHOMORE_TABLE + ";");
-		return sophomore.next();
+		ResultSet sophomore = statement.executeQuery("select * from " + Constants.SOPHOMORE_TABLE + " where building='" + d.getName() + "';");
+		boolean sophomoreOnly = sophomore.next();
+		sophomore.close();
+		return sophomoreOnly;
 	}
 
-	public static int getMaxLotteryNumber() throws SQLException {
+	public static int getMaxLotteryNumber() {
+		try {
 		ResultSet maxNum = statement.executeQuery("select max(number) as maxNum from " + Constants.SEMESTER_TABLE + ";");
 		maxNum.next();
 
-		return maxNum.getInt("maxNum");
+		return maxNum.getInt("maxNum"); 
+		} catch (SQLException e) {
+			return -1;
+		}
 	}
 	/**
 	 * Returns all the rooms that satisfy the given conditions.
@@ -90,12 +107,12 @@ public class Database {
 	 * @param locations
 	 * @param occupancy
 	 * @param years
-	 * @param genderNeutral
+	 * @param genderNeutral gender-neutral housing is REQUIRED for this subgroup
 	 * @param sophomoreEligible
 	 * @return
 	 * @throws SQLException 
 	 */
-	public static RoomList getResults(Collection<Dorm> locations, int occupancy, int[] years, boolean genderNeutral, boolean sophomoreEligible) {
+	public static RoomList getResults(Collection<Dorm> locations, int occupancy, Integer[] years, boolean genderNeutral, boolean sophomoreEligible) {
 		RoomList rooms = new RoomList();
 
 		try {
@@ -105,7 +122,7 @@ public class Database {
 							+ " and building='" + d.getName() + "';");
 
 					while(subRooms.next()) {
-						Room room = RoomFactory.getRoom(INSTANCE._dorms.get(subRooms.getString("building")), subRooms.getString("roomNumber"));
+						Room room = Room.getRoom(INSTANCE._dorms.get(subRooms.getString("building")), subRooms.getString("roomNumber"));
 
 						for(int i = 0; i < years.length; i++) {
 							if(subRooms.getInt("y" + years[i]) != 0) {
@@ -121,6 +138,7 @@ public class Database {
 				}
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
 			System.err.println("ERROR: unable to retrieve results");
 		}
 
@@ -129,7 +147,7 @@ public class Database {
 
 	public static int optimismFromLotteryNumber(int lotteryNumber) {
 		try {
-			int[] years = State.getInstance().getYears();
+			Integer[] years = State.getInstance().getYears();
 			int semester = semesterFromLotteryNumber(lotteryNumber);
 
 			int sum = 0;
@@ -173,7 +191,7 @@ public class Database {
 	 */
 	public static int semesterFromLotteryNumber(int lotteryNumber) {
 		try {
-			int[] years = State.getInstance().getYears();
+			Integer[] years = State.getInstance().getYears();
 
 			ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
 			semesters.next();
@@ -203,7 +221,7 @@ public class Database {
 	 * @throws SQLException 
 	 */
 	public static int lotteryNumberFromSemester(int semester) {
-		int[] years = State.getInstance().getYears();
+		Integer[] years = State.getInstance().getYears();
 		int optimism = State.getInstance().getOptimism();
 
 		int count = 0;
@@ -246,12 +264,11 @@ public class Database {
 
 			return sum / count;
 		} catch(SQLException e) {
-			e.printStackTrace();
 			return -1; //TODO: fix this too
 		}
 	}
 
-	public static void closeDatabase() {
+	protected static void closeDatabase() {
 		INSTANCE.close();
 	}
 

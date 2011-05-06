@@ -1,5 +1,7 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,7 +21,13 @@ import javax.swing.event.ChangeListener;
  */
 public class LotteryNumberPanel extends JPanel implements ChangeListener, ActionListener, AncestorListener {
 	
+	private static ImageIcon _happyImage = new ImageIcon(Constants.HAPPY_FILE, "yay!");
+	private static ImageIcon _okayImage = new ImageIcon(Constants.OKAY_FILE, "eh");
+	private static ImageIcon _sadImage = new ImageIcon(Constants.SAD_FILE, "booo");
 	
+	private JLabel _happyButton;
+	private JLabel _okayButton;
+	private JLabel _sadButton;
 	
 	/** the slider displaying the lottery number */
 	private JSlider _numberSlider;
@@ -30,14 +38,14 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 	
 	public LotteryNumberPanel() {
 		// slider
-		_numberSlider = new JSlider(JSlider.VERTICAL, 1, Constants.MAX_LOTTERY_NUMBER, Constants.DEFAULT_LOTTERY_NUMBER);
+		_numberSlider = new JSlider(JSlider.VERTICAL, 1, Database.getMaxLotteryNumber(), Constants.DEFAULT_LOTTERY_NUMBER);
 		_numberSlider.addChangeListener(this);
 		_numberSlider.setMajorTickSpacing(50);
 		_numberSlider.setPaintTicks(true);
 		_numberSlider.setPaintLabels(true);
 		
 		// semester level
-		Integer[] semesterLevels = {3, 4, 5, 6, 7, 8, 9}; 
+		Integer[] semesterLevels = {3, 4, 5, 6, 7, 8, 9, 10}; 
 			//TODO: rather than ints, have these be objects, so we can include a string description (e.g., "sophomore") as well
 		
 		_semesterLevelBox = new JComboBox(semesterLevels);
@@ -52,7 +60,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		_semesterLevelBox.setSelectedIndex(semesterIndex);
 		
 		// set panel size and add elements to it
-		Dimension size = new Dimension(200,500);
+		Dimension size = new Dimension(Constants.LOTTERY_PANEL_WIDTH,Constants.LOTTERY_PANEL_HEIGHT);
 		this.setPreferredSize(size);
 		this.setSize(size);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -66,12 +74,25 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		this.add(new JLabel("Semester level:"));
 		this.add(_semesterLevelBox);
 		
+		
 		this.add(new JLabel("Level of optimism:"));
-		JComponent happiness = new JLabel("Happy");
-		happiness.setToolTipText("Brown students are always happy.");
-		happiness.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.add(happiness);
+		
+		_happyButton = new JLabel(_happyImage);
+		_okayButton = new JLabel(_okayImage);
+		_sadButton = new JLabel(_sadImage);
+		
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		
+		buttonPanel.add(Box.createRigidArea(new Dimension(20, 0)));
+		buttonPanel.add(_happyButton);
+		buttonPanel.add(_okayButton);
+		buttonPanel.add(_sadButton);
+		
+		this.add(buttonPanel);
 		this.addAncestorListener(this);
+		
+		_numberSlider.setValue(Database.getMaxLotteryNumber() / 2);
 	}
 	
 	/**
@@ -107,7 +128,6 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		if(_semesterLevelBox.hasFocus()) {
 			// get the semester level from the box
 			int semester = (Integer) _semesterLevelBox.getSelectedItem();
-			System.out.println(semester);
 			
 			// get an estimated lottery number from the database
 			int lotteryNumber = Database.lotteryNumberFromSemester(semester);

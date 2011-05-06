@@ -5,14 +5,19 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.Iterator;
 
 import javax.swing.*;
 
 public class Canvas extends JLayeredPane {
-	private Image _trashImage;
+	private static final Canvas INSTANCE = new Canvas();
+	public static Canvas getInstance() { return INSTANCE; }
 	
-	public Canvas() {
+	private Image _trashImage;
+	private Image _domusImage;
+	
+	private Canvas() {
 		this.setLayout(null);
 		
 		Dimension d = new Dimension(Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
@@ -26,11 +31,12 @@ public class Canvas extends JLayeredPane {
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
 		
-		// load trash icon
+		// load trash icon and watermark
 		try {
 			_trashImage = javax.imageio.ImageIO.read(new java.io.File(Constants.TRASH_FILE));
+			_domusImage = javax.imageio.ImageIO.read(new java.io.File(Constants.DOMUS_FILE));
 		} catch(java.io.IOException e) {
-			//TODO: yell, or break silently?
+			//TODO: yell, or break silently? break silently..duh..
 		}
 		
 		// sample data; TODO: remove
@@ -51,6 +57,25 @@ public class Canvas extends JLayeredPane {
 //		this.add(p2, Constants.PERSON_LAYER);
 //		this.add(s, Constants.SUBGROUP_LAYER);
 //		this.add(h, Constants.HOUSE_LAYER);
+	}
+	
+	/**
+	 * Redraws the Canvas and all components based on the objects currently in State.
+	 */
+	public void redrawFromState() {
+		this.removeAll(); // remove all current child components
+		
+		for(House h : State.getInstance().getGroup()) {
+			this.add(h, Constants.HOUSE_LAYER);
+			
+			for(SubGroup s : h) {
+				this.add(s, Constants.SUBGROUP_LAYER);
+				
+				for(Person p : s) {
+					this.add(p, Constants.PERSON_LAYER);
+				}
+			}
+		}
 	}
 	
 	private boolean intersecting(DraggablePositionableComponent a, DraggablePositionableComponent b) {
@@ -89,21 +114,26 @@ public class Canvas extends JLayeredPane {
 			}
 		}
 		
-		// remove this person from his/her old subgroup
 		SubGroup currentSubGroup = person.getSubGroup();
+		House currentHouse = null;
 		
+		// remove this person from his/her old subgroup
 		if(currentSubGroup != null) {
 			if(currentSubGroup == newSubGroup) { // ...unless he's staying in the same subgroup
 				currentSubGroup.updatePeoplePositions(); // move the person pack to his/her spot
 				return; // otherwise, no changes are needed
 			}
 			
+			currentHouse = currentSubGroup.getHouse();
+			
 			currentSubGroup.removePerson(person);
-			if(currentSubGroup.isEmpty()) {
-				removeIfEmpty(currentSubGroup); // (may require cleaning up subgroup/house, if they have been left empty)
-			} else {
-				currentSubGroup.updatePeoplePositions();
-			}	
+			currentSubGroup.updatePeoplePositions();
+			
+			removeIfEmpty(currentSubGroup); // (may require cleaning up subgroup/house, if they have been left empty)
+			
+			if(currentHouse != null) {
+				currentHouse.updateSubGroupPositions();
+			}
 		}
 		
 		if(newSubGroup == null) { // no subgroup was found for this person. create a new one.
@@ -116,12 +146,27 @@ public class Canvas extends JLayeredPane {
 			
 			// add the person to the subgroup
 			newSubGroup.addPerson(person);
-			
-			// place the subgroup into a house
-			dropSubGroup(newSubGroup);
-			
+						
 			// display it
 			this.add(newSubGroup, Constants.SUBGROUP_LAYER);
+			
+			// place the subgroup into a house
+			placeSubGroup(newSubGroup);
+			
+			/* when being placed, the subgroup could have been merged with a different one, 
+			 * and therefore deleted. to account for this possibility, 
+			 * let's make sure newSubGroup really is the subgroup that the person has been added to.
+			 */
+			newSubGroup = person.getSubGroup();
+			
+			// if an entirely new house was created for this person,
+			// get the preferences from the old house and copy them to the new house
+			if(		currentHouse != null &&
+					newSubGroup.getOccupancy() == 1 &&
+					newSubGroup.getHouse().numberOfSubGroups() == 1)
+			{
+				newSubGroup.getHouse().setLocationPreference(currentHouse.getLocationPreference());
+			}
 		} else {
 			// add the person to the (already-existing) subgroup
 			newSubGroup.addPerson(person);
@@ -136,7 +181,7 @@ public class Canvas extends JLayeredPane {
 	}
 	
 	/**
-	 * Performs a drop of the given subgroup at the given location.
+	 * Performs a drop of the given subgroup at its current location.
 	 * 
 	 * @param subgroup
 	 */
@@ -146,6 +191,10 @@ public class Canvas extends JLayeredPane {
 			return;
 		}
 		
+		placeSubGroup(subgroup);
+	}
+	
+	public void placeSubGroup(SubGroup subgroup) {
 		House newHouse = null;
 		
 		for(House h : State.getInstance().getGroup()) {
@@ -181,13 +230,18 @@ public class Canvas extends JLayeredPane {
 			// save the new house to State
 			State.getInstance().getGroup().add(newHouse);
 			
-			// place the new house wherever the subgroup is right now
+			// set the position of the new house to wherever the subgroup is right now
 			newHouse.setPosition(
 					subgroup.getPosition().x - Constants.HOUSE_PADDING, 
 					subgroup.getPosition().y - Constants.HOUSE_PADDING);
-						
+			
 			// display it
 			this.add(newHouse, Constants.HOUSE_LAYER);
+			
+			// get the preferences from the old house and copy them to the new house
+			if(currentHouse != null) {
+				newHouse.setLocationPreference(currentHouse.getLocationPreference());
+			}
 		} else if(newHouse == currentHouse) {
 			currentHouse.updateSubGroupPositions(); // move subgroup to its default location in house
 			this.repaint();
@@ -206,12 +260,18 @@ public class Canvas extends JLayeredPane {
 		
 		State.getInstance().setSelectedHouse(newHouse);
 		
+		// verify house status on the canvas (merge/move if necessary)
+		placeHouse(newHouse);
+		
 		this.repaint();
 	}
 	
 	/**
-	 * Performs a drop of the given house at the given location
-	 * by checking if it is intersecting with any houses.
+	 * Performs a drop of the given house at its current location.
+	 * 
+	 * Specifically,
+	 * Checks if it is over the trash can (if it is, it is removed).
+	 * Places the house on the canvas (@see {@link #placeHouse(House)})
 	 * 
 	 * @param house
 	 */
@@ -219,6 +279,24 @@ public class Canvas extends JLayeredPane {
 		if(tryRemove(house)) { // if the house is over the trash, remove them
 			repaint();
 			return;
+		}
+		
+		placeHouse(house);
+	}
+	
+	/**
+	 * Establishes the location/status of a house on the canvas.
+	 * 
+	 * Specifically,
+	 * Checks if the house is over the sidebar (if it is, moves it off).
+	 * Checks if it is intersecting any house (if it is, they are merged).
+	 * 
+	 * @param house
+	 */
+	protected void placeHouse(House house) {
+		if(house.getPosition().x < Constants.SIDEBAR_WIDTH) {
+			house.setPosition(Constants.SIDEBAR_WIDTH, house.getPosition().y);
+			house.updateSubGroupPositions();
 		}
 		
 		for(House h : State.getInstance().getGroup()) {
@@ -346,16 +424,22 @@ public class Canvas extends JLayeredPane {
 	 */
 	private boolean tryRemove(Person p) {
 		if(overTrashIcon(p)) {
-			SubGroup currentParent = p.getSubGroup();
+			SubGroup currentSubGroup = p.getSubGroup();
 			
 			// remove from view
 			this.remove(p);
 			
 			// remove from subgroup
-			if(currentParent != null) {
-				currentParent.removePerson(p);
-				currentParent.updatePeoplePositions();
-				removeIfEmpty(currentParent);
+			if(currentSubGroup != null) {
+				currentSubGroup.removePerson(p);
+				currentSubGroup.updatePeoplePositions();
+				
+				House currentHouse = currentSubGroup.getHouse();
+				removeIfEmpty(currentSubGroup);
+
+				if(currentHouse != null) {
+					currentHouse.updateSubGroupPositions();
+				}
 			}
 			
 			return true;
@@ -385,7 +469,12 @@ public class Canvas extends JLayeredPane {
 			this.remove(s);
 			
 			// remove from house
+			House currentHouse = s.getHouse();
 			removeIfEmpty(s);
+
+			if(currentHouse != null) {
+				currentHouse.updateSubGroupPositions();
+			}
 			
 			return true;
 		}
@@ -455,6 +544,10 @@ public class Canvas extends JLayeredPane {
 		g.drawLine(Constants.SIDEBAR_WIDTH, 0, Constants.SIDEBAR_WIDTH, this.getHeight());
 		g.setColor(Constants.SIDEBAR_COLOR);
 		g.fillRect(0, 0, Constants.SIDEBAR_WIDTH, this.getHeight());
+		
+		// watermark
+		g.drawImage(_domusImage, (this.getWidth() + Constants.SIDEBAR_WIDTH) / 2 - _domusImage.getWidth(null)/ 2 , (this.getHeight() - _domusImage.getHeight(null)) / 2, null);
+		
 		
 		
 		// new guy

@@ -6,7 +6,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import javax.swing.*;
@@ -28,6 +30,9 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 	private static final LocationPreferencePanel INSTANCE = new LocationPreferencePanel();
 	public static LocationPreferencePanel getInstance() { return INSTANCE; }
 	
+	/** all the checkboxes on this panel. ever. */
+	private Collection<JCheckBox> _checkBoxes;
+	
 	/** all the dorm checkboxes in this panel */
 	private Map<Dorm, DormCheckBox> _dormBoxes;
 	
@@ -35,6 +40,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 	private boolean _changingState = false;
 	
 	private LocationPreferencePanel() {
+		_checkBoxes = new LinkedList<JCheckBox>();
 		_dormBoxes = new HashMap<Dorm, DormCheckBox>();
 		
 		State.getInstance().setSelectedHouseChangeListener(this);
@@ -44,8 +50,15 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		this.setLayout(new BorderLayout());
 		
 		JTextPane title = new JTextPane();
-		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
+		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
 		title.setText("LOCATION PREFERENCES");
+		
+		ParentCheckBox masterBox = new ParentCheckBox("I'm willing to live anywhere!");
+		_checkBoxes.add(masterBox);
+		
+		JPanel topPanel = new JPanel(new BorderLayout());
+		topPanel.add(title, BorderLayout.WEST);
+		topPanel.add(masterBox, BorderLayout.EAST);
 		
 		JPanel locations = new JPanel();
 		locations.setLayout(new BoxLayout(locations, BoxLayout.X_AXIS));
@@ -55,18 +68,19 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 			areaPanel.setLayout(new BoxLayout(areaPanel, BoxLayout.Y_AXIS));
 			areaPanel.setPreferredSize(new Dimension(200,260));
 			areaPanel.setMinimumSize(new Dimension(200,260));
-			areaPanel.setBorder(new LineBorder(Color.black));
+			areaPanel.setBorder(new LineBorder(Color.GRAY));
 			
 			JPanel areaNamePanel = new JPanel();
 			areaNamePanel.setLayout(new BoxLayout(areaNamePanel, BoxLayout.X_AXIS));
-			MatteBorder line = new MatteBorder(0, 0, 1, 0, Color.black);
+			MatteBorder line = new MatteBorder(0, 0, 1, 0, Color.GRAY);
 			
 			areaNamePanel.setBorder(line);
 			areaNamePanel.setPreferredSize(new Dimension(200,25));
 			areaNamePanel.setMinimumSize(new Dimension(200,25));
 			
 			ParentCheckBox areaBox = new ParentCheckBox(area.getName());
-			areaBox.setSelected(true);
+			areaBox.setSelected(false);
+			_checkBoxes.add(areaBox);
 			
 			areaNamePanel.add(areaBox);
 			areaNamePanel.add(Box.createHorizontalGlue());
@@ -80,13 +94,16 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 				
 				DormCheckBox dormBox = new DormCheckBox(dorm);
 				
-				dormBox.setSelected(true);
+				dormBox.setSelected(false);
 				dormBox.addItemListener(myListener);
 				
-				dormBox.setParent(areaBox);
+				dormBox.addParent(areaBox);
+				dormBox.addParent(masterBox);
 				areaBox.addChild(dormBox);
+				masterBox.addChild(dormBox);
 				
 				_dormBoxes.put(dorm, dormBox);
+				_checkBoxes.add(dormBox);
 				
 				dormPanel.add(Box.createRigidArea(new Dimension(15,0)));
 				dormPanel.add(dormBox);
@@ -99,8 +116,10 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 			locations.add(areaPanel);
 		}
 		
-		this.add(title, BorderLayout.WEST);
+		this.add(topPanel, BorderLayout.NORTH);
 		this.add(locations, BorderLayout.SOUTH);
+		
+		stateChanged(null);
 	}
 	
 	/**
@@ -134,7 +153,8 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		_changingState = true;
 		
 		// clear all the current values
-		for(DormCheckBox checkbox : _dormBoxes.values()) {
+		for(JCheckBox checkbox : _checkBoxes) {
+			checkbox.setEnabled(true);
 			checkbox.setSelected(false);
 		}
 		
@@ -145,6 +165,10 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 				if(checkbox != null) { // null shouldn't happen
 					checkbox.setSelected(true);
 				}
+			}
+		} else { // no house selected
+			for(JCheckBox checkbox : _checkBoxes) { // disable all checkboxes
+				checkbox.setEnabled(false);
 			}
 		}
 		
