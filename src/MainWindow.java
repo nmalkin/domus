@@ -14,7 +14,6 @@ import org.dom4j.DocumentException;
 
 public class MainWindow extends JFrame {
 	
-	private JCheckBoxMenuItem sophomoreOnlyMenuItem;
 	protected MainWindow() {
 		super("Domus");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -36,6 +35,16 @@ public class MainWindow extends JFrame {
 		exportFileChooser.setFileFilter(filter);
 		
 		// menu bar items
+		// sophomore-only checkbox
+		final JCheckBoxMenuItem sophomoreOnlyMenuItem = new JCheckBoxMenuItem("Sophomore-Only Eligible");
+		sophomoreOnlyMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(sophomoreOnlyMenuItem.isSelected()) State.getInstance().getGroup().setSophomoreStatus(true);
+				else State.getInstance().getGroup().setSophomoreStatus(false);
+			}
+		});
+		
 		// load state button
 		JMenuItem loadMenuItem = new JMenuItem("Open");
 		loadMenuItem.setMnemonic(KeyEvent.VK_O);
@@ -54,8 +63,9 @@ public class MainWindow extends JFrame {
 									JOptionPane.WARNING_MESSAGE);
 						} else {
 							DomusXML.readXML(file);
-							Canvas.getInstance().redrawFromState();
-							ListsTab.getInstance().updateLists();
+							Canvas.getInstance().redrawFromState(); // update canvas
+							ListsTab.getInstance().updateLists(); // update cart
+							sophomoreOnlyMenuItem.setSelected(State.getInstance().getGroup().isSophomore()); // update menu sophomore-only value
 						}
 					}
 				} catch (IOException e1) {
@@ -140,15 +150,6 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new YearWindow();
-			}
-		});
-		
-		sophomoreOnlyMenuItem = new JCheckBoxMenuItem("Sophomore-Only Eligible");
-		sophomoreOnlyMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(sophomoreOnlyMenuItem.isSelected()) State.getInstance().getGroup().setSophomoreStatus(true);
-				else State.getInstance().getGroup().setSophomoreStatus(false);
 			}
 		});
 		
