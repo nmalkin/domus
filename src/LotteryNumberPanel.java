@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,12 +44,20 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 
 
 	public LotteryNumberPanel() {
+		// set panel size
+		Dimension size = new Dimension(Constants.LOTTERY_PANEL_WIDTH,Constants.LOTTERY_PANEL_HEIGHT);
+		this.setPreferredSize(size);
+		this.setSize(size);
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setBorder(new MatteBorder(0,1,0,0,Color.GRAY));
+		
 		// slider
 		_numberSlider = new JSlider(JSlider.VERTICAL, 1, Database.getMaxLotteryNumber(), Constants.DEFAULT_LOTTERY_NUMBER);
 		_numberSlider.addChangeListener(this);
 		_numberSlider.setMajorTickSpacing(50);
 		_numberSlider.setPaintTicks(true);
 		_numberSlider.setPaintLabels(true);
+		_numberSlider.setAlignmentX(CENTER_ALIGNMENT);
 
 		// semester level
 		Integer[] semesterLevels = {3, 4, 5, 6, 7, 8, 9, 10}; 
@@ -59,33 +68,35 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		//semesterLevel.setPreferredSize(new Dimension(100,25));
 		_semesterLevelBox.setMaximumSize(new Dimension(100,25));
 		_semesterLevelBox.setEditable(false);
+		_semesterLevelBox.setAlignmentX(CENTER_ALIGNMENT);
 
 		// set semester level for current number
 		int semesterLevel = Database.semesterFromLotteryNumber(Constants.DEFAULT_LOTTERY_NUMBER);
 		int semesterIndex = semesterLevel - 3;
 		_semesterLevelBox.setSelectedIndex(semesterIndex);
 
-		// set panel size and add elements to it
-		Dimension size = new Dimension(Constants.LOTTERY_PANEL_WIDTH,Constants.LOTTERY_PANEL_HEIGHT);
-		this.setPreferredSize(size);
-		this.setSize(size);
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBorder(new MatteBorder(0,1,0,0,Color.GRAY));
-
-		this.add(new JLabel("Lottery number"));
+		JLabel lotteryNumTitle = new JLabel("LOTTERY NUMBER");
+		lotteryNumTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD,12));
+		lotteryNumTitle.setAlignmentX(CENTER_ALIGNMENT);
+		this.add(lotteryNumTitle);
+		
 		this.add(_numberSlider);
 
 		this.add(Box.createRigidArea(new Dimension(0,10)));
-
-		//TODO: make sure all the elements actually align
-		//numberSlider.setAlignmentX(CENTER_ALIGNMENT);
-
-		this.add(new JLabel("Semester level:"));
+		
+		JLabel semesterLevelTitle = new JLabel("SEMESTER LEVEL");
+		semesterLevelTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD,12));
+		semesterLevelTitle.setAlignmentX(CENTER_ALIGNMENT);
+		this.add(semesterLevelTitle);
+		
 		this.add(_semesterLevelBox);
 
 		this.add(Box.createRigidArea(new Dimension(0,10)));
 
-		this.add(new JLabel("Level of optimism"));
+		JLabel optimismLevelTitle = new JLabel("LEVEL OF OPTIMISM");
+		optimismLevelTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD,12));
+		optimismLevelTitle.setAlignmentX(CENTER_ALIGNMENT);
+		this.add(optimismLevelTitle);
 
 		_happyButton = new JLabel(_happyImage);
 		_happyButton.addMouseListener(new HappyListener());
@@ -98,8 +109,8 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-
-		buttonPanel.add(Box.createRigidArea(new Dimension((this.getWidth() - 3 * Constants.OPTIMISM_BUTTON_WIDTH - 30) / 2, 0)));
+		buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
+		
 		buttonPanel.add(_happyButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		buttonPanel.add(_okayButton);
