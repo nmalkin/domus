@@ -53,7 +53,7 @@ public class State {
 		_optimism = Constants.OPTIMISM_MEDIUM;
 		_sophomore = false;
 		
-		for(int year: Constants.YEARS) _years.add((Integer) year);
+		for(int year: Database.getYears()) _years.add((Integer) year);
 	}
 	
 	public Group getGroup() {
