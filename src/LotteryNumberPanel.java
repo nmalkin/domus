@@ -98,14 +98,35 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		optimismLevelTitle.setAlignmentX(CENTER_ALIGNMENT);
 		this.add(optimismLevelTitle);
 
+		MouseAdapter optimismButtonListener = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JComponent source = (JComponent) e.getSource();
+				source.requestFocus();
+				int optimism = -1;
+				
+				if(source == _happyButton) {
+					optimism = Constants.OPTIMISM_HIGH;
+				} else if(source == _okayButton) {
+					optimism = Constants.OPTIMISM_MEDIUM;
+				} else if(source == _sadButton) {
+					optimism = Constants.OPTIMISM_LOW;
+				}
+				
+				selectOptimism(optimism);
+				State.getInstance().setOptimism(optimism);
+				updateSliderFromSemester();
+			}
+		};
+		
 		_happyButton = new JLabel(_happyImage);
-		_happyButton.addMouseListener(new HappyListener());
+		_happyButton.addMouseListener(optimismButtonListener);
 
 		_okayButton = new JLabel(_okayImage);
-		_okayButton.addMouseListener(new OkayListener());
+		_okayButton.addMouseListener(optimismButtonListener);
 
 		_sadButton = new JLabel(_sadImage);
-		_sadButton.addMouseListener(new SadListener());
+		_sadButton.addMouseListener(optimismButtonListener);
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -123,30 +144,6 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		this.addAncestorListener(this);
 
 		_numberSlider.setValue(Database.lotteryNumberFromSemester(semesterIndex) / 2);
-	}
-	
-	public class HappyListener extends MouseAdapter {
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			State.getInstance().setOptimism(Constants.OPTIMISTIC);
-			updateSliderFromSemester();
-		}
-	}
-
-	public class OkayListener extends MouseAdapter {
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			State.getInstance().setOptimism(Constants.AVERAGE);
-			updateSliderFromSemester();
-		}
-	}
-
-	public class SadListener extends MouseAdapter {
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			State.getInstance().setOptimism(Constants.PESSIMISTIC);
-			updateSliderFromSemester();
-		}
 	}
 
 	public void updateSliderFromSemester() {
@@ -166,40 +163,52 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 	public void stateChanged(ChangeEvent e) {
 		if(e.getSource() != _numberSlider) throw new IllegalArgumentException("expecting event from slider");
 
-		// get the lottery number from the slider
-		int lotteryNumber = _numberSlider.getValue();
-
-		// update the State with the current lottery number
-		State.getInstance().getGroup().setLotteryNumber(lotteryNumber);
-
-		// get the semester level for the currently selected number
-		int semesterLevel = Database.semesterFromLotteryNumber(lotteryNumber);
-		int semesterIndex = semesterLevel - 3; // the first semester displayed in the combobox is 3
-		//TODO: have a better system; probably affected by whether the semesterLevel stays an int 
-		//      (see todo above)
-
-		// update the combobox with it
-
-		int happiness = Database.optimismFromLotteryNumber(lotteryNumber);
-
-		if(happiness == Constants.OPTIMISTIC) {
-			_happyButton.setBorder(new LineBorder(Color.GRAY));
-			_okayButton.setBorder(null);
-			_sadButton.setBorder(null);
+		if(_numberSlider.hasFocus()) {
+			// get the lottery number from the slider
+			int lotteryNumber = _numberSlider.getValue();
+	
+			// update the State with the current lottery number
+			State.getInstance().getGroup().setLotteryNumber(lotteryNumber);
+	
+			// get the semester level for the currently selected number
+			int semesterLevel = Database.semesterFromLotteryNumber(lotteryNumber);
+			int semesterIndex = semesterLevel - 3; // the first semester displayed in the combobox is 3
+			//TODO: have a better system; probably affected by whether the semesterLevel stays an int 
+			//      (see todo above)
+	
+			// update the combobox with it
+			_semesterLevelBox.setSelectedIndex(semesterIndex);
+			
+			// get happiness level and update state and the display with it
+			int happiness = Database.optimismFromLotteryNumber(lotteryNumber);
+			State.getInstance().setOptimism(happiness);
+			selectOptimism(happiness);
 		}
-		else if(happiness == Constants.AVERAGE) {
-			_happyButton.setBorder(null);
-			_okayButton.setBorder(new LineBorder(Color.GRAY));
-			_sadButton.setBorder(null);
+	}
+	
+	/**
+	 * Given an optimism level, selects the appropriate button
+	 * (and deselects the others).
+	 * 
+	 * @param optimism the optimism level
+	 * @see Constants for allowed optimism levels
+	 */
+	protected void selectOptimism(int optimism) {
+		_happyButton.setBorder(null);
+		_okayButton.setBorder(null);
+		_sadButton.setBorder(null);
+		
+		switch(optimism) {
+			case Constants.OPTIMISM_HIGH:
+				_happyButton.setBorder(new LineBorder(Color.GRAY));
+				break;
+			case Constants.OPTIMISM_MEDIUM:
+				_okayButton.setBorder(new LineBorder(Color.GRAY));
+				break;
+			case Constants.OPTIMISM_LOW:
+				_sadButton.setBorder(new LineBorder(Color.GRAY));
+				break;
 		}
-		else {
-			_happyButton.setBorder(null);
-			_okayButton.setBorder(null);
-			_sadButton.setBorder(new LineBorder(Color.GRAY));
-		}
-
-		State.getInstance().setOptimism(happiness);
-		_semesterLevelBox.setSelectedIndex(semesterIndex);
 	}
 
 	/**
