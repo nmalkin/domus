@@ -132,12 +132,21 @@ public class MainWindow extends JFrame {
 			}
 		});
 		
+		// exit
+		JMenuItem exitMenuItem = new JMenuItem("Exit");
+		exitMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		
 		
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.add(loadMenuItem);
 		fileMenu.add(saveMenuItem);
 		fileMenu.add(exportMenuItem);
+		fileMenu.add(exitMenuItem);
 		
 		JMenu optionsMenu = new JMenu("Options");
 		
