@@ -1,9 +1,13 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.transform.TransformerException;
 
 import org.dom4j.DocumentException;
 
@@ -18,19 +22,27 @@ public class MainWindow extends JFrame {
 		try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
 		catch (Exception e) { e.printStackTrace(); }
 		
-		// file chooser
-		final JFileChooser fc = new JFileChooser();
-		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		// state file chooser
+		final JFileChooser stateFileChooser = new JFileChooser();
+		stateFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		
-		// menu bar
+		// html export file chooser
+		final JFileChooser exportFileChooser = new JFileChooser();
+		exportFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		FileFilter filter = new FileNameExtensionFilter("HTML file", "htm", "html");
+		exportFileChooser.addChoosableFileFilter(filter);
+		
+		// menu bar items
+		// load state button
 		JMenuItem loadMenuItem = new JMenuItem("Open");
+		loadMenuItem.setMnemonic(KeyEvent.VK_O);
 		loadMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					int returnVal = fc.showOpenDialog(MainWindow.this);
+					int returnVal = stateFileChooser.showOpenDialog(MainWindow.this);
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						File file = fc.getSelectedFile();
+						File file = stateFileChooser.getSelectedFile();
 						
 						if(! file.exists()) {
 							JOptionPane.showMessageDialog(MainWindow.this, 
@@ -53,14 +65,16 @@ public class MainWindow extends JFrame {
 			}
 		});
 		
+		// save state button
 		JMenuItem saveMenuItem = new JMenuItem("Save");
+		saveMenuItem.setMnemonic(KeyEvent.VK_S);
 		saveMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					int returnVal = fc.showSaveDialog(MainWindow.this);
+					int returnVal = stateFileChooser.showSaveDialog(MainWindow.this);
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						File file = fc.getSelectedFile();
+						File file = stateFileChooser.getSelectedFile();
 						
 						if(file.exists()) {
 							int option = JOptionPane.showConfirmDialog(MainWindow.this, 
@@ -84,11 +98,65 @@ public class MainWindow extends JFrame {
 			}
 		});
 		
+		// export button
+		JMenuItem exportMenuItem = new JMenuItem("Export");
+		exportMenuItem.setMnemonic(KeyEvent.VK_E);
+		exportMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int returnVal = exportFileChooser.showSaveDialog(MainWindow.this);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						File file = exportFileChooser.getSelectedFile();
+						
+						if(file.exists()) {
+							int option = JOptionPane.showConfirmDialog(MainWindow.this, 
+									"This file already exists. Are you sure you want to overwrite it?", 
+									"Domus", 
+									JOptionPane.OK_CANCEL_OPTION);
+							
+							if(option == JOptionPane.OK_OPTION) {
+								DomusXML.writeHTML(file);
+							}
+						} else {
+							DomusXML.writeHTML(file);
+						}
+					}
+				
+				} catch(java.io.IOException err) {
+					System.err.println("an error occurred writing to output");
+					err.printStackTrace();
+					//TODO: display a message
+				} catch (TransformerException err) {
+					System.err.println("an error occurred writing to output");
+					err.printStackTrace();
+					//TODO: display a message
+				}
+			}
+		});
+		
+		// exit
+		JMenuItem exitMenuItem = new JMenuItem("Exit");
+		exitMenuItem.setMnemonic(KeyEvent.VK_X);
+		exitMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		
+		
 		JMenu fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+		
 		fileMenu.add(loadMenuItem);
 		fileMenu.add(saveMenuItem);
+		fileMenu.add(exportMenuItem);
+		fileMenu.add(exitMenuItem);
+		
 		
 		JMenu optionsMenu = new JMenu("Options");
+		optionsMenu.setMnemonic(KeyEvent.VK_O);
 		
 		JMenuItem yearsMenuItem = new JMenuItem("Choose years");
 		yearsMenuItem.addActionListener(new ActionListener() {
@@ -102,8 +170,8 @@ public class MainWindow extends JFrame {
 		sophomoreOnlyMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(sophomoreOnlyMenuItem.isSelected()) State.getInstance().setSophomoreOnly(true);
-				else State.getInstance().setSophomoreOnly(false);
+				if(sophomoreOnlyMenuItem.isSelected()) State.getInstance().setSophomoreStatus(true);
+				else State.getInstance().setSophomoreStatus(false);
 			}
 		});
 		
