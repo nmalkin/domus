@@ -550,7 +550,10 @@ public class Canvas extends JLayeredPane {
 		
 		// watermark
 		g.drawImage(_domusImage, (this.getWidth() + Constants.SIDEBAR_WIDTH) / 2 - _domusImage.getWidth(null)/ 2 , (this.getHeight() - _domusImage.getHeight(null)) / 2, null);
-				
+		
+		// new people icons
+		g.setColor(Constants.NEW_PERSON_TEXT_COLOR);
+		
 		// new guy
 		String text = "New Guy";
 		int textWidth = g.getFontMetrics().stringWidth(text);

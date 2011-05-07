@@ -27,6 +27,8 @@ public class Constants {
 	protected static final int SIDEBAR_WIDTH = 120;
 	protected static final Color SIDEBAR_COLOR = Color.GRAY;
 	
+	protected static final Color NEW_PERSON_TEXT_COLOR = Color.LIGHT_GRAY;
+	
 	protected static final String TRASH_FILE = "img/trash.png";
 	protected static final int TRASH_WIDTH = 77; // pixels
 	protected static final int TRASH_HEIGHT = 100; // pixels
