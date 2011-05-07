@@ -13,7 +13,7 @@ import javax.xml.transform.TransformerException;
 import org.dom4j.DocumentException;
 
 public class MainWindow extends JFrame {
-	
+	JTabbedPane tabbedPane;
 	protected MainWindow() {
 		super("Domus");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -66,6 +66,22 @@ public class MainWindow extends JFrame {
 							Canvas.getInstance().redrawFromState(); // update canvas
 							ListsTab.getInstance().updateLists(); // update cart
 							sophomoreOnlyMenuItem.setSelected(State.getInstance().getGroup().isSophomore()); // update menu sophomore-only value
+							
+							/*
+							 * Now we need to update the slider with the new lottery number. But how do we get to it?
+							 * Luckily for us, the LotteryNumberPanel has an AncestorListener:
+							 * when one of its parent components becomes visible, it will update from the State.
+							 * But the problem is that its parent component is already visible (whatever tab is currently open),
+							 * so setting it as visible (or as selected) won't do anything.
+							 * So we will momentarily switch to a different tab, and then switch back,
+							 * triggering an ancestor event.
+							 * This is a hacky way of doing things, but probably the best one under the circumstances.
+							 * TODO: using a model for LotteryNumberPanel may help avoid this problem.
+							 *		 see http://download.oracle.com/javase/tutorial/uiswing/components/model.html 
+							 */
+							final int NUMBER_OF_TABS = 3;
+							tabbedPane.setSelectedIndex((tabbedPane.getSelectedIndex()+1) % NUMBER_OF_TABS);
+							tabbedPane.setSelectedIndex((tabbedPane.getSelectedIndex()-1) % NUMBER_OF_TABS);
 						}
 					}
 				} catch (IOException e1) {
@@ -163,7 +179,7 @@ public class MainWindow extends JFrame {
 		this.setJMenuBar(menuBar);
 		
 		// tabs
-		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Preferences", new PreferencesTab());
 		tabbedPane.addTab("Results", new ResultsTab());
 		tabbedPane.addTab("Cart", ListsTab.getInstance());

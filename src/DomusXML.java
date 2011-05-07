@@ -194,6 +194,9 @@ public class DomusXML {
 			Element input = root.element("input");
 			Element group = input.element("group");
 			
+			int lotteryNumber = getIntAttribute(group, "lottery_number");
+			newGroup.setLotteryNumber(lotteryNumber);
+			
 			String sophomore = group.attributeValue("sophomore");
 			if(sophomore.equals("yes")) {
 				newGroup.setSophomoreStatus(true);
