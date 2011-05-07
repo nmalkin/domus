@@ -38,7 +38,7 @@ public class State {
 	private List<Integer> _years;
 	private List<Integer> _ignoredYears;
 	
-	private boolean _sophomoreOnly;
+	private boolean _sophomore;
 
 	private State() {
 		_group = new Group();
@@ -48,7 +48,7 @@ public class State {
 		_selectedHouseChangeListener = null;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
-		_sophomoreOnly = false;
+		_sophomore = false;
 		
 		for(int year: Constants.YEARS) _years.add((Integer) year);
 	}
@@ -57,16 +57,21 @@ public class State {
 		return _group;
 	}
 	
-	public void setSophomoreOnly(boolean soph) {
-		_sophomoreOnly = soph;
+	/**
+	 * Sets the sophomore status.
+	 * 
+	 * @param soph true if the group is eligible for sophomore-only housing
+	 */
+	public void setSophomoreStatus(boolean soph) {
+		_sophomore = soph;
 	}
 
 	protected void setGroup(Group group) { //TODO: do we want to expose it like this?
 		_group = group;
 	}
 	
-	public boolean isSophomoreOnly() {
-		return _sophomoreOnly;
+	public boolean isSophomore() {
+		return _sophomore;
 	}
 	
 	public int getOptimism() {
@@ -123,7 +128,7 @@ public class State {
 	public void updateResults() {
 		_results.clear();
 		Integer[] years = getYears();
-		boolean sophomoreOnly = isSophomoreOnly();
+		boolean sophomoreOnly = isSophomore();
 		for (House h : getGroup()) {
 			Collection<Dorm> locations = h.getLocationPreference();
 			for (SubGroup sg : h) {

@@ -102,8 +102,8 @@ public class MainWindow extends JFrame {
 		sophomoreOnlyMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(sophomoreOnlyMenuItem.isSelected()) State.getInstance().setSophomoreOnly(true);
-				else State.getInstance().setSophomoreOnly(false);
+				if(sophomoreOnlyMenuItem.isSelected()) State.getInstance().setSophomoreStatus(true);
+				else State.getInstance().setSophomoreStatus(false);
 			}
 		});
 		
