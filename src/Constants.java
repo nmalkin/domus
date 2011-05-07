@@ -14,8 +14,6 @@ public class Constants {
 	
 	// years -- TODO: get rid of these
 	protected final static int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
-	protected final static int FIRST_YEAR = 2006;
-	protected final static int LAST_YEAR = 2011;
 	
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
