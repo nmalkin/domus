@@ -12,9 +12,6 @@ public class Constants {
 	protected static final int INSET = 5; // pixels
 	protected static final String DOMUS_FILE = "img/domus.png";
 	
-	// years -- TODO: get rid of these
-	protected final static int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
-	
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
 	protected static final int CANVAS_HEIGHT = 650;
