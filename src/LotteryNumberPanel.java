@@ -91,7 +91,8 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		MouseAdapter optimismButtonListener = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Object source = e.getSource();
+				JComponent source = (JComponent) e.getSource();
+				source.requestFocus();
 				int optimism = -1;
 				
 				if(source == _happyButton) {
