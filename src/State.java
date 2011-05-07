@@ -38,8 +38,6 @@ public class State {
 	private List<Integer> _years;
 	private List<Integer> _ignoredYears;
 
-	private int _optimism;
-
 	private State() {
 		_group = new Group();
 		_results = TreeMultimap.create();
@@ -48,7 +46,6 @@ public class State {
 		_selectedHouseChangeListener = null;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
-		_optimism = Constants.OPTIMISM_MEDIUM;
 		
 		for(int year: Database.getYears()) _years.add((Integer) year);
 	}
@@ -59,14 +56,6 @@ public class State {
 	
 	protected void setGroup(Group group) { //TODO: do we want to expose it like this?
 		_group = group;
-	}
-	
-	public void setOptimism(int optimism) {
-		_optimism = optimism;
-	}
-	
-	public int getOptimism() {
-		return _optimism;
 	}
 	
 	public Integer[] getYears() {
