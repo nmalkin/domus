@@ -238,11 +238,11 @@ public class Database {
 				}
 				else if (optimism == Constants.AVERAGE) {
 					first = firstNum + total / 3 + 1;
-					last = first + 2 * total / 3;
+					last = firstNum + 2 * total / 3;
 				}
 				else {
 					first = firstNum + 2 * total / 3 + 1;
-					last = first + total - 1;
+					last = firstNum + total - 1;
 				}
 
 				ResultSet numbers = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester	+ " and number between " + first + " and " + last + ";");
