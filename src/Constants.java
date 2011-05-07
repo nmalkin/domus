@@ -97,10 +97,10 @@ public class Constants {
 	protected final static String SEMESTER_TABLE = "semester";
 	protected final static String CAMPUS_AREA_TABLE = "campusArea";
 	
-	// Optimism
-	protected final static int OPTIMISTIC = 0;
-	protected final static int AVERAGE = 1;
-	protected final static int PESSIMISTIC = 2;
+	// LotteryNumberPanel (optimism)
+	protected final static int OPTIMISM_HIGH = 0;
+	protected final static int OPTIMISM_MEDIUM = 1;
+	protected final static int OPTIMISM_LOW = 2;
 	
 	protected final static String HAPPY_FILE = "img/Grin.png";
 	protected final static String OKAY_FILE = "img/Undecided.png";

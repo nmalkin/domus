@@ -161,9 +161,9 @@ public class Database {
 				int firstNum = firstNumber.getInt("firstNum");
 				firstNumber.close();
 				
-				if(lotteryNumber < firstNum + total / 3) sum += Constants.OPTIMISTIC;
-				else if(lotteryNumber > firstNum + 2 * total / 3 + 1) sum += Constants.PESSIMISTIC;
-				else sum += Constants.AVERAGE;
+				if(lotteryNumber < firstNum + total / 3) sum += Constants.OPTIMISM_HIGH;
+				else if(lotteryNumber > firstNum + 2 * total / 3 + 1) sum += Constants.OPTIMISM_LOW;
+				else sum += Constants.OPTIMISM_MEDIUM;
 			}
 			
 			return Math.round(sum / years.length);
@@ -232,11 +232,11 @@ public class Database {
 				int firstNum = firstNumber.getInt("firstNum");
 				firstNumber.close();
 
-				if(optimism == Constants.OPTIMISTIC) {
+				if(optimism == Constants.OPTIMISM_HIGH) {
 					first = firstNum;
 					last = first + total / 3;
 				}
-				else if (optimism == Constants.AVERAGE) {
+				else if (optimism == Constants.OPTIMISM_MEDIUM) {
 					first = firstNum + total / 3 + 1;
 					last = firstNum + 2 * total / 3;
 				}

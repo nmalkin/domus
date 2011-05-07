@@ -50,7 +50,7 @@ public class State {
 		_selectedHouseChangeListener = null;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
-		_optimism = Constants.AVERAGE;
+		_optimism = Constants.OPTIMISM_MEDIUM;
 		_sophomore = false;
 		
 		for(int year: Constants.YEARS) _years.add((Integer) year);

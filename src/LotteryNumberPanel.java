@@ -95,11 +95,11 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 				int optimism = -1;
 				
 				if(source == _happyButton) {
-					optimism = Constants.OPTIMISTIC;
+					optimism = Constants.OPTIMISM_HIGH;
 				} else if(source == _okayButton) {
-					optimism = Constants.AVERAGE;
+					optimism = Constants.OPTIMISM_MEDIUM;
 				} else if(source == _sadButton) {
-					optimism = Constants.PESSIMISTIC;
+					optimism = Constants.OPTIMISM_LOW;
 				}
 				
 				selectOptimism(optimism);
@@ -188,13 +188,13 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		_sadButton.setBorder(null);
 		
 		switch(optimism) {
-			case Constants.OPTIMISTIC:
+			case Constants.OPTIMISM_HIGH:
 				_happyButton.setBorder(new LineBorder(Color.GRAY));
 				break;
-			case Constants.AVERAGE:
+			case Constants.OPTIMISM_MEDIUM:
 				_okayButton.setBorder(new LineBorder(Color.GRAY));
 				break;
-			case Constants.PESSIMISTIC:
+			case Constants.OPTIMISM_LOW:
 				_sadButton.setBorder(new LineBorder(Color.GRAY));
 				break;
 		}
