@@ -40,8 +40,6 @@ public class State {
 
 	private int _optimism;
 
-	private boolean _sophomore;
-
 	private State() {
 		_group = new Group();
 		_results = TreeMultimap.create();
@@ -51,7 +49,6 @@ public class State {
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
 		_optimism = Constants.OPTIMISM_MEDIUM;
-		_sophomore = false;
 		
 		for(int year: Constants.YEARS) _years.add((Integer) year);
 	}
@@ -60,21 +57,8 @@ public class State {
 		return _group;
 	}
 	
-	/**
-	 * Sets the sophomore status.
-	 * 
-	 * @param soph true if the group is eligible for sophomore-only housing
-	 */
-	public void setSophomoreStatus(boolean soph) {
-		_sophomore = soph;
-	}
-
 	protected void setGroup(Group group) { //TODO: do we want to expose it like this?
 		_group = group;
-	}
-	
-	public boolean isSophomore() {
-		return _sophomore;
 	}
 	
 	public void setOptimism(int optimism) {
@@ -133,11 +117,11 @@ public class State {
 	public void updateResults() {
 		_results.clear();
 		Integer[] years = getYears();
-		boolean sophomoreOnly = isSophomore();
-		for (House h : getGroup()) {
+		boolean sophomoreOnlyEligible = _group.isSophomore();
+		for (House h : _group) {
 			Collection<Dorm> locations = h.getLocationPreference();
 			for (SubGroup sg : h) {
-				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, (! sg.sameGender()), sophomoreOnly);
+				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, (! sg.sameGender()), sophomoreOnlyEligible);
 				for (Room r : results) {
 					_results.put(sg, r);
 				}
