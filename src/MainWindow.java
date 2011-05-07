@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -31,10 +32,10 @@ public class MainWindow extends JFrame {
 		FileFilter filter = new FileNameExtensionFilter("HTML file", "htm", "html");
 		exportFileChooser.addChoosableFileFilter(filter);
 		
-		// menu bar
-		
+		// menu bar items
 		// load state button
 		JMenuItem loadMenuItem = new JMenuItem("Open");
+		loadMenuItem.setMnemonic(KeyEvent.VK_O);
 		loadMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -66,6 +67,7 @@ public class MainWindow extends JFrame {
 		
 		// save state button
 		JMenuItem saveMenuItem = new JMenuItem("Save");
+		saveMenuItem.setMnemonic(KeyEvent.VK_S);
 		saveMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -98,6 +100,7 @@ public class MainWindow extends JFrame {
 		
 		// export button
 		JMenuItem exportMenuItem = new JMenuItem("Export");
+		exportMenuItem.setMnemonic(KeyEvent.VK_E);
 		exportMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -134,6 +137,7 @@ public class MainWindow extends JFrame {
 		
 		// exit
 		JMenuItem exitMenuItem = new JMenuItem("Exit");
+		exitMenuItem.setMnemonic(KeyEvent.VK_X);
 		exitMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -143,12 +147,16 @@ public class MainWindow extends JFrame {
 		
 		
 		JMenu fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+		
 		fileMenu.add(loadMenuItem);
 		fileMenu.add(saveMenuItem);
 		fileMenu.add(exportMenuItem);
 		fileMenu.add(exitMenuItem);
 		
+		
 		JMenu optionsMenu = new JMenu("Options");
+		optionsMenu.setMnemonic(KeyEvent.VK_O);
 		
 		JMenuItem yearsMenuItem = new JMenuItem("Choose years");
 		yearsMenuItem.addActionListener(new ActionListener() {
