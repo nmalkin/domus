@@ -4,6 +4,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
+
 import org.dom4j.*;
 import org.dom4j.io.*;
 
@@ -23,6 +29,31 @@ public class DomusXML {
 	public static void writeXML(File file) throws IOException {
 		Document document = makeXMLDocument();
 		
+		writeDocument(document, file);
+	}
+	
+	/**
+	 * Given a filename, writes an HTML document, representing a transform of the State XML file, to this file.
+	 * 
+	 * @param filename
+	 * @throws IOException if there was a problem writing to the file
+	 * @throws TransformerException if there was a problem applying the XSL transformation
+	 */
+	public static void writeHTML(File file) throws IOException, TransformerException {
+		Document document = makeXMLDocument();
+		Document htmlDocument = styleDocument(document, Constants.XML_TRANFORM_FILE);
+		
+		writeDocument(htmlDocument, file);
+	}
+	
+	/**
+	 * Given a document and a file, write the document to the file.
+	 * 
+	 * @param document
+	 * @param file
+	 * @throws IOException if there was a problem writing to the file
+	 */
+	private static void writeDocument(Document document, File file) throws IOException {
 		FileWriter outStream = new FileWriter(file); // set up the output stream
 		XMLWriter fileWriter = new XMLWriter(outStream, OutputFormat.createPrettyPrint()); // output using "pretty" formatting
 		fileWriter.write(document); // write!
@@ -281,4 +312,32 @@ public class DomusXML {
 		}
 		return i;
 	}
+	
+	/**
+	 * Given a dom4j Document, styles it according to the XSL stylesheet in the specified file.
+	 * 
+	 * Code directly from http://dom4j.sourceforge.net/dom4j-1.6.1/guide.html
+	 * ("Styling a Document with XSLT")
+	 * 
+	 * @param document
+	 * @param stylesheet
+	 * @return
+	 * @throws TransformerException
+	 */
+	private static Document styleDocument(Document document, String stylesheet) throws TransformerException {
+        // load the transformer using JAXP
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer( 
+            new StreamSource( stylesheet ) 
+        );
+
+        // now lets style the given document
+        DocumentSource source = new DocumentSource( document );
+        DocumentResult result = new DocumentResult();
+        transformer.transform( source, result );
+
+        // return the transformed document
+        Document transformedDoc = result.getDocument();
+        return transformedDoc;
+    }
 }

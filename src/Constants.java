@@ -107,4 +107,8 @@ public class Constants {
 	protected final static int LOTTERY_PANEL_HEIGHT = 500;
 	
 	protected final static int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
+	
+	
+	// XML i/o
+	protected final static String XML_TRANFORM_FILE = "transform.xsl";
 }
