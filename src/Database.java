@@ -174,7 +174,7 @@ public class Database {
 			System.out.println("lottery number " + lotteryNumber + " is " + happy + " for semester " + semester);
 			*/
 			
-			return sum / years.length;
+			return Math.round(sum / years.length);
 		} catch (SQLException e) {
 			return -1;
 		}
@@ -192,6 +192,7 @@ public class Database {
 	public static int semesterFromLotteryNumber(int lotteryNumber) {
 		try {
 			Integer[] years = State.getInstance().getYears();
+			int optimism = State.getInstance().getOptimism();
 
 			ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
 			semesters.next();
@@ -204,7 +205,9 @@ public class Database {
 				if(semesters.getInt(years[i] - 2004) != 0) count++;
 			}
 
-			return sum / count;
+			//System.out.println((double) sum / (double) count - sum / count);
+			//if(optimism == Constants.PESSIMISTIC && ((double) sum / (double) count - sum / count ) < .5) return (int) Math.ceil(sum / (double) count);
+			return Math.round(sum / count);
 		} catch(SQLException e) {
 			//TODO: better handling
 			return -1;

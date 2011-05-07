@@ -22,7 +22,7 @@ import javax.swing.event.ChangeListener;
  * either directly (through the slider) or, indirectly, 
  * by having the program estimate it based on their semester level and optimism.
  * 
- * @author nmalkin, jswarren
+ * @author nmalkin, jswarren, mmschnei
  *
  */
 public class LotteryNumberPanel extends JPanel implements ChangeListener, ActionListener, AncestorListener {
@@ -70,12 +70,12 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		this.setPreferredSize(size);
 		this.setSize(size);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBorder(new MatteBorder(0,1,0,0,Color.BLACK));
+		this.setBorder(new MatteBorder(0,1,0,0,Color.GRAY));
 
 		this.add(new JLabel("Lottery number"));
 		this.add(_numberSlider);
 
-		this.add(Box.createRigidArea(new Dimension(0,20)));
+		this.add(Box.createRigidArea(new Dimension(0,10)));
 
 		//TODO: make sure all the elements actually align
 		//numberSlider.setAlignmentX(CENTER_ALIGNMENT);
@@ -83,7 +83,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		this.add(new JLabel("Semester level:"));
 		this.add(_semesterLevelBox);
 
-		this.add(Box.createRigidArea(new Dimension(0,20)));
+		this.add(Box.createRigidArea(new Dimension(0,10)));
 
 		this.add(new JLabel("Level of optimism"));
 
@@ -101,14 +101,14 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 
 		buttonPanel.add(Box.createRigidArea(new Dimension((this.getWidth() - 3 * Constants.OPTIMISM_BUTTON_WIDTH - 30) / 2, 0)));
 		buttonPanel.add(_happyButton);
-		buttonPanel.add(Box.createRigidArea(new Dimension(10,0)));
+		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		buttonPanel.add(_okayButton);
-		buttonPanel.add(Box.createRigidArea(new Dimension(10,0)));
+		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		buttonPanel.add(_sadButton);
 
 		this.add(buttonPanel);
 
-		this.add(Box.createRigidArea(new Dimension(0,20)));
+		this.add(Box.createRigidArea(new Dimension(0,10)));
 		this.addAncestorListener(this);
 
 		_numberSlider.setValue(Database.lotteryNumberFromSemester(semesterIndex) / 2);
@@ -172,19 +172,19 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		int happiness = Database.optimismFromLotteryNumber(lotteryNumber);
 
 		if(happiness == Constants.OPTIMISTIC) {
-			_happyButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+			_happyButton.setBorder(new LineBorder(Color.GRAY));
 			_okayButton.setBorder(null);
 			_sadButton.setBorder(null);
 		}
 		else if(happiness == Constants.AVERAGE) {
 			_happyButton.setBorder(null);
-			_okayButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+			_okayButton.setBorder(new LineBorder(Color.GRAY));
 			_sadButton.setBorder(null);
 		}
 		else {
 			_happyButton.setBorder(null);
 			_okayButton.setBorder(null);
-			_sadButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
+			_sadButton.setBorder(new LineBorder(Color.GRAY));
 		}
 
 		State.getInstance().setOptimism(happiness);

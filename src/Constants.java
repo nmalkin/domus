@@ -10,6 +10,12 @@ public class Constants {
 	
 	// general graphics
 	protected static final int INSET = 5; // pixels
+	protected static final String DOMUS_FILE = "img/domus.png";
+	
+	// years -- TODO: get rid of these
+	protected final static int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
+	protected final static int FIRST_YEAR = 2006;
+	protected final static int LAST_YEAR = 2011;
 	
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
@@ -70,8 +76,9 @@ public class Constants {
 	protected static final int    WOMAN_WIDTH  = 46; // pixels
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
-	// watermark
-	protected static final String DOMUS_FILE = "img/domus.png";
+	// Lottery panel
+	protected final static int LOTTERY_PANEL_WIDTH = 200;
+	protected final static int LOTTERY_PANEL_HEIGHT = 500;
 	
 	// Results and lists icons
 	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";
@@ -82,19 +89,15 @@ public class Constants {
 	protected static final String RIGHT_ARROW = "img/right_arrow.png";
 	
 	// Database
-	/** database name **/
 	protected final static String DATABASE_NAME = "data/housingdata.db";
 	
-	/** table names in database */
 	protected final static String ROOM_TABLE = "rooms";
 	protected final static String GENDER_TABLE = "genderNeutral";
 	protected final static String SOPHOMORE_TABLE = "sophomoreOnly";
 	protected final static String SEMESTER_TABLE = "semester";
 	protected final static String CAMPUS_AREA_TABLE = "campusArea";
 	
-	protected final static int FIRST_YEAR = 2006;
-	protected final static int LAST_YEAR = 2011;
-	
+	// Optimism
 	protected final static int OPTIMISTIC = 0;
 	protected final static int AVERAGE = 1;
 	protected final static int PESSIMISTIC = 2;
@@ -103,9 +106,4 @@ public class Constants {
 	protected final static String OKAY_FILE = "img/Undecided.png";
 	protected final static String SAD_FILE = "img/Crying.png";
 	protected final static int OPTIMISM_BUTTON_WIDTH = 18;
-	
-	protected final static int LOTTERY_PANEL_WIDTH = 200;
-	protected final static int LOTTERY_PANEL_HEIGHT = 500;
-	
-	protected final static int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
 }
