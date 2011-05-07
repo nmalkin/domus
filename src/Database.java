@@ -165,14 +165,6 @@ public class Database {
 				else if(lotteryNumber > firstNum + 2 * total / 3 + 1) sum += Constants.PESSIMISTIC;
 				else sum += Constants.AVERAGE;
 			}
-
-			/*String happy;
-			if(sum / years.length == Constants.AVERAGE) happy = ":|";
-			else if(sum / years.length == Constants.OPTIMISTIC) happy = ":)";
-			else happy = ":(";
-			
-			System.out.println("lottery number " + lotteryNumber + " is " + happy + " for semester " + semester);
-			*/
 			
 			return Math.round(sum / years.length);
 		} catch (SQLException e) {
@@ -205,8 +197,6 @@ public class Database {
 				if(semesters.getInt(years[i] - 2004) != 0) count++;
 			}
 
-			//System.out.println((double) sum / (double) count - sum / count);
-			//if(optimism == Constants.PESSIMISTIC && ((double) sum / (double) count - sum / count ) < .5) return (int) Math.ceil(sum / (double) count);
 			return Math.round(sum / count);
 		} catch(SQLException e) {
 			//TODO: better handling

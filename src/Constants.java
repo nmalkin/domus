@@ -105,17 +105,9 @@ public class Constants {
 	protected final static String HAPPY_FILE = "img/Grin.png";
 	protected final static String OKAY_FILE = "img/Undecided.png";
 	protected final static String SAD_FILE = "img/Crying.png";
-<<<<<<< HEAD:src/Constants.java
+
 	protected final static int OPTIMISM_BUTTON_WIDTH = 18;
-=======
-	
-	protected final static int LOTTERY_PANEL_WIDTH = 200;
-	protected final static int LOTTERY_PANEL_HEIGHT = 500;
-	
-	protected final static int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
-	
 	
 	// XML i/o
 	protected final static String XML_TRANFORM_FILE = "transform.xsl";
->>>>>>> e9e44fa1fd4d7366849208e4e1c069eb4fa7fa3c:src/Constants.java
 }
