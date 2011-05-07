@@ -234,7 +234,7 @@ public class Database {
 
 				if(optimism == Constants.OPTIMISM_HIGH) {
 					first = firstNum;
-					last = first + total / 3;
+					last = firstNum + total / 3;
 				}
 				else if (optimism == Constants.OPTIMISM_MEDIUM) {
 					first = firstNum + total / 3 + 1;
