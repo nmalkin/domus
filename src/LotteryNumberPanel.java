@@ -155,40 +155,42 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 	public void stateChanged(ChangeEvent e) {
 		if(e.getSource() != _numberSlider) throw new IllegalArgumentException("expecting event from slider");
 
-		// get the lottery number from the slider
-		int lotteryNumber = _numberSlider.getValue();
-
-		// update the State with the current lottery number
-		State.getInstance().getGroup().setLotteryNumber(lotteryNumber);
-
-		// get the semester level for the currently selected number
-		int semesterLevel = Database.semesterFromLotteryNumber(lotteryNumber);
-		int semesterIndex = semesterLevel - 3; // the first semester displayed in the combobox is 3
-		//TODO: have a better system; probably affected by whether the semesterLevel stays an int 
-		//      (see todo above)
-
-		// update the combobox with it
-
-		int happiness = Database.optimismFromLotteryNumber(lotteryNumber);
-
-		if(happiness == Constants.OPTIMISTIC) {
-			_happyButton.setBorder(new LineBorder(Color.GRAY));
-			_okayButton.setBorder(null);
-			_sadButton.setBorder(null);
+		if(_numberSlider.hasFocus()) {
+			// get the lottery number from the slider
+			int lotteryNumber = _numberSlider.getValue();
+	
+			// update the State with the current lottery number
+			State.getInstance().getGroup().setLotteryNumber(lotteryNumber);
+	
+			// get the semester level for the currently selected number
+			int semesterLevel = Database.semesterFromLotteryNumber(lotteryNumber);
+			int semesterIndex = semesterLevel - 3; // the first semester displayed in the combobox is 3
+			//TODO: have a better system; probably affected by whether the semesterLevel stays an int 
+			//      (see todo above)
+	
+			// update the combobox with it
+	
+			int happiness = Database.optimismFromLotteryNumber(lotteryNumber);
+	
+			if(happiness == Constants.OPTIMISTIC) {
+				_happyButton.setBorder(new LineBorder(Color.GRAY));
+				_okayButton.setBorder(null);
+				_sadButton.setBorder(null);
+			}
+			else if(happiness == Constants.AVERAGE) {
+				_happyButton.setBorder(null);
+				_okayButton.setBorder(new LineBorder(Color.GRAY));
+				_sadButton.setBorder(null);
+			}
+			else {
+				_happyButton.setBorder(null);
+				_okayButton.setBorder(null);
+				_sadButton.setBorder(new LineBorder(Color.GRAY));
+			}
+	
+			State.getInstance().setOptimism(happiness);
+			_semesterLevelBox.setSelectedIndex(semesterIndex);
 		}
-		else if(happiness == Constants.AVERAGE) {
-			_happyButton.setBorder(null);
-			_okayButton.setBorder(new LineBorder(Color.GRAY));
-			_sadButton.setBorder(null);
-		}
-		else {
-			_happyButton.setBorder(null);
-			_okayButton.setBorder(null);
-			_sadButton.setBorder(new LineBorder(Color.GRAY));
-		}
-
-		State.getInstance().setOptimism(happiness);
-		_semesterLevelBox.setSelectedIndex(semesterIndex);
 	}
 
 	/**
