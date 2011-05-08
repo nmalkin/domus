@@ -54,6 +54,12 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	/** Last tab, for border display purposes only */
 	private K _lastTab;
 	
+	/** Is the list currently being updated */
+	private boolean _isUpdating;
+	
+	/** Old state of scrollbar visibility */
+	private boolean _scrollbarVisible = false;
+	
 	private AccordionList(int width, int height, int headerHeight) {
 		super();
 		_listWidth = width;
@@ -149,6 +155,15 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		_selectedItem = item;
 	}
 	
+	/**
+	 * Sets whether the list is currently being updated.
+	 */
+	public void setUpdating(boolean updating) {
+		System.out.println("updating: " + updating);
+		_isUpdating = updating;
+//		resizeItemsIfNecessary();
+	}
+	
 	/** Return a set of the tabs in this list */
 	public Collection<K> getTabs() {
 		return _lists.keySet();
@@ -179,16 +194,12 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		//TODO
 		
 	}
-
-	private class ScrollBarVisibilityListener extends ComponentAdapter {
-		
-		boolean _scrollbarVisible = false;
-		
-		@Override
-		public void componentResized(ComponentEvent e) {
-			// determine if the width needs to change
+	
+	private void resizeItemsIfNecessary() {
+		if (!_isUpdating) {
 			boolean visible = _scroller.getVerticalScrollBar().isVisible();
 			if (visible != _scrollbarVisible) {
+				System.out.println("resize");
 				int width = _scroller.getVerticalScrollBar().getSize().width;
 
 				// in which direction does it need to change
@@ -206,6 +217,16 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 					bottom = 1;
 				_scroller.setBorder(BorderFactory.createMatteBorder(1, 0, bottom, 0, Color.BLACK));
 			}
+		}
+	}
+
+	private class ScrollBarVisibilityListener extends ComponentAdapter {
+		
+		@Override
+		public void componentResized(ComponentEvent e) {
+			// determine if the width needs to change
+			System.out.println("component resized");
+			resizeItemsIfNecessary();
 		}
 		
 	}
