@@ -67,6 +67,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 	}
 	
 	public void updateResultsLists() {
+		System.out.println("update");
 		SetMultimap<SubGroup, Dorm> dormMap = TreeMultimap.create(Ordering.natural(), new DormComparator());
 		_dormAverages = new HashMap<Dorm, DormAverage>();
 		_results = State.getInstance().getResults();
@@ -100,6 +101,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 			if ((list = _listsMap.get(sg)) == null) {
 				list = AccordionList.create(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_HEIGHT, Constants.RESULTS_HEADER_HEIGHT);
 			}
+			list.setUpdating(true);
 			list.setHeader(createListHeader(sg));
 			ResultsListTab[] tabsArray = list.getTabs().toArray(new ResultsListTab[0]);
 			for (int i = 0; i < tabsArray.length; ++i) {
@@ -127,6 +129,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 			}
 			_listsMap.put(sg, list);
 			_resultsPanel.add(list);
+			list.setUpdating(false);
 		}
 		int numLists = _listsMap.values().size();
 		int displayLists = Math.min(numLists, Constants.RESULTS_LISTS_DISPLAYED);

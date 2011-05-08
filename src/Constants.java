@@ -100,6 +100,17 @@ public class Constants {
 	protected static final int RESULTS_LISTS_DISPLAYED = 3;
 	protected static final int RESULTS_PANEL_HORIZONTAL_GAP = 5;
 	
+	// Probability display
+	protected static final int PROBABILITY_DISPLAY_WIDTH  = 40;
+	protected static final int PROBABILITY_DISPLAY_HEIGHT = 10;
+	
+	/** How many different categories are we dividing probabilities into? */
+	protected static final int PROBABILIY_DISPLAY_CATEGORIES = 5; // very unlikely, unlikely, average, likely, very likely
+	/** The colors for each probability category, from least probability to highest probability.
+	 * (PROBABILITY_DISPLAY_COLORS.length must equal PROBABILIY_DISPLAY_CATEGORIES) */
+	protected static final Color[] PROBABILITY_DISPLAY_COLORS = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE };
+	protected static final Color PROBABILITY_DISPLAY_BACKGROUND_COLOR = Color.WHITE;
+	
 	// Lists
 	protected static final int LISTS_PANEL_WIDTH = 1000;
 	protected static final int LISTS_WIDTH = 350;
