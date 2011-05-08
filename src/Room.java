@@ -95,9 +95,7 @@ public class Room implements Comparable<Room> {
 	 * where x is the lottery number
 	 */
 	public double getProbability() {
-		double probability = 1.0 / (1.0 + Math.exp(-1 * (_b0_coefficient + _b1_coefficient * State.getInstance().getGroup().getLotteryNumber())));
-		System.out.println(probability);
-		return probability;
+		return 1.0 / (1.0 + Math.exp(-1 * (_b0_coefficient + _b1_coefficient * State.getInstance().getGroup().getLotteryNumber())));
 	}
 	
 	public void setCoefficients(double b0, double b1) {
