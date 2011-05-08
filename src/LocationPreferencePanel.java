@@ -2,8 +2,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Collection;
@@ -12,7 +10,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
@@ -22,7 +19,7 @@ import javax.swing.event.ChangeListener;
  * The LocationPreferencePanel allows the user to select which dorms and areas of campus 
  * they would be okay living in.
  * 
- * @author nmalkin
+ * @author nmalkin, mmschnei
  *
  */
 public class LocationPreferencePanel extends JPanel implements ChangeListener {
@@ -48,10 +45,10 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		CheckBoxListener myListener = new CheckBoxListener();
 		
 		this.setLayout(new BorderLayout());
+		this.setBorder(new MatteBorder(1,0,0,0,Color.GRAY));
 		
-		JTextPane title = new JTextPane();
+		JLabel title = new JLabel("LOCATION PREFERENCES");
 		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-		title.setText("LOCATION PREFERENCES");
 		
 		ParentCheckBox masterBox = new ParentCheckBox("I'm willing to live anywhere!");
 		_checkBoxes.add(masterBox);

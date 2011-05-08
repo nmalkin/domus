@@ -8,13 +8,14 @@ public class Constants {
 	protected static final int VERSION = 1;
 	protected static final int FILE_FORMAT_VERSION = 1;
 	
-	/** the value that the slider starts with */
-	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
+	protected static final int GROUP_SIZE_LIMIT = 12; // people
+	protected static final int SUBGROUP_SIZE_LIMIT = 8; // people
 	
 	// general graphics
 	protected static final int INSET = 5; // pixels
 	protected static final Border EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
-	
+	protected static final String DOMUS_FILE = "img/domus.png";
+
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
 	protected static final int CANVAS_HEIGHT = 650;
@@ -30,17 +31,11 @@ public class Constants {
 	protected static final int SIDEBAR_WIDTH = 120;
 	protected static final Color SIDEBAR_COLOR = Color.GRAY;
 	
-	protected static final int NEW_MALE_X_POSITION = (0 + Constants.SIDEBAR_WIDTH) / 2 - Gender.MALE.getImageDimension().width / 2;
-	protected static final int NEW_MALE_Y_POSITION = 120;
-	
-	protected static final int NEW_FEMALE_X_POSITION = (0 + Constants.SIDEBAR_WIDTH) / 2 - Gender.FEMALE.getImageDimension().width / 2;
-	protected static final int NEW_FEMALE_Y_POSITION = 320;
+	protected static final Color NEW_PERSON_TEXT_COLOR = Color.LIGHT_GRAY;
 	
 	protected static final String TRASH_FILE = "img/trash.png";
 	protected static final int TRASH_WIDTH = 77; // pixels
 	protected static final int TRASH_HEIGHT = 100; // pixels
-	protected static final int TRASH_X_POSITION = (0 + Constants.SIDEBAR_WIDTH) / 2 - TRASH_WIDTH / 2;
-	protected static final int TRASH_Y_POSITION = 500;
 	protected static final float TRASH_OVERLAY_ALPHA_FRACTION = 0.25f;
 	protected static final int TRASH_OVERLAY_ALPHA = (int) (TRASH_OVERLAY_ALPHA_FRACTION * 255);
 	
@@ -74,8 +69,12 @@ public class Constants {
 	protected static final int    WOMAN_WIDTH  = 46; // pixels
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
-	// Watermark
-	protected static final String DOMUS_FILE = "img/domus.png";
+	// Lottery panel
+	protected final static int LOTTERY_PANEL_WIDTH = 200;
+	protected final static int LOTTERY_PANEL_HEIGHT = 500;
+
+	/** the value that the slider starts with */
+	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	
 	// Results and lists icons
 	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";
@@ -120,29 +119,25 @@ public class Constants {
 			"by simply dragging them to a new location.</center></html>";
 	
 	// Database
-	/** database name **/
-	protected static final String DATABASE_NAME = "data/housingdata.db";
+	protected final static String DATABASE_NAME = "data/housingdata.db";
 	
-	/** table names in database */
-	protected static final String ROOM_TABLE = "rooms";
-	protected static final String GENDER_TABLE = "genderNeutral";
-	protected static final String SOPHOMORE_TABLE = "sophomoreOnly";
-	protected static final String SEMESTER_TABLE = "semester";
-	protected static final String CAMPUS_AREA_TABLE = "campusArea";
+	protected final static String ROOM_TABLE = "rooms";
+	protected final static String GENDER_TABLE = "genderNeutral";
+	protected final static String SOPHOMORE_TABLE = "sophomoreOnly";
+	protected final static String SEMESTER_TABLE = "semester";
+	protected final static String CAMPUS_AREA_TABLE = "campusArea";
 	
-	protected static final int FIRST_YEAR = 2006;
-	protected static final int LAST_YEAR = 2011;
+	// LotteryNumberPanel (optimism)
+	protected final static int OPTIMISM_HIGH = 0;
+	protected final static int OPTIMISM_MEDIUM = 1;
+	protected final static int OPTIMISM_LOW = 2;
 	
-	protected static final int OPTIMISTIC = 0;
-	protected static final int AVERAGE = 1;
-	protected static final int PESSIMISTIC = 2;
+	protected final static String HAPPY_FILE = "img/Grin.png";
+	protected final static String OKAY_FILE = "img/Undecided.png";
+	protected final static String SAD_FILE = "img/Crying.png";
+
+	protected final static int OPTIMISM_BUTTON_WIDTH = 18;
 	
-	protected static final String HAPPY_FILE = "img/Grin.png";
-	protected static final String OKAY_FILE = "img/Undecided.png";
-	protected static final String SAD_FILE = "img/Crying.png";
-	
-	protected static final int LOTTERY_PANEL_WIDTH = 200;
-	protected static final int LOTTERY_PANEL_HEIGHT = 500;
-	
-	protected static final int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
+	// XML i/o
+	protected final static String XML_TRANFORM_FILE = "transform.xsl";
 }

@@ -23,6 +23,8 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	/** used for comparing house, strictly increasing */
 	private static int _houseCount = 0;
 	
+	private int _width = 0, _height = 0;
+	
 	public House() {
 		super();
 		
@@ -103,17 +105,59 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 		return _index;
 	}
 	
+	/**
+	 * Returns the total number of people in this house.
+	 * 
+	 * @return
+	 */
+	public int numberOfPeople() {
+		int count = 0;
+		
+		for(SubGroup s : _subgroups) {
+			count += s.getOccupancy();
+		}
+		
+		return count;
+	}
+	
 	protected void updateSubGroupPositions() {
 		// note: positions are absolute,
-		// so everything is (also) offset by this subgroup's position
+		// so everything is (also) offset by this house's position
+		
+		_width = 0;
+		_height = 0;
 		
 		int horizontalOffset = Constants.HOUSE_PADDING;
+		int verticalOffset = Constants.HOUSE_PADDING;
+		
+		int xPosition;
+		
 		for(SubGroup s : _subgroups) {
-			s.setPosition(getPosition().x + horizontalOffset, getPosition().y + Constants.HOUSE_PADDING);
+			xPosition = this.getPosition().x + horizontalOffset;
+			
+			// make sure the position where we're placing this subgroup is not off the screen
+			if(xPosition + s.getWidth() + Constants.HOUSE_PADDING > Canvas.getInstance().getWidth() &&
+					horizontalOffset > Constants.HOUSE_PADDING) // do not allow wrapping on the first subgroup in each row
+			{
+				_width = horizontalOffset;
+				
+				horizontalOffset = Constants.HOUSE_PADDING;
+				verticalOffset += s.getHeight() + Constants.HOUSE_PADDING;
+					// NOTE: we are assuming here that all SubGroups have the same height as the current one
+				
+				xPosition = this.getPosition().x + horizontalOffset;
+			}
+			
+			// set subgroup's position
+			s.setPosition(xPosition, getPosition().y + verticalOffset);
 			s.updatePeoplePositions();
 			
-			horizontalOffset += s.getWidth() + Constants.HOUSE_PADDING;
+			horizontalOffset += s.getWidth() + Constants.HOUSE_PADDING; // offset the position of the next subgroup
+			
+			_height = Math.max(_height, verticalOffset + s.getHeight() + Constants.HOUSE_PADDING); // update the height if necessary
 		}
+		
+		_width = Math.max(_width, horizontalOffset);
 	}
 	
 	@Override
@@ -131,26 +175,12 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	
 	@Override
 	public int getWidth() {
-		int width = Constants.HOUSE_PADDING;
-		
-		for(SubGroup s : _subgroups) {
-			width += s.getWidth() + Constants.HOUSE_PADDING; //TODO: getWidth() may not return correct width
-		}
-		
-		return width;
+		return _width;
 	}
 	
 	@Override
 	public int getHeight() {
-		int height = 0;
-		
-		for(SubGroup s : _subgroups) {
-			height = Math.max(height, s.getHeight());
-		}
-		
-		height += 2 * Constants.HOUSE_PADDING;
-		
-		return height;
+		return _height;
 	}
 	
 	/**
@@ -161,7 +191,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	 * @return
 	 */
 	private Color getColor() {
-		if(Canvas.overTrashIcon(this)) { // if hovering over trash, draw this transparently
+		if(Canvas.getInstance().overTrashIcon(this)) { // if hovering over trash, draw this transparently
 			return Constants.HOUSE_COLOR_TRANSPARENT;
 		} else {
 			return Constants.HOUSE_COLOR;
@@ -176,7 +206,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	 * @return
 	 */
 	private Color getBorderColor() {
-		if(Canvas.overTrashIcon(this)) { // if hovering over trash, draw this transparently
+		if(Canvas.getInstance().overTrashIcon(this)) { // if hovering over trash, draw this transparently
 			return Constants.SELECTED_HOUSE_BORDER_COLOR_TRANSPARENT;
 		} else {
 			return Constants.SELECTED_HOUSE_BORDER_COLOR;

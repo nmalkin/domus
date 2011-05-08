@@ -37,8 +37,6 @@ public class State {
 	
 	private List<Integer> _years;
 	private List<Integer> _ignoredYears;
-	
-	private boolean _sophomoreOnly;
 
 	private State() {
 		_group = new Group();
@@ -48,31 +46,16 @@ public class State {
 		_selectedHouseChangeListener = null;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
-		_sophomoreOnly = false;
 		
-		for(int year: Constants.YEARS) _years.add((Integer) year);
+		for(int year: Database.getYears()) _years.add((Integer) year);
 	}
 	
 	public Group getGroup() {
 		return _group;
 	}
 	
-	public void setSophomoreOnly(boolean soph) {
-		_sophomoreOnly = soph;
-	}
-
 	protected void setGroup(Group group) { //TODO: do we want to expose it like this?
 		_group = group;
-	}
-	
-	public boolean isSophomoreOnly() {
-		return _sophomoreOnly;
-	}
-	
-	public int getOptimism() {
-		//TODO: optimism in state
-		int optimism = Constants.PESSIMISTIC;
-		return optimism;
 	}
 	
 	public Integer[] getYears() {
@@ -123,11 +106,11 @@ public class State {
 	public void updateResults() {
 		_results.clear();
 		Integer[] years = getYears();
-		boolean sophomoreOnly = isSophomoreOnly();
-		for (House h : getGroup()) {
+		boolean sophomoreOnlyEligible = _group.isSophomore();
+		for (House h : _group) {
 			Collection<Dorm> locations = h.getLocationPreference();
 			for (SubGroup sg : h) {
-				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, (! sg.sameGender()), sophomoreOnly);
+				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, (! sg.sameGender()), sophomoreOnlyEligible);
 				for (Room r : results) {
 					_results.put(sg, r);
 				}
