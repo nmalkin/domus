@@ -55,7 +55,6 @@ public class Group extends AbstractCollection<House> {
 		_lotteryNumber = number;
 	}
 	
-
 	/**
 	 * Sets the sophomore status.
 	 * 
@@ -69,4 +68,18 @@ public class Group extends AbstractCollection<House> {
 		return _sophomore;
 	}
 	
+	/**
+	 * Returns the total number of people in this group.
+	 * 
+	 * @return
+	 */
+	public int numberOfPeople() {
+		int count = 0;
+		
+		for(House h : _houses) {
+			count += h.numberOfPeople();
+		}
+		
+		return count;
+	}
 }

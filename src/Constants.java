@@ -5,8 +5,8 @@ public class Constants {
 	protected static final int VERSION = 1;
 	protected static final int FILE_FORMAT_VERSION = 1;
 	
-	/** the value that the slider starts with */
-	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
+	protected static final int GROUP_SIZE_LIMIT = 12; // people
+	protected static final int SUBGROUP_SIZE_LIMIT = 8; // people
 	
 	// general graphics
 	protected static final int INSET = 5; // pixels
@@ -68,6 +68,9 @@ public class Constants {
 	// Lottery panel
 	protected final static int LOTTERY_PANEL_WIDTH = 200;
 	protected final static int LOTTERY_PANEL_HEIGHT = 500;
+
+	/** the value that the slider starts with */
+	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	
 	// Results and lists icons
 	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";

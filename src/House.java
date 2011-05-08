@@ -105,6 +105,21 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 		return _index;
 	}
 	
+	/**
+	 * Returns the total number of people in this house.
+	 * 
+	 * @return
+	 */
+	public int numberOfPeople() {
+		int count = 0;
+		
+		for(SubGroup s : _subgroups) {
+			count += s.getOccupancy();
+		}
+		
+		return count;
+	}
+	
 	protected void updateSubGroupPositions() {
 		// note: positions are absolute,
 		// so everything is (also) offset by this house's position

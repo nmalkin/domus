@@ -608,20 +608,27 @@ public class Canvas extends JLayeredPane {
 		public void mousePressed(MouseEvent e) {
 			Gender newPersonGender = overNewPersonIcon(e.getX(), e.getY());
 			if(newPersonGender != null) {
-				Person newPerson = new Person("A Person", newPersonGender);
-				
-				switch(newPersonGender) {
-				case MALE:
-					newPerson.setPosition(_new_male_x_position, _new_male_y_position);
-					break;
-				case FEMALE:
-					newPerson.setPosition(_new_female_x_position, _new_female_y_position);
-					break;
+				// before adding a person, make sure the group hasn't reached its size limit
+				if(State.getInstance().getGroup().numberOfPeople() < Constants.GROUP_SIZE_LIMIT) {
+					Person newPerson = new Person("A Person", newPersonGender);
+					
+					switch(newPersonGender) {
+					case MALE:
+						newPerson.setPosition(_new_male_x_position, _new_male_y_position);
+						break;
+					case FEMALE:
+						newPerson.setPosition(_new_female_x_position, _new_female_y_position);
+						break;
+					}
+					
+					add(newPerson, Constants.PERSON_LAYER);
+					
+					_currentlyDragging = newPerson;
+				} else { // the group has reached its size limit
+					JOptionPane.showMessageDialog(Canvas.this, 
+							"You've reached the limit on group size.", 
+							"Domus", JOptionPane.INFORMATION_MESSAGE);
 				}
-				
-				add(newPerson, Constants.PERSON_LAYER);
-				
-				_currentlyDragging = newPerson;
 			}
 		}
 		
