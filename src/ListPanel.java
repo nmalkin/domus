@@ -59,7 +59,7 @@ public class ListPanel extends JPanel {
 		label.setIconTextGap(10);
 		panel.add(label);
 		JLabel removeLabel = new JLabel(_removeIcon);
-		removeLabel.addMouseListener(new RemoveListListener());;
+		removeLabel.addMouseListener(new RemoveListListener());
 		panel.add(Box.createHorizontalGlue());
 		panel.add(removeLabel);
 		panel.setBorder(new EmptyBorder(new Insets(_insets.top, _insets.left + 1, _insets.bottom, _insets.right + 1)));

@@ -75,6 +75,9 @@ public class Constants {
 	protected final static int LOTTERY_PANEL_WIDTH = 200;
 	protected final static int LOTTERY_PANEL_HEIGHT = 500;
 	
+	// Preference panel
+	protected final static int PREFERENCE_PANEL_WIDTH = 200;
+	
 	// Results and lists icons
 	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";
 	protected static final String OPEN_FILE = "img/open_results_tab_new.png";
