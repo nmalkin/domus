@@ -1,5 +1,8 @@
 import java.awt.Color;
 
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+
 
 public class Constants {
 	protected static final int VERSION = 1;
@@ -10,6 +13,7 @@ public class Constants {
 	
 	// general graphics
 	protected static final int INSET = 5; // pixels
+	protected static final Border EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
 	
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
@@ -70,7 +74,7 @@ public class Constants {
 	protected static final int    WOMAN_WIDTH  = 46; // pixels
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
-	// watermark
+	// Watermark
 	protected static final String DOMUS_FILE = "img/domus.png";
 	
 	// Results and lists icons
@@ -80,31 +84,65 @@ public class Constants {
 	protected static final String REMOVE_FILE = "img/remove_from_list_black.png";
 	protected static final String LEFT_ARROW = "img/left_arrow_smaller.png";
 	protected static final String RIGHT_ARROW = "img/right_arrow_smaller.png";
+	protected static final int OPEN_ICON_WIDTH = 15;
+	
+	// Results
+	protected static final int RESULTS_LIST_WIDTH = 350;
+	protected static final int RESULTS_LIST_HEIGHT = 800;
+	protected static final int RESULTS_LIST_TAB_WIDTH = 150;
+	protected static final int RESULTS_LIST_TAB_HEIGHT = 25;
+	protected static final int RESULTS_LIST_ITEM_WIDTH = 150;
+	protected static final int RESULTS_LIST_ITEM_HEIGHT = 15;
+	protected static final int RESULTS_HEADER_HEIGHT = 30;
+	protected static final int RESULTS_PANEL_WIDTH = 1200;
+	protected static final int RESULTS_PANEL_HEIGHT = RESULTS_LIST_HEIGHT + RESULTS_HEADER_HEIGHT;
+	protected static final int RESULTS_LISTS_DISPLAYED = 3;
+	protected static final int RESULTS_PANEL_HORIZONTAL_GAP = 5;
+	protected static final String SMALL_MAN_FILE = "img/small_man.png";
+	protected static final String SMALL_WOMAN_FILE = "img/small_woman.png";
+	
+	// Lists
+	protected static final int LISTS_PANEL_WIDTH = 1000;
+	protected static final int LISTS_WIDTH = 350;
+	protected static final int LISTS_HEIGHT = 800;
+	protected static final int LISTS_DISPLAYED = 3;
+	protected static final int LISTS_HORIZONTAL_GAP = 5;
+	protected static final int LISTS_INSTRUCTIONS_WIDTH = 500;
+	protected static final int LISTS_INSTRUCTIONS_HEIGHT = 300;
+	
+	// Instructions
+	protected static final String LISTS_INSTRUCTIONS = "<html><center>To create a list, click on the plus sign " +
+			"next to a result on the Results tab.<p><p>" + 
+			"You may make as many lists as you like and " +
+			"add individual rooms or entire dorms to them.<p><p>" +
+			"You can also remove items or an entire list if you want.<p><p>" +
+			"Lastly, you can reorder the elements in these list " +
+			"by simply dragging them to a new location.</center></html>";
 	
 	// Database
 	/** database name **/
-	protected final static String DATABASE_NAME = "data/housingdata.db";
+	protected static final String DATABASE_NAME = "data/housingdata.db";
 	
 	/** table names in database */
-	protected final static String ROOM_TABLE = "rooms";
-	protected final static String GENDER_TABLE = "genderNeutral";
-	protected final static String SOPHOMORE_TABLE = "sophomoreOnly";
-	protected final static String SEMESTER_TABLE = "semester";
-	protected final static String CAMPUS_AREA_TABLE = "campusArea";
+	protected static final String ROOM_TABLE = "rooms";
+	protected static final String GENDER_TABLE = "genderNeutral";
+	protected static final String SOPHOMORE_TABLE = "sophomoreOnly";
+	protected static final String SEMESTER_TABLE = "semester";
+	protected static final String CAMPUS_AREA_TABLE = "campusArea";
 	
-	protected final static int FIRST_YEAR = 2006;
-	protected final static int LAST_YEAR = 2011;
+	protected static final int FIRST_YEAR = 2006;
+	protected static final int LAST_YEAR = 2011;
 	
-	protected final static int OPTIMISTIC = 0;
-	protected final static int AVERAGE = 1;
-	protected final static int PESSIMISTIC = 2;
+	protected static final int OPTIMISTIC = 0;
+	protected static final int AVERAGE = 1;
+	protected static final int PESSIMISTIC = 2;
 	
-	protected final static String HAPPY_FILE = "img/Grin.png";
-	protected final static String OKAY_FILE = "img/Undecided.png";
-	protected final static String SAD_FILE = "img/Crying.png";
+	protected static final String HAPPY_FILE = "img/Grin.png";
+	protected static final String OKAY_FILE = "img/Undecided.png";
+	protected static final String SAD_FILE = "img/Crying.png";
 	
-	protected final static int LOTTERY_PANEL_WIDTH = 200;
-	protected final static int LOTTERY_PANEL_HEIGHT = 500;
+	protected static final int LOTTERY_PANEL_WIDTH = 200;
+	protected static final int LOTTERY_PANEL_HEIGHT = 500;
 	
-	protected final static int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
+	protected static final int[] YEARS = {2006, 2007, 2008, 2009, 2010, 2011};
 }

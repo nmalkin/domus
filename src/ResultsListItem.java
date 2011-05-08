@@ -16,10 +16,9 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 /**
- * A single results inside a tab of results for a specific subgroup.
+ * A single result inside a tab of results for a specific subgroup.
  * 
  * @author jswarren
  *
@@ -36,9 +35,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 	private int _index;
 	private int _numLists;
-	private Insets _insets;
 	private static Font _unselectedFont = new Font("Verdana", Font.PLAIN, 12);
-	private static Font _selectedFont = new Font("Verdana", Font.BOLD, 12);
 	private static Color _unselectedBackgroundColor;
 	private static Color _selectedBackgroundColor;
 	
@@ -59,6 +56,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_isOpen = false;
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
 		_label.setFont(_unselectedFont);
+		this.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH - 1, 0)));
 		this.add(_label);
 		_labelsPanel = new JPanel();
 		_labelsPanel.setLayout(new BoxLayout(_labelsPanel, BoxLayout.LINE_AXIS));
@@ -72,6 +70,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_addButton = new JLabel(_addToListIcon);
 		_addButton.addMouseListener(new AddListener(this));
 		this.add(_addButton);
+		this.add(Box.createRigidArea(new Dimension(Constants.INSET + 1, 0)));
 		this.addMouseListener(new SelectedListener());
 		_unselectedBackgroundColor = this.getBackground();
 		_selectedBackgroundColor = _unselectedBackgroundColor.darker();
@@ -104,12 +103,6 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		validate();
 	}
 	
-	/** Sets the insets for this item to match those of the tab */
-	public void setInsets(Insets insets) {
-		_insets = insets;
-		this.setBorder(new EmptyBorder(_insets));
-	}
-	
 	/** Returns the room associated with this item */
 	public Room getRoom() {
 		return _room;
@@ -136,14 +129,10 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	@Override
 	public void setOpen(boolean open) {
 		if (open) {
-			_label.setFont(_selectedFont);
-			_probLabel.setFont(_selectedFont);
 			this.setBackground(_selectedBackgroundColor);
 			_isOpen = true;
 		}
 		else {
-			_label.setFont(_unselectedFont);
-			_probLabel.setFont(_unselectedFont);
 			this.setBackground(_unselectedBackgroundColor);
 			_isOpen = false;
 		}
@@ -154,6 +143,9 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	
 	@Override
 	public void removeItem(AccordionItem item) { }
+	
+	@Override
+	public void resizeItem(Dimension d) { }
 	
 	@Override
 	public int compareTo(AccordionItem o) {

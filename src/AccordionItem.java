@@ -1,3 +1,5 @@
+import java.awt.Dimension;
+
 public interface AccordionItem extends Comparable<AccordionItem> {
 
 	/**
@@ -26,8 +28,13 @@ public interface AccordionItem extends Comparable<AccordionItem> {
 	public void addItem(AccordionItem item);
 	
 	/**
-	 * Remves an AccordionItem from this AccordionItem's list.
+	 * Removes an AccordionItem from this AccordionItem's list.
 	 */
 	public void removeItem(AccordionItem item);
+	
+	/**
+	 * Resizes the item.
+	 */
+	public void resizeItem(Dimension d);
 
 }

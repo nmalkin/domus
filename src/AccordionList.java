@@ -1,9 +1,14 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Collection;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
@@ -28,40 +33,87 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	private int _hiddenSpace;
 	private int _timeStep = 10;
 	
-	private int _listWidth = 350;
-	private int _listHeight = 500;
+	private int _listWidth;
+	private int _listHeight;
 	
 	/** A multimap of tabs to items */
 	private Multimap<K, V> _lists;
 	
+	/** A header panel with information for the entire list */
+	private JPanel _header;
+	
+	/** Panel for the lists */
+	private JPanel _listsPanel;
+	
+	/** Scrollpane for the entire list */
+	private JScrollPane _scroller;
+	
 	/** Currently selected item, should only be one at a time */
 	private V _selectedItem;
 	
-	private AccordionList() {
+	/** Last tab, for border display purposes only */
+	private K _lastTab;
+	
+	private AccordionList(int width, int height, int headerHeight) {
 		super();
+		_listWidth = width;
+		_listHeight = height + headerHeight;
 		_lists = TreeMultimap.create();
-		this.setPreferredSize(new Dimension(_listWidth, _listHeight));
+		this.setPreferredSize(new Dimension(width, height + headerHeight));
 		FlowLayout layout = (FlowLayout) this.getLayout();
 		layout.setVgap(0);
 		this.setAlignmentY(TOP_ALIGNMENT);
+		_listsPanel = new JPanel();
+		_listsPanel.setPreferredSize(new Dimension(width, 0));
+		_listsPanel.setSize(new Dimension(width, 0));
+		_listsPanel.addComponentListener(new ScrollBarVisibilityListener());
+		layout = (FlowLayout) _listsPanel.getLayout();
+		layout.setVgap(0);
+		layout.setHgap(0);
+		layout.setAlignment(FlowLayout.LEADING);
+		_scroller = new JScrollPane(_listsPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		_scroller.setPreferredSize(new Dimension(width, height));
+		_scroller.setSize(new Dimension(width, height));
+		_scroller.getVerticalScrollBar().setBorder(Constants.EMPTY_BORDER);
+		_scroller.setViewportBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+		this.add(_scroller);
 	}
 	
 	/** Creates a new AccordionList */
-	public static <K extends JComponent & AccordionItem, V extends JComponent & AccordionItem> AccordionList<K,V> create() {
-		return new AccordionList<K,V>();
+	public static <K extends JComponent & AccordionItem, V extends JComponent & AccordionItem> AccordionList<K,V> create(int width, int height, int headerHeight) {
+		return new AccordionList<K,V>(width, height, headerHeight);
 	}
 	
 	/** Add a tab (an expandable item) to the list */
 	public void addTab(K tab) {
-		this.add(tab);
+		_listsPanel.add(tab);
+		Dimension size = _listsPanel.getPreferredSize();
+		_listsPanel.setPreferredSize(new Dimension(size.width, size.height + tab.getPreferredSize().height));
+		_listsPanel.setSize(new Dimension(size.width, size.height + tab.getPreferredSize().height));
 		tab.setVisible(true);
+		_lastTab = tab;
 	}
 	
 	/** Remove a tab from the list */
 	public void removeTab(K tab) {
 		_lists.removeAll(tab);
-		this.remove(tab);
+		_listsPanel.remove(tab);
+		Dimension size = _listsPanel.getPreferredSize();
+		_listsPanel.setPreferredSize(new Dimension(size.width, size.height - tab.getPreferredSize().height));
+		_listsPanel.setSize(new Dimension(size.width, size.height - tab.getPreferredSize().height));
 		tab.setVisible(false);
+	}
+	
+	/** Changes the size of the panel if a tab is opened or closed */
+	public void tabDisplayChanged(K tab, boolean open, int heightChange) {
+		Dimension size = _listsPanel.getPreferredSize();
+		int height = size.height;
+		if (open)
+			height += heightChange;
+		else
+			height -= heightChange;
+		_listsPanel.setPreferredSize(new Dimension(size.width, height));
+		_listsPanel.setSize(new Dimension(size.width, height));
 	}
 	
 	/** Add an item to a tab in the list */
@@ -74,6 +126,15 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	public void removeListItem(K tab, V item) {
 		_lists.remove(tab, item);
 		tab.removeItem(item);
+	}
+	
+	/** Set header to be displayed above the list */
+	public void setHeader(JPanel panel) {
+		if (_header != null) {
+			this.remove(_header);
+		}
+		_header = panel;
+		this.add(_header, 0);
 	}
 	
 	/** 
@@ -92,9 +153,16 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		return _lists.keySet();
 	}
 	
+	/** Get last tab */
+	public K getLastTab() {
+		return _lastTab;
+	}
+	
 	/** Return a collection of the items under specified tab */
 	public Collection<V> getItemsFromTab(K tab) {
-		return _lists.get(tab);
+		TreeMultimap<K, V> lists = (TreeMultimap<K, V>) _lists;
+		Collection<V> items = lists.get(tab);
+		return items;
 	}
 	
 	// Maybe the tabs should do this themselves?
@@ -110,5 +178,31 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		//TODO
 		
 	}
-	
+
+	private class ScrollBarVisibilityListener extends ComponentAdapter {
+		
+		boolean _scrollbarVisible = false;
+		
+		@Override
+		public void componentResized(ComponentEvent e) {
+			// determine if the width needs to change
+			_scroller.setViewportBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+			boolean visible = _scroller.getVerticalScrollBar().isVisible();
+			if (visible != _scrollbarVisible) {
+				int width = _scroller.getVerticalScrollBar().getSize().width;
+
+				// in which direction does it need to change
+				if (visible)
+					width = -width;
+				
+				// change the width of each list
+				for (K tab : _lists.keySet()) {
+					Dimension size = tab.getSize();
+					tab.resizeItem(new Dimension(size.width + width, size.height));
+				}
+				_scrollbarVisible = visible;
+			}
+		}
+		
+	}
 }

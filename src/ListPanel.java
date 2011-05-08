@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,7 @@ import javax.swing.border.EmptyBorder;
 public class ListPanel extends JPanel {
 
 	private RoomList _list;
-	private Map<JLabel, Room> _map;
+	private Map<JLabel, Room> _roomMap;
 	private ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
 	private JList _panel;
 	private JScrollPane _scroller;
@@ -37,7 +38,7 @@ public class ListPanel extends JPanel {
 	public ListPanel(RoomList list) {
 		super();
 		_list = list;
-		_map = new HashMap<JLabel, Room>();
+		_roomMap = new HashMap<JLabel, Room>();
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(_listWidth, _listHeight));
 		this.setSize(new Dimension(_listWidth, _listHeight));
@@ -76,10 +77,15 @@ public class ListPanel extends JPanel {
 		updateList();
 	}
 	
+	/**
+	 * Updates the list by removing all components and
+	 * then adding all existing ones.
+	 */
 	public void updateList() {
 		_panel.removeAll();
 		_panel.setPreferredSize(new Dimension(_itemWidth, 0));
 		_panel.setSize(new Dimension(_itemWidth, 0));
+		MouseListener hoverListener = new HoverListener();
 		for (Room r : _list) {
 			JPanel p = new JPanel();
 			p.setPreferredSize(new Dimension(_itemWidth, _itemHeight));
@@ -89,10 +95,12 @@ public class ListPanel extends JPanel {
 			p.add(label);
 			p.add(Box.createHorizontalGlue());
 			JLabel removeLabel = new JLabel(_removeIcon);
+			removeLabel.setVisible(false);
 			removeLabel.addMouseListener(new RemoveListener());
 			p.add(removeLabel);
 			p.setBorder(new EmptyBorder(_insets));
-			_map.put(removeLabel, r);
+			p.addMouseListener(hoverListener);
+			_roomMap.put(removeLabel, r);
 			Dimension size = _panel.getPreferredSize();
 			_panel.setPreferredSize(new Dimension(size.width, size.height + _itemHeight));
 			_panel.setSize(new Dimension(size.width, size.height + _itemHeight));
@@ -100,13 +108,13 @@ public class ListPanel extends JPanel {
 		}
 	}
 	
-	/** Add a room to list */
+	/** Adds a room to list */
 	public void addRoom(Room r) {
 		_list.add(r);
 		updateList();
 	}
 	
-	/** Remove a room from list */
+	/** Removes a room from list */
 	public void removeRoom(Room r) {
 		_list.remove(r);
 		r.removeFromRoomList(_list);
@@ -116,13 +124,57 @@ public class ListPanel extends JPanel {
 		updateList();
 	}
 	
+	/** Listener for removal button display */
+	private class HoverListener extends MouseAdapter {
+		
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			//show the remove button label
+			JPanel panel = (JPanel) e.getSource();
+			JLabel label = (JLabel) panel.getComponent(panel.getComponentCount() - 1);
+			label.setVisible(true);
+		}
+		
+		@Override
+		public void mouseExited(MouseEvent e) {
+			//hide the remove button label
+			JPanel panel = (JPanel) e.getSource();
+			JLabel label = (JLabel) panel.getComponent(panel.getComponentCount() - 1);
+			if (panel.getComponentAt(e.getX(), e.getY()) != label)
+				label.setVisible(false);
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			//hide the remove button label if not on the component anymore
+			JPanel panel = (JPanel) e.getSource();
+			JLabel label = (JLabel) panel.getComponent(panel.getComponentCount() - 1);
+			if (!panel.contains(e.getX(), e.getY()))
+				label.setVisible(false);
+		}
+	}
+	
+	
 	/** Listener for room removal */
 	private class RemoveListener extends MouseAdapter {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			JLabel label = (JLabel) e.getSource();
-			removeRoom(_map.get(label));
+			removeRoom(_roomMap.get(label));
+		}
+		
+		@Override
+		public void mouseExited(MouseEvent e) {
+			//hide the button if not on the parent componet still
+			JLabel label = (JLabel) e.getSource();
+			label.setVisible(false);
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			JLabel label = (JLabel) e.getSource();
+			label.setVisible(false);
 		}
 		
 	}
@@ -143,4 +195,5 @@ public class ListPanel extends JPanel {
 		}
 		
 	}
+	
 }

@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -8,13 +9,14 @@ import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -34,29 +36,25 @@ public class ResultsPanel extends JPanel implements Runnable {
 	private Multimap<SubGroup, Room> _results;
 	private Map<Dorm, DormAverage> _dormAverages;
 	private JScrollPane _scroller;
-	private JPanel _listsPanel;
+	private JPanel _resultsPanel;
 	private JLabel _leftButton, _rightButton;
 	private ImageIcon _leftButtonIcon = new ImageIcon(Constants.LEFT_ARROW, "scroll left");
 	private ImageIcon _rightButtonIcon = new ImageIcon(Constants.RIGHT_ARROW, "scroll right");
 	private boolean _scrollLeft, _scrollRight, _scrollOnce;
-	private int _scrollWidth, _scrollDelay, _hGap = 5;
-	
-	private int _listHeight = 550;
-	private int _listWidth = 350;
-	private int _numDisplayLists = 3;
+	private int _scrollWidth, _scrollDelay;
 	
 	public ResultsPanel() {
 		super();
-		this.setPreferredSize(new Dimension(1200, _listHeight));
-		_listsPanel = new JPanel();
-		_listsPanel.setPreferredSize(new Dimension(0, _listHeight));
-		_listsPanel.setSize(new Dimension(0, _listHeight));
-		_listsPanel.setLayout(new BoxLayout(_listsPanel, BoxLayout.LINE_AXIS));
-		_listsPanel.setBorder(new EmptyBorder(new Insets(0, 0, 0, 0)));
-		_scroller = new JScrollPane(_listsPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		_scroller.setPreferredSize(new Dimension(0, _listHeight));
-		_scroller.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
-		_scroller.getHorizontalScrollBar().setBorder(new EmptyBorder(0, 0, 0, 0));
+		this.setPreferredSize(new Dimension(Constants.RESULTS_PANEL_WIDTH, Constants.RESULTS_PANEL_HEIGHT));
+		_resultsPanel = new JPanel();
+		_resultsPanel.setPreferredSize(new Dimension(0, Constants.RESULTS_PANEL_HEIGHT));
+		_resultsPanel.setSize(new Dimension(0, Constants.RESULTS_PANEL_HEIGHT));
+		_resultsPanel.setLayout(new BoxLayout(_resultsPanel, BoxLayout.LINE_AXIS));
+		_resultsPanel.setBorder(Constants.EMPTY_BORDER);
+		_scroller = new JScrollPane(_resultsPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		_scroller.setPreferredSize(new Dimension(0, Constants.RESULTS_PANEL_HEIGHT));
+		_scroller.setViewportBorder(Constants.EMPTY_BORDER);
+		_scroller.getHorizontalScrollBar().setBorder(Constants.EMPTY_BORDER);
 		_leftButton = new JLabel(_leftButtonIcon);
 		_leftButton.setVisible(false);
 		_rightButton = new JLabel(_rightButtonIcon);
@@ -68,7 +66,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 		this.add(_scroller);
 		this.add(_rightButton);
 		_listsMap = new HashMap<SubGroup, AccordionList<ResultsListTab, ResultsListItem>>();
-		updateResultsLists();
+//		updateResultsLists();
 	}
 	
 	public void updateResultsLists() {
@@ -91,27 +89,35 @@ public class ResultsPanel extends JPanel implements Runnable {
 				dormMap.put(sg, r.getDorm());
 			}
 		}
+		Collection<SubGroup> oldSubGroups = _listsMap.keySet();
+		for (Iterator<SubGroup> iter = oldSubGroups.iterator(); iter.hasNext();) {
+			SubGroup sg = iter.next();
+			if (!dormMap.containsKey(sg)) {
+				if (_listsMap.get(sg) != null)
+					_resultsPanel.remove(_listsMap.get(sg));
+				iter.remove();
+			}
+		}
 		for (SubGroup sg : dormMap.keySet()) {
 			AccordionList<ResultsListTab, ResultsListItem> list = null;
 			if ((list = _listsMap.get(sg)) == null) {
-				list = AccordionList.create();
+				list = AccordionList.create(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_HEIGHT, Constants.RESULTS_HEADER_HEIGHT);
 			}
+			list.setHeader(createListHeader(sg));
 			ResultsListTab[] tabsArray = list.getTabs().toArray(new ResultsListTab[0]);
 			for (int i = 0; i < tabsArray.length; ++i) {
 				ResultsListTab rlt = tabsArray[i];
 				if (!_dormAverages.containsKey(rlt.getDorm()))
 					list.removeTab(rlt);
 			}
-			Collection<ResultsListTab> tabs = list.getTabs(); 
+			Collection<ResultsListTab> tabs = list.getTabs();
 			for (Dorm d : dormMap.get(sg)) {
-				ResultsListTab tab = null;
-				if ((tab = containsDormTab(tabs, d)) != null) {
-					tab.setComparisonValue((int) _dormAverages.get(d).getAverage());
+				ResultsListTab tab = containsDormTab(tabs, d);
+				if (tab != null) {
 					intersectResultsWithTab(sg, d, list, tab);
 				}
 				else {
 					tab = new ResultsListTab(d, sg, list);
-					tab.setComparisonValue((int) _dormAverages.get(d).getAverage());
 					list.addTab(tab);
 					for (Room r : _results.get(sg)) {
 						if (r.getDorm() == d) {
@@ -119,25 +125,56 @@ public class ResultsPanel extends JPanel implements Runnable {
 						}
 					}
 				}
+				tab.setComparisonValue((int) _dormAverages.get(d).getAverage());
 			}
 			_listsMap.put(sg, list);
-			_listsPanel.add(list);	
+			_resultsPanel.add(list);	
 		}
 		int numLists = _listsMap.values().size();
-		int displayLists = Math.min(numLists, _numDisplayLists);
-		Dimension size = new Dimension(numLists * _listWidth + ((numLists - 1) * _hGap), _listHeight);
-		_listsPanel.setPreferredSize(size);
-		_listsPanel.setSize(size);
-		size = new Dimension(displayLists * _listWidth + ((displayLists -1) * _hGap), _listHeight);
+		int displayLists = Math.min(numLists, Constants.RESULTS_LISTS_DISPLAYED);
+		Dimension size = new Dimension(numLists * Constants.RESULTS_LIST_WIDTH + ((numLists - 1) * Constants.RESULTS_PANEL_HORIZONTAL_GAP), Constants.RESULTS_PANEL_HEIGHT);
+		_resultsPanel.setPreferredSize(size);
+		_resultsPanel.setSize(size);
+		size = new Dimension(displayLists * Constants.RESULTS_LIST_WIDTH + ((displayLists -1) * Constants.RESULTS_PANEL_HORIZONTAL_GAP), Constants.RESULTS_PANEL_HEIGHT);
 		_scroller.setPreferredSize(size);
 		_scroller.setSize(size);
 		boolean buttonsVisible = false;
-		if (numLists > _numDisplayLists)
+		if (numLists > Constants.RESULTS_LISTS_DISPLAYED)
 			buttonsVisible = true;
 		_leftButton.setVisible(buttonsVisible);
 		_rightButton.setVisible(buttonsVisible);
 	}
 	
+	private JPanel createListHeader(SubGroup sg) {
+		JPanel panel = new JPanel();
+		panel.setPreferredSize(new Dimension(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_HEADER_HEIGHT));
+		panel.setSize(new Dimension(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_HEADER_HEIGHT));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+		String names = "";
+		int i = 0;
+		for (Person p : sg) {
+			JLabel label = new JLabel(new ImageIcon(p.getGender().getImage().getScaledInstance(-1, 30, Image.SCALE_SMOOTH)));
+			panel.add(label);
+			panel.add(Box.createRigidArea(new Dimension(5, 0)));
+			if (p.getName() != "A Person") {
+				if (i == 0)
+					names += p.getName();
+				else if (i == sg.getOccupancy() - 1) {
+					if (i > 1)
+						names += ","; 
+					names += " and " + p.getName();
+				}
+				else
+					names += ", " + p.getName();
+			}
+			++i;
+		}
+		panel.add(new JLabel(names));
+		panel.add(Box.createHorizontalGlue());
+		System.out.println(panel.getSize().height);
+		return panel;
+	}
+
 	private ResultsListTab containsDormTab(Collection<ResultsListTab> tabs, Dorm d) {
 		ResultsListTab tab = null;
 		for (ResultsListTab rlt : tabs) {
@@ -150,7 +187,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 	
 	private void intersectResultsWithTab(SubGroup sg, Dorm d, AccordionList<ResultsListTab, ResultsListItem> list, ResultsListTab tab) {
 		Collection<Room> roomResults = _results.get(sg);
-		SortedSet<ResultsListItem> tabItems = (SortedSet<ResultsListItem>) list.getItemsFromTab(tab);
+		Collection<ResultsListItem> tabItems = tab.getItems();
 		List<Room> tabRooms = new LinkedList<Room>();
 		if (tabItems != null) {
 			for (ResultsListItem rli : tabItems) {
@@ -164,6 +201,13 @@ public class ResultsPanel extends JPanel implements Runnable {
 			}
 			return;
 		}
+		tabItems = tab.getItems();
+		for (ResultsListItem item : tabItems) {
+			Room r = item.getRoom();
+			if (!roomResults.contains(r)) {
+				list.removeListItem(tab, item);
+			}
+		}
 		for (Room r : roomResults) {
 			if (r.getDorm() == tab.getDorm()) {
 				if (!tabRooms.contains(r)) {
@@ -171,22 +215,13 @@ public class ResultsPanel extends JPanel implements Runnable {
 				}
 			}
 		}
-		for (Room r : tabRooms) {
-			if (r.getDorm() == tab.getDorm()) {
-				if (!tabRooms.contains(r)) {
-					ResultsListItem[] tabs = tabItems.toArray(new ResultsListItem[0]);
-					list.removeListItem(tab, tabs[tabRooms.indexOf(r)]);
-				}	
-			}
-		}
-		if (list.getItemsFromTab(tab).size() == 0) {
+		if (tab.getItems().size() == 0) {
 			list.removeTab(tab);
 		}
 	}
 	
 	private void addListItem(AccordionList<ResultsListTab, ResultsListItem> list, ResultsListTab tab, Room r) {
 		ResultsListItem item = new ResultsListItem(r, list);
-		item.setInsets(tab.getBorderInsets());
 		list.addListItem(tab, item);
 	}
 	
@@ -237,16 +272,16 @@ public class ResultsPanel extends JPanel implements Runnable {
 //		}
 		int count = 0;
 		while (_scrollLeft || _scrollRight) {
-			if (_scrollOnce && count > (_listWidth / _scrollWidth)) {
+			if (_scrollOnce && count > (Constants.RESULTS_LIST_WIDTH / _scrollWidth)) {
 				break;
 			}
-			if (_scrollWidth == _hGap) {
+			if (_scrollWidth == Constants.RESULTS_PANEL_HORIZONTAL_GAP) {
 				break;
 			}
-			if (count == (_listWidth / _scrollWidth)) {
-				_scrollWidth = _hGap;
+			if (count == (Constants.RESULTS_LIST_WIDTH / _scrollWidth)) {
+				_scrollWidth = Constants.RESULTS_PANEL_HORIZONTAL_GAP;
 			}
-			if (_listsPanel.getSize().width < _scroller.getSize().width) {
+			if (_resultsPanel.getSize().width < _scroller.getSize().width) {
 				_scrollLeft = false;
 				_scrollRight = false;
 				break;
@@ -259,8 +294,8 @@ public class ResultsPanel extends JPanel implements Runnable {
 //					_scrollRight = false;
 //					break;
 //				}
-				if (r.x + r.width + _scrollWidth >= _listsPanel.getWidth()) {
-					view.setViewPosition(new Point(_listsPanel.getWidth() - r.width, r.y));
+				if (r.x + r.width + _scrollWidth >= _resultsPanel.getWidth()) {
+					view.setViewPosition(new Point(_resultsPanel.getWidth() - r.width, r.y));
 					_scrollRight = false;
 					_scrollLeft = false;
 					break;
