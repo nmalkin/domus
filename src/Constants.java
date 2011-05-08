@@ -121,7 +121,7 @@ public class Constants {
 	// Database
 	protected final static String DATABASE_NAME = "data/housingdata.db";
 	
-	protected final static String ROOM_TABLE = "rooms";
+	protected final static String ROOM_TABLE = "rooms_with_regressions";
 	protected final static String GENDER_TABLE = "genderNeutral";
 	protected final static String SOPHOMORE_TABLE = "sophomoreOnly";
 	protected final static String SEMESTER_TABLE = "semester";
