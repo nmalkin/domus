@@ -94,7 +94,7 @@ public class Room implements Comparable<Room> {
 	 * 1/(1+e^-(b0 + b1*x))
 	 * where x is the lottery number
 	 */
-	public double getProbability() {System.out.println(_b0_coefficient + " " + _b1_coefficient + " " + State.getInstance().getGroup().getLotteryNumber());
+	public double getProbability() {
 		double probability = 1.0 / (1.0 + Math.exp(-1 * (_b0_coefficient + _b1_coefficient * State.getInstance().getGroup().getLotteryNumber())));
 		System.out.println(probability);
 		return probability;
@@ -148,7 +148,8 @@ public class Room implements Comparable<Room> {
 
 	@Override
 	public int compareTo(Room o) {
-		int averageResult = getAverageResult();
-		return averageResult < o.getAverageResult() ? -1 : (averageResult > o.getAverageResult() ? 1 : 0);
+		double myProbability = getProbability();
+		double theirProbability = o.getProbability();
+		return myProbability < theirProbability ? -1 : (myProbability > theirProbability ? 1 : 0);
 	}
 }
