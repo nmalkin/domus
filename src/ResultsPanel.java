@@ -1,6 +1,5 @@
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
@@ -23,7 +22,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
-import javax.swing.border.EmptyBorder;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Ordering;
@@ -52,7 +50,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 		_resultsPanel.setLayout(new BoxLayout(_resultsPanel, BoxLayout.LINE_AXIS));
 		_resultsPanel.setBorder(Constants.EMPTY_BORDER);
 		_scroller = new JScrollPane(_resultsPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		_scroller.setPreferredSize(new Dimension(0, Constants.RESULTS_PANEL_HEIGHT));
+		_scroller.setPreferredSize(new Dimension(0, Constants.RESULTS_PANEL_HEIGHT + _scroller.getHorizontalScrollBar().getPreferredSize().height));
 		_scroller.setViewportBorder(Constants.EMPTY_BORDER);
 		_scroller.getHorizontalScrollBar().setBorder(Constants.EMPTY_BORDER);
 		_leftButton = new JLabel(_leftButtonIcon);
@@ -66,7 +64,6 @@ public class ResultsPanel extends JPanel implements Runnable {
 		this.add(_scroller);
 		this.add(_rightButton);
 		_listsMap = new HashMap<SubGroup, AccordionList<ResultsListTab, ResultsListItem>>();
-//		updateResultsLists();
 	}
 	
 	public void updateResultsLists() {
@@ -126,16 +123,17 @@ public class ResultsPanel extends JPanel implements Runnable {
 					}
 				}
 				tab.setComparisonValue((int) _dormAverages.get(d).getAverage());
+				tab.validateListLabels();
 			}
 			_listsMap.put(sg, list);
-			_resultsPanel.add(list);	
+			_resultsPanel.add(list);
 		}
 		int numLists = _listsMap.values().size();
 		int displayLists = Math.min(numLists, Constants.RESULTS_LISTS_DISPLAYED);
 		Dimension size = new Dimension(numLists * Constants.RESULTS_LIST_WIDTH + ((numLists - 1) * Constants.RESULTS_PANEL_HORIZONTAL_GAP), Constants.RESULTS_PANEL_HEIGHT);
 		_resultsPanel.setPreferredSize(size);
 		_resultsPanel.setSize(size);
-		size = new Dimension(displayLists * Constants.RESULTS_LIST_WIDTH + ((displayLists -1) * Constants.RESULTS_PANEL_HORIZONTAL_GAP), Constants.RESULTS_PANEL_HEIGHT);
+		size = new Dimension(displayLists * Constants.RESULTS_LIST_WIDTH + ((displayLists -1) * Constants.RESULTS_PANEL_HORIZONTAL_GAP), _scroller.getSize().height);
 		_scroller.setPreferredSize(size);
 		_scroller.setSize(size);
 		boolean buttonsVisible = false;
@@ -152,8 +150,16 @@ public class ResultsPanel extends JPanel implements Runnable {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 		String names = "";
 		int i = 0;
+		ImageIcon man = new ImageIcon(Gender.MALE.getImage().getScaledInstance(-1, 30, Image.SCALE_SMOOTH));
+		ImageIcon woman = new ImageIcon(Gender.FEMALE.getImage().getScaledInstance(-1, 30, Image.SCALE_SMOOTH));
+		int width = Constants.RESULTS_LIST_WIDTH - (man.getIconWidth() * sg.getOccupancy()); 
 		for (Person p : sg) {
-			JLabel label = new JLabel(new ImageIcon(p.getGender().getImage().getScaledInstance(-1, 30, Image.SCALE_SMOOTH)));
+			ImageIcon icon = man;
+			if (p.getGender() == Gender.FEMALE)
+				icon = woman;
+			icon.setDescription(p.getName());
+			JLabel label = new JLabel(icon);
+			label.setToolTipText(p.getName());
 			panel.add(label);
 			panel.add(Box.createRigidArea(new Dimension(5, 0)));
 			if (p.getName() != "A Person") {
@@ -169,9 +175,25 @@ public class ResultsPanel extends JPanel implements Runnable {
 			}
 			++i;
 		}
-		panel.add(new JLabel(names));
+		JLabel name = new JLabel(names);
+		name.validate();
+		boolean fix = false;
+		while (name.getPreferredSize().width > width) {
+			String text = name.getText();
+			text = text.substring(0, text.length() - 2);
+			name.setText(text);
+			name.validate();
+			fix = true;
+		}
+		if (fix) {
+			String text = name.getText();
+			text = text.substring(0, text.length() - 2 - "...".length());
+			text += "...";
+			name.setText(text);
+			name.setToolTipText(names);
+		}
+		panel.add(name);
 		panel.add(Box.createHorizontalGlue());
-		System.out.println(panel.getSize().height);
 		return panel;
 	}
 

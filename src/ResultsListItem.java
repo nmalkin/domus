@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -61,7 +60,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_labelsPanel = new JPanel();
 		_labelsPanel.setLayout(new BoxLayout(_labelsPanel, BoxLayout.LINE_AXIS));
 		_labelsPanel.setBackground(new Color(255, 255, 255, 0));
-		this.add(Box.createRigidArea(new Dimension(5, 0)));
+		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		this.add(_labelsPanel);
 		this.add(Box.createHorizontalGlue());
 		_probLabel = new JLabel("[" + _room.getProbability() + "%]");
@@ -70,7 +69,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_addButton = new JLabel(_addToListIcon);
 		_addButton.addMouseListener(new AddListener(this));
 		this.add(_addButton);
-		this.add(Box.createRigidArea(new Dimension(Constants.INSET + 1, 0)));
+		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		this.addMouseListener(new SelectedListener());
 		_unselectedBackgroundColor = this.getBackground();
 		_selectedBackgroundColor = _unselectedBackgroundColor.darker();
@@ -185,8 +184,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 					ListsTab.getInstance().updateLists();
 				}
 			}
-			for (ResultsListItem rli : getRoom().getListItems())
+			for (ResultsListItem rli : getRoom().getListItems()) {
 				rli.validateListLabels();
+				ResultsListTab rlt = (ResultsListTab) rli.getParent().getParent();
+				rlt.validateListLabels();
+			}
 			_prompt.setVisible(false);
 			_prompt.dispose();
 		}

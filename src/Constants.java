@@ -11,7 +11,7 @@ public class Constants {
 	protected static final int GROUP_SIZE_LIMIT = 12; // people
 	protected static final int SUBGROUP_SIZE_LIMIT = 8; // people
 	
-	// general graphics
+	// General Graphics
 	protected static final int INSET = 5; // pixels
 	protected static final Border EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
 	protected static final String DOMUS_FILE = "img/domus.png";
@@ -40,13 +40,13 @@ public class Constants {
 	protected static final int TRASH_OVERLAY_ALPHA = (int) (TRASH_OVERLAY_ALPHA_FRACTION * 255);
 	
 	// House
-	protected static final Color HOUSE_COLOR = new Color(171,171,171);
+	protected static final Color HOUSE_COLOR = new Color(171, 171, 171);
 	protected static final int HOUSE_PADDING = 45; // pixels
 	protected static final Color HOUSE_COLOR_TRANSPARENT = new Color(
 			HOUSE_COLOR.getRed(), HOUSE_COLOR.getGreen(), HOUSE_COLOR.getBlue(), 
 			TRASH_OVERLAY_ALPHA);
 	
-	protected static final Color SELECTED_HOUSE_BORDER_COLOR = new Color(49,49,49);
+	protected static final Color SELECTED_HOUSE_BORDER_COLOR = new Color(49, 49, 49);
 	protected static final float SELECTED_HOUSE_BORDER_WIDTH = INSET + 0f;
 	protected static final Color SELECTED_HOUSE_BORDER_COLOR_TRANSPARENT = new Color(
 			SELECTED_HOUSE_BORDER_COLOR.getRed(), SELECTED_HOUSE_BORDER_COLOR.getGreen(), SELECTED_HOUSE_BORDER_COLOR.getBlue(), 
@@ -70,8 +70,8 @@ public class Constants {
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
 	// Lottery panel
-	protected final static int LOTTERY_PANEL_WIDTH = 200;
-	protected final static int LOTTERY_PANEL_HEIGHT = 500;
+	protected static final int LOTTERY_PANEL_WIDTH = 200;
+	protected static final int LOTTERY_PANEL_HEIGHT = 500;
 
 	/** the value that the slider starts with */
 	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
@@ -119,25 +119,25 @@ public class Constants {
 			"by simply dragging them to a new location.</center></html>";
 	
 	// Database
-	protected final static String DATABASE_NAME = "data/housingdata.db";
+	protected static final String DATABASE_NAME = "data/housingdata.db";
 	
-	protected final static String ROOM_TABLE = "rooms";
-	protected final static String GENDER_TABLE = "genderNeutral";
-	protected final static String SOPHOMORE_TABLE = "sophomoreOnly";
-	protected final static String SEMESTER_TABLE = "semester";
-	protected final static String CAMPUS_AREA_TABLE = "campusArea";
+	protected static final String ROOM_TABLE = "rooms";
+	protected static final String GENDER_TABLE = "genderNeutral";
+	protected static final String SOPHOMORE_TABLE = "sophomoreOnly";
+	protected static final String SEMESTER_TABLE = "semester";
+	protected static final String CAMPUS_AREA_TABLE = "campusArea";
 	
 	// LotteryNumberPanel (optimism)
-	protected final static int OPTIMISM_HIGH = 0;
-	protected final static int OPTIMISM_MEDIUM = 1;
-	protected final static int OPTIMISM_LOW = 2;
+	protected static final int OPTIMISM_HIGH = 0;
+	protected static final int OPTIMISM_MEDIUM = 1;
+	protected static final int OPTIMISM_LOW = 2;
 	
-	protected final static String HAPPY_FILE = "img/Grin.png";
-	protected final static String OKAY_FILE = "img/Undecided.png";
-	protected final static String SAD_FILE = "img/Crying.png";
+	protected static final String HAPPY_FILE = "img/Grin.png";
+	protected static final String OKAY_FILE = "img/Undecided.png";
+	protected static final String SAD_FILE = "img/Crying.png";
 
-	protected final static int OPTIMISM_BUTTON_WIDTH = 18;
+	protected static final int OPTIMISM_BUTTON_WIDTH = 18;
 	
 	// XML i/o
-	protected final static String XML_TRANFORM_FILE = "transform.xsl";
+	protected static final String XML_TRANFORM_FILE = "transform.xsl";
 }

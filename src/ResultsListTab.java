@@ -7,17 +7,17 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -34,8 +34,8 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private JLabel _label;
 	private JLabel _addButton;
 	private JPanel _itemsPanel;
+	private JPanel _labelsPanel;
 	private Dorm _dorm;
-	private SubGroup _subGroup;
 	private int _index;
 	private boolean _isOpen;
 	private static ImageIcon _openIcon = new ImageIcon(Constants.OPEN_FILE, "open results list");
@@ -46,7 +46,6 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	ResultsListTab(Dorm dorm, SubGroup sg, AccordionList<ResultsListTab, ResultsListItem> list) {
 		super();
 		_dorm = dorm;
-		_subGroup = sg;
 		_parentList = list;
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_TAB_HEIGHT));
@@ -59,12 +58,19 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		_tab.setBounds(0, 0, Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_TAB_HEIGHT);
 		_tab.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 1, Color.BLACK));
 		
-		//Set up label on tag (with expansion icon)
+		//Set up label on tab (with expansion icon)
 		_label = new JLabel(_dorm.getName());
 		_label.setFont(new Font(_font.getFontName(), Font.BOLD, _font.getSize()));
 		_label.setIcon(_closedIcon);
 		_tab.addMouseListener(new ExpandListener());
 		_tab.add(_label);
+		
+		//Set up panel for list labels on tab
+		_labelsPanel = new JPanel();
+		_labelsPanel.setLayout(new BoxLayout(_labelsPanel, BoxLayout.LINE_AXIS));
+		_labelsPanel.setBackground(new Color(255, 255, 255, 0));
+		_tab.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
+		_tab.add(_labelsPanel);
 		
 		//Set up addToListButton (actually a blank label with an icon)
 		_tab.add(Box.createHorizontalGlue());
@@ -84,16 +90,52 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		this.add(_itemsPanel);
 	}
 	
+	/** Returns the dorm this tab represents */
 	public Dorm getDorm() {
 		return _dorm;
 	}
 	
+	/** Returns the items contained in this tab */
 	public Collection<ResultsListItem> getItems() {
 		Collection<ResultsListItem> items = new LinkedList<ResultsListItem>();
 		for (Component c : _itemsPanel.getComponents()) {
 			items.add((ResultsListItem) c);
 		}
 		return items;
+	}
+	
+	/** Makes sure the list labels for this item are updated */
+	public void validateListLabels() {
+		_labelsPanel.removeAll();
+		for (RoomList rl : State.getInstance().getRoomLists()) {
+			boolean addLabel = true;
+			for (Component c : _itemsPanel.getComponents()) {
+				ResultsListItem rli = (ResultsListItem) c;
+				rli.validateListLabels();
+				Room r = rli.getRoom();
+				if (!r.getRoomLists().contains(rl))
+					addLabel = false;
+			}
+			if (addLabel) {
+				addListLabel(rl);
+			}
+		}
+	}
+	
+	/** Adds a list label for this item */
+	private void addListLabel(RoomList list) {
+		if (list.getColor() == null) {
+			list.setColor(null);
+		}
+		BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D g = image.createGraphics();
+		g.setColor(list.getColor());
+		g.fillRect(0, 0, 10, 10);
+		ImageIcon icon = new ImageIcon(image);
+		JLabel label = new JLabel(icon);
+		_labelsPanel.add(label);
+		_labelsPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+		validate();
 	}
 
 	@Override
@@ -147,26 +189,22 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	public void resizeItem(Dimension d) {
 		//resize this component
 		Dimension size = this.getSize();
-		System.out.println("this:" + size);
 		this.setPreferredSize(new Dimension(d.width, size.height));
 		this.setSize(new Dimension(d.width, size.height));
 		
 		//resize tab
 		size = _tab.getSize();
-		System.out.println("tab: " + size);
 		_tab.setPreferredSize(new Dimension(d.width, size.height));
 		_tab.setSize(new Dimension(d.width, size.height));
 
 		//resize itemsPanel
 		size = _itemsPanel.getSize();
-		System.out.println("itemsPanel: " + size);
 		_itemsPanel.setPreferredSize(new Dimension(d.width, size.height));
 		_itemsPanel.setSize(new Dimension(d.width, size.height));
 		
 		//resize items
 		for (Component c : _itemsPanel.getComponents()) {
 			size = c.getSize();
-			System.out.println("item: " + size);
 			c.setPreferredSize(new Dimension(d.width, size.height));
 			c.setSize(new Dimension(d.width, size.height));
 		}
@@ -247,6 +285,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 				ResultsListItem listItem = (ResultsListItem) c;
 				for (ResultsListItem rli : listItem.getRoom().getListItems())
 					rli.validateListLabels();
+				validateListLabels();
 			}
 			_prompt.setVisible(false);
 			_prompt.dispose();

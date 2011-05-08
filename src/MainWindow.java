@@ -3,7 +3,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -183,9 +182,6 @@ public class MainWindow extends JFrame {
 		tabbedPane.addTab("Preferences", new PreferencesTab());
 		tabbedPane.addTab("Results", new ResultsTab());
 		tabbedPane.addTab("Cart", ListsTab.getInstance());
-//		tabbedPane.setEnabledAt(1, false);
-//		tabbedPane.setEnabledAt(2, false);
-		
 		this.add(tabbedPane);
 		
 		this.pack();

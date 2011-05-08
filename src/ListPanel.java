@@ -106,12 +106,7 @@ public class ListPanel extends JPanel {
 			_panel.setSize(new Dimension(size.width, size.height + _itemHeight));
 			_panel.add(p);
 		}
-	}
-	
-	/** Adds a room to list */
-	public void addRoom(Room r) {
-		_list.add(r);
-		updateList();
+		
 	}
 	
 	/** Removes a room from list */
@@ -120,6 +115,8 @@ public class ListPanel extends JPanel {
 		r.removeFromRoomList(_list);
 		for (ResultsListItem rli : r.getListItems()) {
 			rli.validateListLabels();
+			ResultsListTab rlt = (ResultsListTab) rli.getParent().getParent();
+			rlt.validateListLabels();
 		}
 		updateList();
 	}

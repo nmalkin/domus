@@ -75,7 +75,8 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		_scroller.setPreferredSize(new Dimension(width, height));
 		_scroller.setSize(new Dimension(width, height));
 		_scroller.getVerticalScrollBar().setBorder(Constants.EMPTY_BORDER);
-		_scroller.setViewportBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+		_scroller.setViewportBorder(Constants.EMPTY_BORDER);
+		_scroller.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
 		this.add(_scroller);
 	}
 	
@@ -186,7 +187,6 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		@Override
 		public void componentResized(ComponentEvent e) {
 			// determine if the width needs to change
-			_scroller.setViewportBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
 			boolean visible = _scroller.getVerticalScrollBar().isVisible();
 			if (visible != _scrollbarVisible) {
 				int width = _scroller.getVerticalScrollBar().getSize().width;
@@ -201,6 +201,10 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 					tab.resizeItem(new Dimension(size.width + width, size.height));
 				}
 				_scrollbarVisible = visible;
+				int bottom = 0;
+				if (_scrollbarVisible)
+					bottom = 1;
+				_scroller.setBorder(BorderFactory.createMatteBorder(1, 0, bottom, 0, Color.BLACK));
 			}
 		}
 		
