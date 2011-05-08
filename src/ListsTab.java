@@ -1,6 +1,5 @@
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -34,11 +33,7 @@ public class ListsTab extends JPanel implements Runnable {
 	private ImageIcon _rightButtonIcon = new ImageIcon(Constants.RIGHT_ARROW, "scroll right");
 	private boolean _scrollLeft, _scrollRight, _scrollOnce;
 	private int _scrollWidth, _scrollDelay;
-	
-	private int _listWidth = 350;
-	private int _listHeight = 525;
-	private int _numDisplayLists = 3;
-	private int _hGap = 5;
+	private JLabel _instructionsLabel;
 	
 	public static ListsTab getInstance() {
 		return _INSTANCE;
@@ -46,16 +41,29 @@ public class ListsTab extends JPanel implements Runnable {
 	
 	private ListsTab() {
 		super();
-		this.setPreferredSize(new Dimension(1000, _listHeight));
+		this.setPreferredSize(new Dimension(Constants.LISTS_PANEL_WIDTH, Constants.LISTS_HEIGHT));
+		
+		//create a panel for the instructions which will be displayed whenever there are no lists
+		_instructionsLabel = new JLabel(Constants.LISTS_INSTRUCTIONS);
+		_instructionsLabel.setPreferredSize(new Dimension(Constants.LISTS_INSTRUCTIONS_WIDTH, Constants.LISTS_INSTRUCTIONS_HEIGHT));
+		
+		//create the panel to hold the lists
 		_listsPanel = new JPanel();
-		_listsPanel.setPreferredSize(new Dimension(0, _listHeight));
-		_listsPanel.setSize(new Dimension(0, _listHeight));
 		_listsPanel.setLayout(new BoxLayout(_listsPanel, BoxLayout.LINE_AXIS));
 		_listsPanel.setBorder(new EmptyBorder(new Insets(0, 0, 0, 0)));
+		
+		//add the instructions initially
+		_listsPanel.add(_instructionsLabel);
+		_listsPanel.setPreferredSize(new Dimension(_instructionsLabel.getPreferredSize().width, Constants.LISTS_HEIGHT));
+		_listsPanel.setSize(new Dimension(_instructionsLabel.getPreferredSize().width, Constants.LISTS_HEIGHT));
+		
+		//create a scroll pane to hold the panel of lists
 		_scroller = new JScrollPane(_listsPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		_scroller.setPreferredSize(new Dimension(0, _listHeight));
+		_scroller.setPreferredSize(new Dimension(_listsPanel.getSize().width, Constants.LISTS_HEIGHT));
 		_scroller.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
 		_scroller.getHorizontalScrollBar().setBorder(new EmptyBorder(0, 0, 0, 0));
+		
+		//create and add the scroll buttons which will be visible when necessary
 		_leftButton = new JLabel(_leftButtonIcon);
 		_leftButton.setVisible(false);
 		_rightButton = new JLabel(_rightButtonIcon);
@@ -66,6 +74,8 @@ public class ListsTab extends JPanel implements Runnable {
 		this.add(_leftButton);
 		this.add(_scroller);
 		this.add(_rightButton);
+		
+		//create a list to hold all of the individual lists
 		_lists = new LinkedList<ListPanel>();
 		_INSTANCE = this;
 	}
@@ -74,33 +84,57 @@ public class ListsTab extends JPanel implements Runnable {
 		int i = 0;
 		for (RoomList rl : State.getInstance().getRoomLists()) {
 			if (i >= _lists.size()) {
+				//remove the instructions if no lists exist yet
+				if (i == 0) {
+					_listsPanel.removeAll();
+					_listsPanel.setPreferredSize(new Dimension(0, Constants.LISTS_HEIGHT));
+					_listsPanel.setSize(new Dimension(0, Constants.LISTS_HEIGHT));
+					_scroller.setPreferredSize(new Dimension(0, Constants.LISTS_HEIGHT));
+					_scroller.setPreferredSize(new Dimension(0, Constants.LISTS_HEIGHT));
+				}
+				
+				//create a new list and add it to the lists panel, as well as a spacing component
 				ListPanel lp = new ListPanel(rl);
 				_lists.add(lp);
 				_listsPanel.add(lp);
 				int extra = 0;
 				if (i != _lists.size()) {
-					_listsPanel.add(Box.createRigidArea(new Dimension(_hGap, 0)));
-					extra = _hGap;
+					_listsPanel.add(Box.createRigidArea(new Dimension(Constants.LISTS_HORIZONTAL_GAP, 0)));
+					extra = Constants.LISTS_HORIZONTAL_GAP;
 				}
+				
+				//reset the size of the lists panel
 				Dimension size = _listsPanel.getPreferredSize();
-				_listsPanel.setPreferredSize(new Dimension(size.width + _listWidth + extra, size.height));
-				_listsPanel.setSize(new Dimension(size.width + _listWidth + extra, size.height));
-				if (i < _numDisplayLists) {
+				_listsPanel.setPreferredSize(new Dimension(size.width + Constants.LISTS_WIDTH + extra, size.height));
+				_listsPanel.setSize(new Dimension(size.width + Constants.LISTS_WIDTH + extra, size.height));
+				
+				//reset the size of the scroll pane if needed
+				if (i < Constants.LISTS_DISPLAYED) {
 					size = _scroller.getPreferredSize();
-					_scroller.setPreferredSize(new Dimension(size.width + _listWidth + extra, size.height));
-					_scroller.setSize(new Dimension(size.width + _listWidth + extra, size.height));
+					_scroller.setPreferredSize(new Dimension(size.width + Constants.LISTS_WIDTH + extra, size.height));
+					_scroller.setSize(new Dimension(size.width + Constants.LISTS_WIDTH + extra, size.height));
 				}
 			}
 			i++;
 		}
+		
+		//set the button visibility and update all pre-existing lists
 		setButtonVisibility();
 		for (ListPanel lp : _lists) {
 			lp.updateList();
 		}
 	}
 	
-	public void removeList(ListPanel list) { 
-		_lists.remove(list);
+	/**
+	 * Removes a list from the lists panel 
+	 * @param list
+	 */
+	void removeList(ListPanel list) {
+		//if the list doesn't exist, return
+		if (!_lists.remove(list))
+			return;
+		
+		//figure out which component the list belongs to
 		Component[] comps = _listsPanel.getComponents();
 		int index = -1;
 		for (int i = 0; i < comps.length; ++i) {
@@ -108,30 +142,54 @@ public class ListsTab extends JPanel implements Runnable {
 				index = i;
 			}
 		}
+		
+		//if none, return
 		if (index == -1) {
 			return;
 		}
+		
+		//remove the component containing the list
 		_listsPanel.remove(index);
 		_listsPanel.remove(index);
+		
+		//reset the size of the lists panel
 		Dimension size = _listsPanel.getPreferredSize();
 		int extra = 0;
 		if (_lists.size() > 0)
-			extra = _hGap;
-		_listsPanel.setPreferredSize(new Dimension(size.width - _listWidth - extra, size.height));
-		_listsPanel.setSize(new Dimension(size.width - _listWidth - extra, size.height));
-		if (_lists.size() < _numDisplayLists) {
+			extra = Constants.LISTS_HORIZONTAL_GAP;
+		_listsPanel.setPreferredSize(new Dimension(size.width - Constants.LISTS_WIDTH - extra, size.height));
+		_listsPanel.setSize(new Dimension(size.width - Constants.LISTS_WIDTH - extra, size.height));
+		
+		//reset the size of the scroll pane if necessary
+		if (_lists.size() < Constants.LISTS_DISPLAYED) {
 			size = _scroller.getPreferredSize();
-			_scroller.setPreferredSize(new Dimension(size.width - _listWidth - extra, size.height));
-			_scroller.setSize(new Dimension(size.width - _listWidth - extra, size.height));
+			_scroller.setPreferredSize(new Dimension(size.width - Constants.LISTS_WIDTH - extra, size.height));
+			_scroller.setSize(new Dimension(size.width - Constants.LISTS_WIDTH - extra, size.height));
 		}
+		
+		//add the instructions back to the panel if there are no lists
+		if (_lists.size() == 0) {
+			_listsPanel.add(_instructionsLabel);
+			_listsPanel.setPreferredSize(new Dimension(_instructionsLabel.getPreferredSize().width, Constants.LISTS_HEIGHT));
+			_listsPanel.setSize(new Dimension(_instructionsLabel.getPreferredSize().width, Constants.LISTS_HEIGHT));
+			_scroller.setPreferredSize(new Dimension(_listsPanel.getSize().width, Constants.LISTS_HEIGHT));
+		}
+		
+		//set the button visibility
 		setButtonVisibility();
 		validate();
 	}
 	
+	/**
+	 * Sets the visibility of the scroll buttons.
+	 * They are made visible if there are more than LISTS_DISPLAYED
+	 * lists. Otherwise, they are hidden.
+	 */
 	public void setButtonVisibility() {
 		boolean buttonsVisible = false;
-		if (_lists.size() > _numDisplayLists)
+		if (_lists.size() > Constants.LISTS_DISPLAYED)
 			buttonsVisible = true;
+		
 		_leftButton.setVisible(buttonsVisible);
 		_rightButton.setVisible(buttonsVisible);
 	}
@@ -152,14 +210,14 @@ public class ListsTab extends JPanel implements Runnable {
 //		}
 		int count = 0;
 		while (_scrollLeft || _scrollRight) {
-			if (_scrollOnce && count > (_listWidth / _scrollWidth)) {
+			if (_scrollOnce && count > (Constants.LISTS_WIDTH / _scrollWidth)) {
 				break;
 			}
-			if (_scrollWidth == _hGap) {
+			if (_scrollWidth == Constants.LISTS_HORIZONTAL_GAP) {
 				break;
 			}
-			if (count == (_listWidth / _scrollWidth)) {
-				_scrollWidth = _hGap;
+			if (count == (Constants.LISTS_WIDTH / _scrollWidth)) {
+				_scrollWidth = Constants.LISTS_HORIZONTAL_GAP;
 			}
 			if (_listsPanel.getSize().width < _scroller.getSize().width) {
 				_scrollLeft = false;

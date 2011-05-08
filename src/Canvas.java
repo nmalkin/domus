@@ -17,6 +17,16 @@ public class Canvas extends JLayeredPane {
 	private Image _trashImage;
 	private Image _domusImage;
 	
+	// image positions
+	private final int _new_male_x_position; // note: x position for icons does not change
+	private int _new_male_y_position;
+	
+	private final int _new_female_x_position;
+	private int _new_female_y_position;
+	
+	private final int _trash_x_position;
+	private int _trash_y_position;
+	
 	private Canvas() {
 		this.setLayout(null);
 		
@@ -38,25 +48,10 @@ public class Canvas extends JLayeredPane {
 		} catch(java.io.IOException e) {
 			//TODO: yell, or break silently? break silently..duh..
 		}
-		
-		// sample data; TODO: remove
-//		House h = new House();
-//		SubGroup s = new SubGroup();
-//		Person p1 = new Person("Sumner", Gender.MALE);
-//		Person p2 = new Person("Miya", Gender.FEMALE);
-//		
-//		State.getInstance().getGroup().add(h);
-//		h.addSubGroup(s);
-//		s.addPerson(p1);
-//		s.addPerson(p2);
-//		
-//		h.setPosition(200,150);
-//		h.updateSubGroupPositions();
-//		
-//		this.add(p1, Constants.PERSON_LAYER);
-//		this.add(p2, Constants.PERSON_LAYER);
-//		this.add(s, Constants.SUBGROUP_LAYER);
-//		this.add(h, Constants.HOUSE_LAYER);
+
+		_new_male_x_position = (0 + Constants.SIDEBAR_WIDTH) / 2 - Gender.MALE.getImageDimension().width / 2;
+		_new_female_x_position = (0 + Constants.SIDEBAR_WIDTH) / 2 - Gender.FEMALE.getImageDimension().width / 2;
+		_trash_x_position = (0 + Constants.SIDEBAR_WIDTH) / 2 - Constants.TRASH_WIDTH / 2;
 	}
 	
 	/**
@@ -517,7 +512,7 @@ public class Canvas extends JLayeredPane {
 		return false;
 	}
 	
-	public static boolean overTrashIcon(DraggablePositionableComponent c) {
+	public boolean overTrashIcon(DraggablePositionableComponent c) {
 		return GraphicsSupport.intersectionAreaFraction(c.getRectangle(), getTrashRectangle()) 
 		> Constants.INTERSECTION_FRACTION;
 	}
@@ -527,17 +522,25 @@ public class Canvas extends JLayeredPane {
 	 * 
 	 * @return
 	 */
-	private static Rectangle getTrashRectangle() {
+	private Rectangle getTrashRectangle() {
 		return new Rectangle(
-				Constants.TRASH_X_POSITION, 
-				Constants.TRASH_Y_POSITION, 
+				_trash_x_position, 
+				_trash_y_position, 
 				Constants.TRASH_WIDTH, 
 				Constants.TRASH_HEIGHT);
+	}
+	
+	private void updateIconPositions() {
+		_new_male_y_position = this.getHeight() / 4 - Gender.MALE.getImageDimension().height / 2;
+		_new_female_y_position = this.getHeight() / 4 * 2 - Gender.FEMALE.getImageDimension().height / 2;
+		_trash_y_position = this.getHeight() / 4 * 3 - Constants.TRASH_HEIGHT / 2;
 	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
+		updateIconPositions();
 		
 		// sidebar
 		g.setColor(Color.BLACK);
@@ -548,24 +551,26 @@ public class Canvas extends JLayeredPane {
 		// watermark
 		g.drawImage(_domusImage, (this.getWidth() + Constants.SIDEBAR_WIDTH) / 2 - _domusImage.getWidth(null)/ 2 , (this.getHeight() - _domusImage.getHeight(null)) / 2, null);
 		
-		
+		// new people icons
+		g.setColor(Constants.NEW_PERSON_TEXT_COLOR);
 		
 		// new guy
 		String text = "New Guy";
 		int textWidth = g.getFontMetrics().stringWidth(text);
 		int textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2; 
-		g.drawString(text, textPosition, Constants.NEW_MALE_Y_POSITION - 20);
-		g.drawImage(Gender.MALE.getImage(), Constants.NEW_MALE_X_POSITION, Constants.NEW_MALE_Y_POSITION, null);
+		g.drawString(text, textPosition, _new_male_y_position - 20);
+		
+		g.drawImage(Gender.MALE.getImage(), _new_male_x_position, _new_male_y_position, null);
 		
 		// new girl
 		text = "New Girl";
 		textWidth = g.getFontMetrics().stringWidth(text);
 		textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2;
-		g.drawString(text, textPosition, Constants.NEW_FEMALE_Y_POSITION - 20);
-		g.drawImage(Gender.FEMALE.getImage(), Constants.NEW_FEMALE_X_POSITION, Constants.NEW_FEMALE_Y_POSITION, null);
+		g.drawString(text, textPosition, _new_female_y_position - 20);
+		g.drawImage(Gender.FEMALE.getImage(), _new_female_x_position, _new_female_y_position, null);
 		
 		// trash can
-		g.drawImage(_trashImage, Constants.TRASH_X_POSITION, Constants.TRASH_Y_POSITION, null);
+		g.drawImage(_trashImage, _trash_x_position, _trash_y_position, null);
 	}
 	
 	private class AddPersonListener extends MouseAdapter {
@@ -581,17 +586,17 @@ public class Canvas extends JLayeredPane {
 		 * @return
 		 */
 		private Gender overNewPersonIcon(int x, int y) {
-			if(	x >= Constants.NEW_MALE_X_POSITION &&
-				x <= Constants.NEW_MALE_X_POSITION + Gender.MALE.getImageDimension().width &&
-				y >= Constants.NEW_MALE_Y_POSITION &&
-				y <= Constants.NEW_MALE_Y_POSITION + Gender.MALE.getImageDimension().height) 
+			if(	x >= _new_male_x_position &&
+				x <= _new_male_x_position + Gender.MALE.getImageDimension().width &&
+				y >= _new_male_y_position &&
+				y <= _new_male_y_position + Gender.MALE.getImageDimension().height) 
 			{
 				return Gender.MALE;
 			} else if(
-				x >= Constants.NEW_FEMALE_X_POSITION &&
-				x <= Constants.NEW_FEMALE_X_POSITION + Gender.FEMALE.getImageDimension().width &&
-				y >= Constants.NEW_FEMALE_Y_POSITION &&
-				y <= Constants.NEW_FEMALE_Y_POSITION + Gender.FEMALE.getImageDimension().height) 
+				x >= _new_female_x_position &&
+				x <= _new_female_x_position + Gender.FEMALE.getImageDimension().width &&
+				y >= _new_female_y_position &&
+				y <= _new_female_y_position + Gender.FEMALE.getImageDimension().height) 
 			{
 				return Gender.FEMALE;
 			} else {
@@ -603,20 +608,27 @@ public class Canvas extends JLayeredPane {
 		public void mousePressed(MouseEvent e) {
 			Gender newPersonGender = overNewPersonIcon(e.getX(), e.getY());
 			if(newPersonGender != null) {
-				Person newPerson = new Person("A Person", newPersonGender);
-				
-				switch(newPersonGender) {
-				case MALE:
-					newPerson.setPosition(Constants.NEW_MALE_X_POSITION, Constants.NEW_MALE_Y_POSITION);
-					break;
-				case FEMALE:
-					newPerson.setPosition(Constants.NEW_FEMALE_X_POSITION, Constants.NEW_FEMALE_Y_POSITION);
-					break;
+				// before adding a person, make sure the group hasn't reached its size limit
+				if(State.getInstance().getGroup().numberOfPeople() < Constants.GROUP_SIZE_LIMIT) {
+					Person newPerson = new Person("A Person", newPersonGender);
+					
+					switch(newPersonGender) {
+					case MALE:
+						newPerson.setPosition(_new_male_x_position, _new_male_y_position);
+						break;
+					case FEMALE:
+						newPerson.setPosition(_new_female_x_position, _new_female_y_position);
+						break;
+					}
+					
+					add(newPerson, Constants.PERSON_LAYER);
+					
+					_currentlyDragging = newPerson;
+				} else { // the group has reached its size limit
+					JOptionPane.showMessageDialog(Canvas.this, 
+							"You've reached the limit on group size.", 
+							"Domus", JOptionPane.INFORMATION_MESSAGE);
 				}
-				
-				add(newPerson, Constants.PERSON_LAYER);
-				
-				_currentlyDragging = newPerson;
 			}
 		}
 		

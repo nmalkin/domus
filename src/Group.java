@@ -15,9 +15,13 @@ public class Group extends AbstractCollection<House> {
 	/** Where on screen am I located? */
 	private Point _position;
 	
+	/** Is this a sophomore group? (Are they eligible for sophomore-only housing?) */
+	private boolean _sophomore;
+	
 	public Group() {
 		_houses = new LinkedList<House>();
 		_position = new Point(0,0);
+		_sophomore = false;
 	}
 	
 	@Override
@@ -49,5 +53,33 @@ public class Group extends AbstractCollection<House> {
 	
 	public void setLotteryNumber(int number) {
 		_lotteryNumber = number;
+	}
+	
+	/**
+	 * Sets the sophomore status.
+	 * 
+	 * @param soph true if the group is eligible for sophomore-only housing
+	 */
+	public void setSophomoreStatus(boolean soph) {
+		_sophomore = soph;
+	}
+	
+	public boolean isSophomore() {
+		return _sophomore;
+	}
+	
+	/**
+	 * Returns the total number of people in this group.
+	 * 
+	 * @return
+	 */
+	public int numberOfPeople() {
+		int count = 0;
+		
+		for(House h : _houses) {
+			count += h.numberOfPeople();
+		}
+		
+		return count;
 	}
 }

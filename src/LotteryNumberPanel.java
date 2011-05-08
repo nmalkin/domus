@@ -41,6 +41,9 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 
 	/** the combo box displaying the semester level */
 	private JComboBox _semesterLevelBox;
+	
+	/** the currently selected optimism level */
+	private int _selectedOptimism;
 
 
 	public LotteryNumberPanel() {
@@ -114,7 +117,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 				}
 				
 				selectOptimism(optimism);
-				State.getInstance().setOptimism(optimism);
+				_selectedOptimism = optimism;
 				updateSliderFromSemester();
 			}
 		};
@@ -141,13 +144,11 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		this.add(buttonPanel);
 
 		this.add(Box.createRigidArea(new Dimension(0,10)));
-		this.addAncestorListener(this);
-
-		_numberSlider.setValue(Database.lotteryNumberFromSemester(semesterIndex) / 2);
+		this.addAncestorListener(this);	
 	}
 
 	public void updateSliderFromSemester() {
-		int lotteryNumber = Database.lotteryNumberFromSemester(_semesterLevelBox.getSelectedIndex() + 3);
+		int lotteryNumber = Database.predictLotteryNumber(_semesterLevelBox.getSelectedIndex() + 3, _selectedOptimism);
 
 		// update the State with the current lottery number
 		State.getInstance().getGroup().setLotteryNumber(lotteryNumber);
@@ -181,7 +182,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 			
 			// get happiness level and update state and the display with it
 			int happiness = Database.optimismFromLotteryNumber(lotteryNumber);
-			State.getInstance().setOptimism(happiness);
+			_selectedOptimism = happiness;
 			selectOptimism(happiness);
 		}
 	}
@@ -223,7 +224,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 			int semester = (Integer) _semesterLevelBox.getSelectedItem();
 
 			// get an estimated lottery number from the database
-			int lotteryNumber = Database.lotteryNumberFromSemester(semester);
+			int lotteryNumber = Database.predictLotteryNumber(semester, _selectedOptimism);
 
 			// update the state with the number
 			State.getInstance().getGroup().setLotteryNumber(lotteryNumber);

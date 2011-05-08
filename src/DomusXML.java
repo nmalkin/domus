@@ -80,6 +80,14 @@ public class DomusXML {
 		
 		group.addAttribute("lottery_number", State.getInstance().getGroup().getLotteryNumber() + "");
 		
+		String sophomoreStatus;
+		if(State.getInstance().getGroup().isSophomore()) {
+			sophomoreStatus = "yes";
+		} else {
+			sophomoreStatus = "no";
+		}
+		group.addAttribute("sophomore", sophomoreStatus);
+		
 		Element house;
 		for(House h : State.getInstance().getGroup()) {
 			house = DocumentHelper.createElement("house");
@@ -185,6 +193,18 @@ public class DomusXML {
 		try {
 			Element input = root.element("input");
 			Element group = input.element("group");
+			
+			int lotteryNumber = getIntAttribute(group, "lottery_number");
+			newGroup.setLotteryNumber(lotteryNumber);
+			
+			String sophomore = group.attributeValue("sophomore");
+			if(sophomore.equals("yes")) {
+				newGroup.setSophomoreStatus(true);
+			} else if(sophomore.equals("no")) {
+				newGroup.setSophomoreStatus(false);
+			} else {
+				throw new DocumentException("invalid value for attribute \"sophomore\"");
+			}
 			
 			for(Object o : group.elements("house")) {
 				Element house = (Element) o;

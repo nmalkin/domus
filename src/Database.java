@@ -143,7 +143,10 @@ public class Database {
 
 					while(subRooms.next()) {
 						Room room = Room.getRoom(INSTANCE._dorms.get(subRooms.getString("building")), subRooms.getString("roomNumber"));
-
+						
+						// save coefficients
+						room.setCoefficients(subRooms.getDouble("b0"), subRooms.getDouble("b1"));
+						
 						for(int i = 0; i < years.length; i++) {
 							if(subRooms.getInt("y" + years[i]) != 0) {
 								LotteryResult result = new LotteryResult(years[i], subRooms.getInt("y" + years[i]));
@@ -204,7 +207,6 @@ public class Database {
 	protected static int semesterFromLotteryNumber(int lotteryNumber) {
 		try {
 			Integer[] years = State.getInstance().getYears();
-			int optimism = State.getInstance().getOptimism();
 
 			ResultSet semesters = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where number=" + lotteryNumber + ";");
 			semesters.next();
@@ -230,12 +232,12 @@ public class Database {
 	 * Looks at settings in State to choose which years to use. 
 	 * 
 	 * @param lotteryNumber the lottery number
+	 * @param optimism expected level of optimism
 	 * @return average semester level for groups with this lottery number
 	 * @throws SQLException 
 	 */
-	protected static int lotteryNumberFromSemester(int semester) {
+	protected static int predictLotteryNumber(int semester, int optimism) {
 		Integer[] years = State.getInstance().getYears();
-		int optimism = State.getInstance().getOptimism();
 
 		int count = 0;
 		int sum = 0;
