@@ -82,10 +82,8 @@ public class Person extends CanvasComponent {
 			_subgroup != null && Canvas.getInstance().overTrashIcon(_subgroup) || // if my subgroup is over the trash, also draw transparently
 			_subgroup != null && _subgroup.getHouse() != null && Canvas.getInstance().overTrashIcon(_subgroup.getHouse()))  // same for house
 		{ 
-			Canvas.getInstance().openTrash();
 			return Constants.TRASH_OVERLAY_ALPHA_FRACTION;
 		} else {
-			Canvas.getInstance().closeTrash();
 			return 1.0f;
 		}
 	}
