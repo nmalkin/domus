@@ -28,7 +28,6 @@ public class ListPanel extends JPanel {
 	private JList _panel;
 	private JScrollPane _scroller;
 	private static Font _font = new Font("Verdana", Font.PLAIN, 12);
-	private static Insets _insets = new Insets(0, 5, 0, 5);
 	
 	private final int _listWidth = 350;
 	private final int _listHeight = 500;
@@ -60,10 +59,12 @@ public class ListPanel extends JPanel {
 		label.setIconTextGap(10);
 		panel.add(label);
 		JLabel removeLabel = new JLabel(_removeIcon);
+		removeLabel.setVisible(false);
+		panel.addMouseListener(new HoverListener());
 		removeLabel.addMouseListener(new RemoveListListener());;
 		panel.add(Box.createHorizontalGlue());
 		panel.add(removeLabel);
-		panel.setBorder(new EmptyBorder(new Insets(_insets.top, _insets.left + 1, _insets.bottom, _insets.right + 1)));
+		panel.setBorder(new EmptyBorder(0, Constants.INSET + 1, 0, Constants.INSET + 1));
 		this.add(panel);
 		_panel = new JList();
 		_panel.setPreferredSize(new Dimension(_listWidth, 0));
@@ -98,7 +99,7 @@ public class ListPanel extends JPanel {
 			removeLabel.setVisible(false);
 			removeLabel.addMouseListener(new RemoveListener());
 			p.add(removeLabel);
-			p.setBorder(new EmptyBorder(_insets));
+			p.setBorder(new EmptyBorder(new Insets(0, Constants.INSET, 0, Constants.INSET)));
 			p.addMouseListener(hoverListener);
 			_roomMap.put(removeLabel, r);
 			Dimension size = _panel.getPreferredSize();

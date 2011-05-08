@@ -5,7 +5,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.Iterator;
 
 import javax.swing.*;
@@ -43,7 +42,7 @@ public class Canvas extends JLayeredPane {
 		
 		// load trash icon and watermark
 		try {
-			_trashImage = javax.imageio.ImageIO.read(new java.io.File(Constants.TRASH_FILE));
+			_trashImage = javax.imageio.ImageIO.read(new java.io.File(Constants.TRASH_CLOSED_FILE));
 			_domusImage = javax.imageio.ImageIO.read(new java.io.File(Constants.DOMUS_FILE));
 		} catch(java.io.IOException e) {
 			//TODO: yell, or break silently? break silently..duh..

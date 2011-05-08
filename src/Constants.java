@@ -33,9 +33,11 @@ public class Constants {
 	
 	protected static final Color NEW_PERSON_TEXT_COLOR = Color.LIGHT_GRAY;
 	
-	protected static final String TRASH_FILE = "img/trash.png";
+//	protected static final String TRASH_FILE = "img/trash.png";
+	protected static final String TRASH_CLOSED_FILE = "img/trashcan_closed.png";
+	protected static final String TRASH_OPEN_FILE = "img/trashcan_open.png";
 	protected static final int TRASH_WIDTH = 77; // pixels
-	protected static final int TRASH_HEIGHT = 100; // pixels
+	protected static final int TRASH_HEIGHT = 140; // pixels
 	protected static final float TRASH_OVERLAY_ALPHA_FRACTION = 0.25f;
 	protected static final int TRASH_OVERLAY_ALPHA = (int) (TRASH_OVERLAY_ALPHA_FRACTION * 255);
 	
@@ -79,8 +81,8 @@ public class Constants {
 	// Results and lists icons
 	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";
 	protected static final String OPEN_FILE = "img/open_results_tab_new.png";
-	protected static final String ADD_FILE = "img/add_to_list_new.png";
-	protected static final String REMOVE_FILE = "img/remove_from_list_black.png";
+	protected static final String ADD_FILE = "img/add_to_list_black.png";
+	protected static final String REMOVE_FILE = "img/remove_from_list_thin.png";
 	protected static final String LEFT_ARROW = "img/left_arrow_smaller.png";
 	protected static final String RIGHT_ARROW = "img/right_arrow_smaller.png";
 	protected static final int OPEN_ICON_WIDTH = 15;
@@ -97,8 +99,6 @@ public class Constants {
 	protected static final int RESULTS_PANEL_HEIGHT = RESULTS_LIST_HEIGHT + RESULTS_HEADER_HEIGHT;
 	protected static final int RESULTS_LISTS_DISPLAYED = 3;
 	protected static final int RESULTS_PANEL_HORIZONTAL_GAP = 5;
-	protected static final String SMALL_MAN_FILE = "img/small_man.png";
-	protected static final String SMALL_WOMAN_FILE = "img/small_woman.png";
 	
 	// Lists
 	protected static final int LISTS_PANEL_WIDTH = 1000;

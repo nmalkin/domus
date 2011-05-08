@@ -116,6 +116,7 @@ public class State {
 				}
 			}
 		}
+		System.out.println();
 	}
 	
 	public Multimap<SubGroup, Room> getResults() {

@@ -109,7 +109,7 @@ public class Room implements Comparable<Room> {
 		for(LotteryResult r: _results) resultString += r.getLotteryNumber() + " ";
 		resultString += "]";
 		
-		return _dorm.getName() + " " + _number + "; " + resultString + ";";
+		return _dorm.getName() + " " + _number + "; " + resultString + ";" + getProbability() + ";";
 	}
 	
 	public void addResult(LotteryResult result) {
