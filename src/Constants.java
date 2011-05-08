@@ -120,13 +120,12 @@ public class Constants {
 	
 	// Database
 	protected static final String DATABASE_NAME = "data/housingdata.db";
-	
-	protected static final String ROOM_TABLE = "rooms";
+	protected static final String ROOM_TABLE = "rooms_with_regressions";
 	protected static final String GENDER_TABLE = "genderNeutral";
 	protected static final String SOPHOMORE_TABLE = "sophomoreOnly";
 	protected static final String SEMESTER_TABLE = "semester";
 	protected static final String CAMPUS_AREA_TABLE = "campusArea";
-	
+
 	// LotteryNumberPanel (optimism)
 	protected static final int OPTIMISM_HIGH = 0;
 	protected static final int OPTIMISM_MEDIUM = 1;

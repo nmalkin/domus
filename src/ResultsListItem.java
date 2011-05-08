@@ -55,7 +55,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_isOpen = false;
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
 		_label.setFont(_unselectedFont);
-		this.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH - 1, 0)));
+		this.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
 		this.add(_label);
 		_labelsPanel = new JPanel();
 		_labelsPanel.setLayout(new BoxLayout(_labelsPanel, BoxLayout.LINE_AXIS));
@@ -63,7 +63,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		this.add(_labelsPanel);
 		this.add(Box.createHorizontalGlue());
-		_probLabel = new JLabel("[" + _room.getProbability() + "%]");
+		String probabilityString = "" + (int) (_room.getProbability() * 100);
+		_probLabel = new JLabel("[" + probabilityString + "%]");
 		_probLabel.setFont(_unselectedFont);
 		this.add(_probLabel);
 		_addButton = new JLabel(_addToListIcon);

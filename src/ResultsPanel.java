@@ -157,12 +157,12 @@ public class ResultsPanel extends JPanel implements Runnable {
 			ImageIcon icon = man;
 			if (p.getGender() == Gender.FEMALE)
 				icon = woman;
-			icon.setDescription(p.getName());
 			JLabel label = new JLabel(icon);
-			label.setToolTipText(p.getName());
+			
 			panel.add(label);
 			panel.add(Box.createRigidArea(new Dimension(5, 0)));
 			if (p.getName() != "A Person") {
+				label.setToolTipText(p.getName());
 				if (i == 0)
 					names += p.getName();
 				else if (i == sg.getOccupancy() - 1) {

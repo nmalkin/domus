@@ -143,7 +143,10 @@ public class Database {
 
 					while(subRooms.next()) {
 						Room room = Room.getRoom(INSTANCE._dorms.get(subRooms.getString("building")), subRooms.getString("roomNumber"));
-
+						
+						// save coefficients
+						room.setCoefficients(subRooms.getDouble("b0"), subRooms.getDouble("b1"));
+						
 						for(int i = 0; i < years.length; i++) {
 							if(subRooms.getInt("y" + years[i]) != 0) {
 								LotteryResult result = new LotteryResult(years[i], subRooms.getInt("y" + years[i]));
