@@ -93,6 +93,17 @@ public abstract class CanvasComponent extends DraggablePositionableComponent {
 		}
 	}
 	
+	/**
+	 * Returns true if this CanvasComponent is over the trash icon on the Canvas.
+	 * 
+	 * TODO: consider caching this value, since now it's being recalculated several times between moves
+	 * 
+	 * @return
+	 */
+	protected boolean overTrashIcon() {
+		return Canvas.getInstance().overTrashIcon(this);
+	}
+	
 	
 	protected class TrashHoverListener extends MouseAdapter {
 		private boolean _trashOpened;
@@ -104,7 +115,7 @@ public abstract class CanvasComponent extends DraggablePositionableComponent {
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			CanvasComponent source = (CanvasComponent) e.getSource();
-			if(Canvas.getInstance().overTrashIcon(source)) {
+			if(source.overTrashIcon()) {
 				if(! _trashOpened) { // if we haven't already opened the trash
 					Canvas.getInstance().openTrash();
 					_trashOpened = true;
