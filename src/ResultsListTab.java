@@ -306,5 +306,12 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		}
 		
 	}
-	
+
+	public void updateProbabilities() {
+		for (Component c : _itemsPanel.getComponents()) {
+			ResultsListItem listItem = (ResultsListItem) c;
+			listItem.updateProbability();
+		}
+	}
+
 }

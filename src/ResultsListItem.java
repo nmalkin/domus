@@ -30,10 +30,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private JLabel _probLabel;
 	private JLabel _addButton;
 	private JPanel _labelsPanel;
+	private ProbabilityDisplay _probabilityDisplay;
 	private boolean _isOpen;
 	private boolean _fullWidth;
 	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
-	private int _index;
+	private double _comparisonValue;
 	private int _numLists;
 	private static Font _unselectedFont = new Font("Verdana", Font.PLAIN, 12);
 	private static Color _unselectedBackgroundColor;
@@ -52,7 +53,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_numLists = 0;
 		_room = room;
 		_room.addToListItem(this);
-		_index = _room.getAverageResult();
+		_comparisonValue = _room.getAverageResult();
 		_isOpen = false;
 		_fullWidth = true;
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
@@ -66,12 +67,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		this.add(_labelsPanel);
 		this.add(Box.createHorizontalGlue());
 		
-//		String probabilityString = "" + (int) (_room.getProbability() * 100);
-//		_probLabel = new JLabel("[" + probabilityString + "%]");
-//		_probLabel.setFont(_unselectedFont);
-//		this.add(_probLabel);
-		ProbabilityDisplay probabilityDisplay = new ProbabilityDisplay(_room.getProbability());
-		this.add(probabilityDisplay);
+		_probabilityDisplay = new ProbabilityDisplay(_room.getProbability());
+		this.add(_probabilityDisplay);
 		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		
 		_addButton = new JLabel(_addToListIcon);
@@ -119,7 +116,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	
 	@Override
 	public double getComparisonValue() {
-		return _index;
+		return _comparisonValue;
 	}
 
 	@Override
@@ -169,7 +166,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	
 	@Override
 	public int compareTo(AccordionItem o) {
-		return _index < o.getComparisonValue() ? -1 : (_index > o.getComparisonValue() ? 1 : 0);
+		return _comparisonValue < o.getComparisonValue() ? -1 : (_comparisonValue > o.getComparisonValue() ? 1 : 0);
 	}
 	
 	/** Handles adding this item to a specific user created list */
@@ -227,6 +224,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			else
 				_parentList.setSelectedItem(null);
 		}
+	}
+
+	public void updateProbability() {
+		_comparisonValue = getRoom().getProbability();
+		_probabilityDisplay.setProbability(_comparisonValue);
 	}
 	
 } // end of ResultsListItem

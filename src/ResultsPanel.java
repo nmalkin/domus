@@ -66,7 +66,11 @@ public class ResultsPanel extends JPanel implements Runnable {
 		_listsMap = new HashMap<SubGroup, AccordionList<ResultsListTab, ResultsListItem>>();
 	}
 	
-	public void updateResultsLists() {
+	public void updateResultsLists(boolean probabilitiesOnly) {
+		if (probabilitiesOnly) {
+			updateProbabilities();
+			return;
+		}
 		SetMultimap<SubGroup, Dorm> dormMap = TreeMultimap.create(Ordering.natural(), new DormComparator());
 		_dormAverages = new HashMap<Dorm, DormAverage>();
 		_results = State.getInstance().getResults();
@@ -246,6 +250,14 @@ public class ResultsPanel extends JPanel implements Runnable {
 	private void addListItem(AccordionList<ResultsListTab, ResultsListItem> list, ResultsListTab tab, Room r) {
 		ResultsListItem item = new ResultsListItem(r, list);
 		list.addListItem(tab, item);
+	}
+	
+	private void updateProbabilities() {
+		for (AccordionList<ResultsListTab, ResultsListItem> list : _listsMap.values()) {
+			for (ResultsListTab tab : list.getTabs()) {
+				tab.updateProbabilities();
+			}
+		}
 	}
 	
 	private class DormAverage {

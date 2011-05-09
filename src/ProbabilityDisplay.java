@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -26,10 +25,21 @@ public class ProbabilityDisplay extends JPanel {
 	 * as a value between 0 and 100, rounded to the nearest percentage,
 	 * and with a % sign at the end.
 	 * 
-	 * @return
+	 * @return String representation of probability
 	 */
 	private String getProbabilityString() {
 		return (int) (_probability * 100) + "%";
+	}
+	
+	/**
+	 * Sets the probability. A value between 0.0 and 1.0
+	 * 
+	 * @param probability, probability for this display
+	 */
+	public void setProbability(double probability) {
+		_probability = probability;
+		this.setToolTipText(getProbabilityString());
+		repaint();
 	}
 	
 	@Override
