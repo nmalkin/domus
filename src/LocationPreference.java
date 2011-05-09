@@ -27,6 +27,10 @@ public class LocationPreference extends AbstractSet<Dorm> {
 		return _dorms.add(e);
 	}
 
+	public boolean remove(Dorm e) {
+		return _dorms.remove(e);
+	}
+	
 	@Override
 	public Iterator<Dorm> iterator() {
 		return _dorms.iterator();

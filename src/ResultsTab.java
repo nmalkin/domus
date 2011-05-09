@@ -21,10 +21,6 @@ public class ResultsTab extends JPanel {
 		this.add(new LotteryNumberPanel(), BorderLayout.LINE_END);
 	}
 	
-	public void updatePreferences() {
-		_preferencePanel.updatePreferences();
-	}
-	
 	public void updateResults() {
 		State.getInstance().updateResults();
 		_resultsPanel.updateResultsLists();
@@ -35,7 +31,10 @@ public class ResultsTab extends JPanel {
 		super.setVisible(visible);
 		if (visible) {
 			updateResults();
-			updatePreferences();
+			
+			this.remove(_preferencePanel);
+			_preferencePanel = new PreferencePanel();
+			this.add(_preferencePanel, BorderLayout.LINE_START);
 		}
 	}
 }

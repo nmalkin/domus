@@ -157,7 +157,7 @@ public class MainWindow extends JFrame {
 		fileMenu.add(exitMenuItem);
 		
 		
-		JMenu optionsMenu = new JMenu("Options");
+		JMenu optionsMenu = new JMenu("Settings");
 		optionsMenu.setMnemonic(KeyEvent.VK_O);
 		
 		JMenuItem yearsMenuItem = new JMenuItem("Choose years");

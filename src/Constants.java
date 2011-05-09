@@ -70,14 +70,15 @@ public class Constants {
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
 	// Lottery panel
-	protected static final int LOTTERY_PANEL_WIDTH = 200;
+	protected static final int LOTTERY_PANEL_WIDTH = 180;
 	protected static final int LOTTERY_PANEL_HEIGHT = 500;
 
 	/** the value that the slider starts with */
 	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	
 	// Preference panel
-	protected final static int PREFERENCE_PANEL_WIDTH = 200;
+	protected final static int PREFERENCE_PANEL_WIDTH = 250;
+	protected final static int PREFERENCE_PANEL_HEIGHT = 850;
 	
 	// Results and lists icons
 	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";
@@ -87,6 +88,7 @@ public class Constants {
 	protected static final String LEFT_ARROW = "img/left_arrow_smaller.png";
 	protected static final String RIGHT_ARROW = "img/right_arrow_smaller.png";
 	protected static final int OPEN_ICON_WIDTH = 15;
+	protected static final int REMOVE_ICON_HEIGHT = 16;
 	
 	// Results
 	protected static final int RESULTS_LIST_WIDTH = 350;
@@ -118,8 +120,12 @@ public class Constants {
 			"You may make as many lists as you like and " +
 			"add individual rooms or entire dorms to them.<p><p>" +
 			"You can also remove items or an entire list if you want.<p><p>" +
-			"Lastly, you can reorder the elements in these list " +
+			"Lastly, you can reorder the elements in these lists " +
 			"by simply dragging them to a new location.</center></html>";
+	
+	protected static final String PREFERENCE_PANEL_INSTRUCTIONS = "<html><center>View preferences for your houses here. " +
+			"Remove them if you like, and the results will update instantly. Mouse over the people if you need to remember" +
+			" who is in each house.</center></html>";
 	
 	// Database
 	protected static final String DATABASE_NAME = "data/housingdata.db";
@@ -137,8 +143,10 @@ public class Constants {
 	protected static final String HAPPY_FILE = "img/Grin.png";
 	protected static final String OKAY_FILE = "img/Undecided.png";
 	protected static final String SAD_FILE = "img/Crying.png";
+	protected static final String SAD_FILE_DIM = "img/Crying2.png";
+	protected static final String OKAY_FILE_DIM = "img/Undecided2.png";
+	protected static final String HAPPY_FILE_DIM = "img/Grin2.png";
 
-	protected static final int OPTIMISM_BUTTON_WIDTH = 18;
 	
 	// XML i/o
 	protected static final String XML_TRANFORM_FILE = "transform.xsl";
