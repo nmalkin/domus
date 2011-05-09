@@ -67,7 +67,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		
 		_probabilityDisplay = new ProbabilityDisplay(_room.getProbability());
 		this.add(_probabilityDisplay);
-		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
+		this.add(Box.createRigidArea(new Dimension(Constants.PROBABILITY_DISPLAY_RIGHT_SPACING, 0)));
 		
 		_button = new JLabel(_buttonIcon);
 		_button.setPreferredSize(new Dimension(_buttonIcon.getIconWidth(), _buttonIcon.getIconHeight()));
@@ -107,6 +107,14 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		validate();
 	}
 	
+	/** 
+	 * Returns the parent list associated with this item.
+	 * May be null.
+	 */
+	public AccordionList<ResultsListTab, ResultsListItem> getParentList() {
+		return _parentList;
+	}
+	
 	/** Returns the room associated with this item */
 	public Room getRoom() {
 		return _room;
@@ -119,6 +127,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 
 	public void setButtonIcon(ImageIcon icon) {
 		_buttonIcon = icon;
+		_button.setIcon(_buttonIcon);
 	}
 	
 	public void setButtonMouseListener(MouseListener l) {
@@ -186,6 +195,24 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		return _comparisonValue < o.getComparisonValue() ? -1 : (_comparisonValue > o.getComparisonValue() ? 1 : 0);
 	}
 	
+	@Override
+	public int hashCode() {
+		return _room.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof ResultsListItem))
+			return false;
+		ResultsListItem other = (ResultsListItem) o;
+		return _room.equals(other.getRoom());
+	}
+	
+	@Override
+	public String toString() {
+		return _room.getDorm().getName() + " " + _room.getNumber();
+	}
+	
 	/** Handles adding this item to a specific user created list */
 	public class RoomListSelectionListener implements ActionListener {
 		
@@ -220,7 +247,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			}
 			for (ResultsListItem rli : getRoom().getListItems()) {
 				rli.validateListLabels();
-				if (_parentList != null) {
+				if (rli.getParentList() != null) {
 					ResultsListTab rlt = (ResultsListTab) rli.getParent().getParent();
 					rlt.validateListLabels();
 				}

@@ -20,7 +20,7 @@ public class ResultsTab extends JPanel {
 		this.add(_resultsPanel);
 		
 		this.add(new LotteryNumberPanel(), BorderLayout.LINE_END);
-		State.getInstance().getGroup().setGroupStateChangeListener(new GroupStateChangeListener());
+		State.getInstance().getGroup().addGroupStateChangeListener(new GroupStateChangeListener());
 		State.getInstance().addSelectedHouseChangeListener(new SelectedHouseChangeListener());
 		State.getInstance().setSelectedProbabilityModelChangeListener(new SelectedProbabilityModelChangeListener());
 	}
@@ -55,7 +55,10 @@ public class ResultsTab extends JPanel {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			if (isVisible())
+			if (!((Group.GroupChangeEvent) e).getUpdateType())
+				updateResults(((Group.GroupChangeEvent) e).getUpdateType());
+			
+			else if (isVisible())
 				// update what should be updated based on the GroupChangeEvent updateType
 				updateResults(((Group.GroupChangeEvent) e).getUpdateType());
 		}
