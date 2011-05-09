@@ -96,7 +96,7 @@ public class ListPanel extends JPanel {
 			JLabel label = new JLabel(r.getDorm() + " " + r.getNumber());
 			label.setFont(_font);
 			p.add(label);
-//			p.add(Box.createHorizontalGlue());
+			p.add(Box.createHorizontalGlue());
 			JLabel removeLabel = new JLabel(_removeIcon);
 			removeLabel.setVisible(false);
 			removeLabel.addMouseListener(new RemoveListener());
@@ -144,14 +144,6 @@ public class ListPanel extends JPanel {
 				label.setVisible(false);
 		}
 		
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			//hide the remove button label if not on the component anymore
-			JPanel panel = (JPanel) e.getSource();
-			JLabel label = (JLabel) panel.getComponent(panel.getComponentCount() - 1);
-			if (!panel.contains(e.getX(), e.getY()))
-				label.setVisible(false);
-		}
 	}
 	
 	
@@ -166,17 +158,10 @@ public class ListPanel extends JPanel {
 		
 		@Override
 		public void mouseExited(MouseEvent e) {
-			//hide the button if not on the parent componet still
 			JLabel label = (JLabel) e.getSource();
 			label.setVisible(false);
 		}
-		
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			JLabel label = (JLabel) e.getSource();
-			label.setVisible(false);
-		}
-		
+
 	}
 	
 	/** Listener for list removal */
@@ -192,6 +177,12 @@ public class ListPanel extends JPanel {
 			_list = null;
 			ListsTab.getInstance().removeList(ListPanel.this);
 			ListsTab.getInstance().updateLists();
+		}
+		
+		@Override
+		public void mouseExited(MouseEvent e) {
+			JLabel label = (JLabel) e.getSource();
+			label.setVisible(false);
 		}
 		
 	}

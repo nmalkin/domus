@@ -67,13 +67,20 @@ public class ResultsPanel extends JPanel implements Runnable {
 	}
 	
 	public void updateResultsLists(boolean probabilitiesOnly) {
+		// if only updating probability displays, do so and return
 		if (probabilitiesOnly) {
 			updateProbabilities();
 			return;
 		}
+		
+		// set up some variables
 		SetMultimap<SubGroup, Dorm> dormMap = TreeMultimap.create(Ordering.natural(), new DormComparator());
 		_dormAverages = new HashMap<Dorm, DormAverage>();
+		
+		// get the results from State
 		_results = State.getInstance().getResults();
+		
+		// determine which Dorms are in the results and compute averages for them
 		for (SubGroup sg : _results.keySet()) {
 			for (Room r : _results.get(sg)) {
 				DormAverage average = _dormAverages.get(r.getDorm());
@@ -83,11 +90,16 @@ public class ResultsPanel extends JPanel implements Runnable {
 				_dormAverages.put(r.getDorm(), average);
 			}
 		}
+		
+		// create a multimap from SubGroup to Dorms
 		for (SubGroup sg : _results.keySet()) {
 			for (Room r : _results.get(sg)) {
 				dormMap.put(sg, r.getDorm());
 			}
 		}
+		
+		// Remove any AccordionLists which shouldn't exist any more
+		// (because the corresponding SubGroup was deleted)
 		Collection<SubGroup> oldSubGroups = _listsMap.keySet();
 		for (Iterator<SubGroup> iter = oldSubGroups.iterator(); iter.hasNext();) {
 			SubGroup sg = iter.next();
@@ -97,13 +109,23 @@ public class ResultsPanel extends JPanel implements Runnable {
 				iter.remove();
 			}
 		}
+		
 		for (SubGroup sg : dormMap.keySet()) {
+			// if there is not an exisiting AccordionList for this SubGroup, create a new one
 			AccordionList<ResultsListTab, ResultsListItem> list = null;
 			if ((list = _listsMap.get(sg)) == null) {
 				list = AccordionList.create(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_HEIGHT, Constants.RESULTS_HEADER_HEIGHT);
+				_listsMap.put(sg, list);
+				_resultsPanel.add(list);
 			}
+			
+			// set the header of the AccordionList (Person icons and names)
 			list.setHeader(createListHeader(sg));
+			
+			// get the old ResultsListTabs from the AccordionList (could be empty if new list)
 			Collection<ResultsListTab> tabs = list.getTabs();
+			
+			// remove any ResultsListTabs which don't have a corresponding Dorm for this SubGroup 
 			for (Iterator<ResultsListTab> iter = tabs.iterator(); iter.hasNext();) {
 				ResultsListTab rlt = iter.next();
 				if (!_dormAverages.containsKey(rlt.getDorm())) {
@@ -111,14 +133,17 @@ public class ResultsPanel extends JPanel implements Runnable {
 					list.removeTab(rlt);
 				}
 			}
-			tabs = list.getTabs();
+
 			for (Dorm d : dormMap.get(sg)) {
+				// if there is an existing ResultsListTab for this Dorm, update it
+				// otherwise, create a new one
 				ResultsListTab tab = containsDormTab(tabs, d);
 				if (tab != null) {
 					intersectResultsWithTab(sg, d, list, tab);
 					tab.setComparisonValue(_dormAverages.get(d).getAverage());
 				}
 				else {
+					// create a new ResultsListTab and add all the rooms to it
 					tab = new ResultsListTab(d, sg, list);
 					tab.setComparisonValue(_dormAverages.get(d).getAverage());
 					list.addTab(tab);
@@ -128,19 +153,25 @@ public class ResultsPanel extends JPanel implements Runnable {
 						}
 					}
 				}
+				
+				// make sure the ResultsListTab is displaying all of the list labels it should be
 				tab.validateListLabels();
-			}
-			_listsMap.put(sg, list);
-			_resultsPanel.add(list);
+			}			
 		}
+		
+		// make sure that size of the panel is updated properly
 		int numLists = _listsMap.values().size();
 		int displayLists = Math.min(numLists, Constants.RESULTS_LISTS_DISPLAYED);
 		Dimension size = new Dimension(numLists * Constants.RESULTS_LIST_WIDTH + ((numLists - 1) * Constants.RESULTS_PANEL_HORIZONTAL_GAP), Constants.RESULTS_PANEL_HEIGHT);
 		_resultsPanel.setPreferredSize(size);
 		_resultsPanel.setSize(size);
+		
+		// that goes for the scroll pane as well
 		size = new Dimension(displayLists * Constants.RESULTS_LIST_WIDTH + ((displayLists -1) * Constants.RESULTS_PANEL_HORIZONTAL_GAP), _scroller.getSize().height);
 		_scroller.setPreferredSize(size);
 		_scroller.setSize(size);
+		
+		// show or hide the scroll buttons as necessary
 		boolean buttonsVisible = false;
 		if (numLists > Constants.RESULTS_LISTS_DISPLAYED)
 			buttonsVisible = true;
@@ -148,56 +179,92 @@ public class ResultsPanel extends JPanel implements Runnable {
 		_rightButton.setVisible(buttonsVisible);
 	}
 	
+	/**
+	 * Creates a header for the AccordionList. The header
+	 * consists of a Person icon for each person in the SubGroup,
+	 * as well as the names of the Person objects, if they have
+	 * been named by the user.
+	 * 
+	 * @param sg, the SubGroup for which to create a header
+	 * @return the header, a JPanel
+	 */
 	private JPanel createListHeader(SubGroup sg) {
+		// create a new JPanel, and set its size appropriately
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_HEADER_HEIGHT));
 		panel.setSize(new Dimension(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_HEADER_HEIGHT));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+		
 		String names = "";
 		int i = 0;
+		
+		// create an ImageIcon for both the man and the woman Person objects
+		// We can use a single instance for all labels
+		// created by scaling the images from the Canvas
 		ImageIcon man = new ImageIcon(Gender.MALE.getImage().getScaledInstance(-1, 30, Image.SCALE_SMOOTH));
 		ImageIcon woman = new ImageIcon(Gender.FEMALE.getImage().getScaledInstance(-1, 30, Image.SCALE_SMOOTH));
-		int width = Constants.RESULTS_LIST_WIDTH - (man.getIconWidth() * sg.getOccupancy()); 
+		
+		//determine how much width is left on the header after the icons are added
+		int width = Constants.RESULTS_LIST_WIDTH - (man.getIconWidth() * sg.getOccupancy());
+		
 		for (Person p : sg) {
+			// add the correct icon for each Person
 			ImageIcon icon = man;
 			if (p.getGender() == Gender.FEMALE)
 				icon = woman;
 			JLabel label = new JLabel(icon);
-			
 			panel.add(label);
 			panel.add(Box.createRigidArea(new Dimension(5, 0)));
+			
+			// add the Person's name to the label if they have been named
+			// Make sure to use correct grammar, and of course,
+			// an Oxford comma if necessary
 			if (! p.getName().equals(Constants.NEW_PERSON_DEFAULT_NAME)) {
+				//set the tooltip for the icon if the Person has been named
 				label.setToolTipText(p.getName());
 				if (i == 0)
 					names += p.getName();
 				else if (i == sg.getOccupancy() - 1) {
 					if (i > 1)
-						names += ","; 
-					names += " and " + p.getName();
+						names += ",";
+					if (!names.equals(""))
+						names += " and ";
+					names += p.getName();
 				}
 				else
 					names += ", " + p.getName();
 			}
 			++i;
 		}
-		JLabel name = new JLabel(names);
-		name.validate();
+		
+		// create a new label for the names
+		JLabel nameLabel = new JLabel(names);
+		nameLabel.validate();
 		boolean fix = false;
-		while (name.getPreferredSize().width > width) {
-			String text = name.getText();
+		
+		// if the label is too wide for the header, shrink it down
+		while (nameLabel.getPreferredSize().width > width) {
+			String text = nameLabel.getText();
 			text = text.substring(0, text.length() - 2);
-			name.setText(text);
-			name.validate();
+			nameLabel.setText(text);
+			nameLabel.validate();
 			fix = true;
 		}
+		
+		// if it was too wide, shrink it a little more and add "..." to the end
 		if (fix) {
-			String text = name.getText();
+			String text = nameLabel.getText();
 			text = text.substring(0, text.length() - 2 - "...".length());
 			text += "...";
-			name.setText(text);
-			name.setToolTipText(names);
+			nameLabel.setText(text);
 		}
-		panel.add(name);
+		
+		// if the names label is not empty, set the tooltip in case it is too long
+		if (nameLabel.getText().equals(""))
+			nameLabel.setToolTipText(names);
+
+		// add the names label and return the header 
+		panel.add(nameLabel);
 		panel.add(Box.createHorizontalGlue());
 		return panel;
 	}
@@ -212,8 +279,21 @@ public class ResultsPanel extends JPanel implements Runnable {
 		return tab;
 	}
 	
+	/**
+	 * Performs an intersection on the results already in the ResultsListTab, and
+	 * those returned from the database for the corresponding Drom.
+	 * 
+	 * @param sg, the SubGroup to which the Dorm and ResultsListTab being merged belong
+	 * @param d, the Dorm to merge with the ResultsListTab
+	 * @param list, the AccordionList the ResultsListTab belongs too
+	 * @param tab, the ResultsListTab to merge with the Dorm
+	 */
 	private void intersectResultsWithTab(SubGroup sg, Dorm d, AccordionList<ResultsListTab, ResultsListItem> list, ResultsListTab tab) {
+		// get the results for the SubGroup
 		Collection<Room> roomResults = _results.get(sg);
+		
+		// get the itmes already present in the ResultsListTab
+		// add the corresponding Rooms to a list
 		Collection<ResultsListItem> tabItems = tab.getItems();
 		List<Room> tabRooms = new LinkedList<Room>();
 		if (tabItems != null) {
@@ -221,6 +301,8 @@ public class ResultsPanel extends JPanel implements Runnable {
 				tabRooms.add(rli.getRoom());
 			}
 		}
+		// if the ResultsListTab is empty, add all of the Rooms in the results to it
+		// then return
 		else {
 			for (Room r : roomResults) {
 				if (r.getDorm() == tab.getDorm())
@@ -228,13 +310,18 @@ public class ResultsPanel extends JPanel implements Runnable {
 			}
 			return;
 		}
-		tabItems = tab.getItems();
+
+		// for each ResultsListItem already in the ResultsListTab
+		// remove it if its room is not in the returned results
 		for (ResultsListItem item : tabItems) {
 			Room r = item.getRoom();
 			if (!roomResults.contains(r)) {
 				list.removeListItem(tab, item);
 			}
 		}
+		
+		// for each Room in the returned results, add it to the
+		// ResultsListTab if it's not already there
 		for (Room r : roomResults) {
 			if (r.getDorm() == tab.getDorm()) {
 				if (!tabRooms.contains(r)) {
@@ -242,16 +329,28 @@ public class ResultsPanel extends JPanel implements Runnable {
 				}
 			}
 		}
+		
+		// if the ResultsListTab is now empty, remove it
 		if (tab.getItems().size() == 0) {
 			list.removeTab(tab);
 		}
 	}
 	
+	/**
+	 * Adds a Room (via a ResultsListItem) to the ResultsListTab.
+	 * 
+	 * @param list, the AccordionList to which to add the ResultsListItem
+	 * @param tab, the ResultsListTab to which to add the ResultsListItem
+	 * @param r, the Room to add to the ResultsListTab
+	 */
 	private void addListItem(AccordionList<ResultsListTab, ResultsListItem> list, ResultsListTab tab, Room r) {
 		ResultsListItem item = new ResultsListItem(r, list);
 		list.addListItem(tab, item);
 	}
 	
+	/**
+	 * Updates the probabilities for each AccordionList
+	 */
 	private void updateProbabilities() {
 		for (AccordionList<ResultsListTab, ResultsListItem> list : _listsMap.values()) {
 			for (ResultsListTab tab : list.getTabs()) {
@@ -260,6 +359,12 @@ public class ResultsPanel extends JPanel implements Runnable {
 		}
 	}
 	
+	/**
+	 * A class for quickly storing and computing the average probability
+	 * for a Dorm.
+	 * 
+	 * @author jswarren
+	 */
 	private class DormAverage {
 		
 		private int _size;
@@ -279,14 +384,27 @@ public class ResultsPanel extends JPanel implements Runnable {
 			return (double) (_sum / _size);
 		}
 	}
-	
+
+	/**
+	 * Compares two dorms based on the average probability of their rooms.
+	 * If two dorms have the same average probability, they are compared lexicographically.
+	 * 
+	 * @return a number less than 0 if this dorm has a lower average probability,
+	 * or if the two probabilities are equal but this dorm comes first lexicographically
+	 */
 	private class DormComparator implements Comparator<Dorm> {
 
 		@Override
 		public int compare(Dorm o1, Dorm o2) {
 			double ave1 = _dormAverages.get(o1).getAverage();
 			double ave2 = _dormAverages.get(o2).getAverage();
-			return ave1 < ave2 ? -1 : (ave1 > ave2 ? 1 : 0); 
+			if (ave1 < ave2)
+				return -1;
+			if (ave1 > ave2)
+				return 1;
+			
+			// if the averages are equal, compare dorm
+			return o1.compareTo(o2);
 		}
 		
 	}
@@ -366,6 +484,12 @@ public class ResultsPanel extends JPanel implements Runnable {
 		}
 	}
 	
+	/**
+	 * Listens for mouseClicks on the scroll buttons (if they are
+	 * visible) and scrolls the panel appropriately.
+	 * 
+	 * @author jswarren
+	 */
 	private class ScrollButtonListener extends MouseAdapter {
 		
 		@Override

@@ -60,7 +60,9 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 		
 		JLabel removeButton = new JLabel(_removeIcon);
 		removeButton.addMouseListener(new RemoveListener());
+		removeButton.setVisible(false);
 		this.add(removeButton);
+		this.addMouseListener(new HoverListener());
 		
 		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		this.addMouseListener(new SelectedListener());
@@ -96,6 +98,28 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 		
 	}
 	
+	/** Listener for removal button display */
+	private class HoverListener extends MouseAdapter {
+		
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			//show the remove button label
+			JPanel panel = (JPanel) e.getSource();
+			JLabel label = (JLabel) panel.getComponent(panel.getComponentCount() - 2);
+			label.setVisible(true);
+		}
+		
+		@Override
+		public void mouseExited(MouseEvent e) {
+			//hide the remove button label
+			JPanel panel = (JPanel) e.getSource();
+			JLabel label = (JLabel) panel.getComponent(panel.getComponentCount() - 2);
+			if (panel.getComponentAt(e.getX(), e.getY()) != label)
+				label.setVisible(false);
+		}
+		
+	}
+	
 	/** Listener for room removal */
 	private class RemoveListener extends MouseAdapter {
 		
@@ -124,6 +148,12 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 			
 			State.getInstance().setSelectedHouse(null);
 			State.getInstance().setSelectedHouse(_house);
+		}
+		
+		@Override
+		public void mouseExited(MouseEvent e) {
+			JLabel label = (JLabel) e.getSource();
+			label.setVisible(false);
 		}
 		
 	}

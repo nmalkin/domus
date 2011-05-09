@@ -7,6 +7,11 @@ public class Database {
 	private static final Database INSTANCE = new Database();
 	private static Connection connection;
 	private static Statement statement;
+	
+	/**
+	 * A list of all CampusAreas known to the database.
+	 */
+	private static ArrayList<CampusArea> _campusAreas;
 
 	/** 
 	 * all dorms known to the database, with the key being their name
@@ -64,14 +69,17 @@ public class Database {
 	 * @return
 	 */
 	protected static Collection<CampusArea> getCampusAreas() {
-		ArrayList<CampusArea> campusAreas = new ArrayList<CampusArea>();
+		if (_campusAreas != null)
+			return _campusAreas;
+		
+		_campusAreas = new ArrayList<CampusArea>();
 
 		try {
 			ResultSet areas = statement.executeQuery("select distinct campusArea from " + Constants.CAMPUS_AREA_TABLE + ";");
 
 			while (areas.next()) {
 				CampusArea area = new CampusArea(areas.getString("campusArea"));
-				campusAreas.add(area);
+				_campusAreas.add(area);
 			}
 
 			areas.close();
@@ -80,7 +88,7 @@ public class Database {
 
 			while(dorms.next()) {
 				Dorm dorm = new Dorm(dorms.getString("building"));
-				for(CampusArea ca : campusAreas) {
+				for(CampusArea ca : _campusAreas) {
 					if(dorms.getString("campusArea").equals(ca.getName())) {
 						INSTANCE._dorms.put(dorm.getName(), dorm);
 						ca.add(dorm);
@@ -94,7 +102,7 @@ public class Database {
 			System.out.println("ERROR: unable to retrieve campus areas");
 		}
 
-		return campusAreas;
+		return _campusAreas;
 	}
 
 	private boolean isGenderNeutral(Dorm d) throws SQLException {

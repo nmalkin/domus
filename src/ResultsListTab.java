@@ -32,7 +32,6 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private AccordionList<ResultsListTab, ResultsListItem> _parentList;
 	private JPanel _tab;
 	private JLabel _label;
-	private JLabel _addButton;
 	private JPanel _itemsPanel;
 	private JPanel _labelsPanel;
 	private Dorm _dorm;
@@ -42,7 +41,6 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private static ImageIcon _openIcon = new ImageIcon(Constants.OPEN_FILE, "open results list");
 	private static ImageIcon _closedIcon = new ImageIcon(Constants.CLOSED_FILE, "closed results list");
 	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
-	private static Font _font = new Font("Verdana", Font.PLAIN, 12);
 	
 	ResultsListTab(Dorm dorm, SubGroup sg, AccordionList<ResultsListTab, ResultsListItem> list) {
 		super();
@@ -62,7 +60,6 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		
 		//Set up label on tab (with expansion icon)
 		_label = new JLabel(_dorm.getName());
-		_label.setFont(new Font(_font.getFontName(), Font.BOLD, _font.getSize()));
 		_label.setIcon(_closedIcon);
 		_tab.addMouseListener(new ExpandListener());
 		_tab.add(_label);
@@ -76,9 +73,9 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		
 		//Set up addToListButton (actually a blank label with an icon)
 		_tab.add(Box.createHorizontalGlue());
-		_addButton = new JLabel(_addToListIcon);
-		_addButton.addMouseListener(new AddListener(this));
-		_tab.add(_addButton);
+		JLabel addButton = new JLabel(_addToListIcon);
+		addButton.addMouseListener(new AddListener(this));
+		_tab.add(addButton);
 		_tab.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		this.add(_tab);
 		
@@ -140,6 +137,53 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		validate();
 	}
 
+	public void updateProbabilities() {
+		for (Component c : _itemsPanel.getComponents()) {
+			ResultsListItem listItem = (ResultsListItem) c;
+			listItem.updateProbability();
+		}
+	}
+	
+	/** 
+	 * Resizes the list. Called when the visibility
+	 * of the vertical scrollbar on the parent components
+	 * changes.
+	 */
+	public void resizeItem(Dimension d) {
+		//determine if components need to be resized
+		boolean fullWidth = _fullWidth;
+		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
+		System.out.println();
+		
+		//resize this component
+		Dimension size = this.getSize();
+		if (resize) {
+			this.setPreferredSize(new Dimension(size.width + d.width, size.height));
+			this.setSize(new Dimension(size.width + d.width, size.height));
+		}
+		
+		//resize tab
+		size = _tab.getSize();
+		if (resize) {
+			_tab.setPreferredSize(new Dimension(size.width + d.width, size.height));
+			_tab.setSize(new Dimension(size.width + d.width, size.height));
+		}
+
+		//resize itemsPanel
+		size = _itemsPanel.getSize();
+		if (resize) {
+			_itemsPanel.setPreferredSize(new Dimension(size.width + d.width, size.height));
+			_itemsPanel.setSize(new Dimension(size.width + d.width, size.height));
+			_fullWidth = !_fullWidth;
+		}
+		
+		//resize items
+		for (Component c : _itemsPanel.getComponents()) {
+			AccordionItem item = (AccordionItem) c;
+			item.resizeItem(d);
+		}
+	}
+
 	@Override
 	public double getComparisonValue() {
 		return _comparisonValue;
@@ -183,50 +227,24 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		_itemsPanel.setSize(size);
 	}
 	
-	/** 
-	 * Resizes the list. Called when the visibility
-	 * of the vertical scrollbar on the parent components
-	 * changes.
+	/**
+	 * Compares two tabs based on the average probability of their results.
+	 * If two tabs have the same average probability, their dorm names are compared lexicographically.
+	 * 
+	 * @return a number less than 0 if this tab has a lower average probability,
+	 * or if the two probabilities are equal but this tab's dorm comes first lexicographically
 	 */
-	public void resizeItem(Dimension d) {
-		//determine if components need to be resized
-		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
-		
-		//resize this component
-		Dimension size = this.getSize();
-		if (resize) {
-			this.setPreferredSize(new Dimension(size.width + d.width, size.height));
-			this.setSize(new Dimension(size.width + d.width, size.height));
-		}
-		
-		//resize tab
-		size = _tab.getSize();
-		if (resize) {
-			_tab.setPreferredSize(new Dimension(size.width + d.width, size.height));
-			_tab.setSize(new Dimension(size.width + d.width, size.height));
-		}
-
-		//resize itemsPanel
-		size = _itemsPanel.getSize();
-		if (resize) {
-			_itemsPanel.setPreferredSize(new Dimension(size.width + d.width, size.height));
-			_itemsPanel.setSize(new Dimension(size.width + d.width, size.height));
-			_fullWidth = !_fullWidth;
-		}
-		
-		//resize items
-		for (Component c : _itemsPanel.getComponents()) {
-			AccordionItem item = (AccordionItem) c;
-			item.resizeItem(d);
-		}
-	}
-	
 	@Override
-	public int compareTo(AccordionItem o) {
-		if (this == o)
-			return 0;
-		else
-			return _comparisonValue < o.getComparisonValue() ? -1 : (_comparisonValue > o.getComparisonValue() ? 1 : 0);
+	public int compareTo(AccordionItem o) {	
+		double ave1 = this.getComparisonValue();
+		double ave2 = o.getComparisonValue();
+		if (ave1 < ave2)
+			return -1;
+		if (ave1 > ave2)
+			return 1;
+		
+		// if the averages are equal, compare dorms
+		return getDorm().compareTo(((ResultsListTab) o).getDorm());
 	}
 	
 	@Override
@@ -305,13 +323,6 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 			_prompt.dispose();
 		}
 		
-	}
-
-	public void updateProbabilities() {
-		for (Component c : _itemsPanel.getComponents()) {
-			ResultsListItem listItem = (ResultsListItem) c;
-			listItem.updateProbability();
-		}
 	}
 
 }

@@ -8,7 +8,7 @@ import java.util.LinkedList;
  * that particular area of campus.
  *
  */
-public class CampusArea extends AbstractCollection<Dorm> {
+public class CampusArea extends AbstractCollection<Dorm> implements Comparable<CampusArea> {
 	/** the dorms that constitute this area */
 	private Collection<Dorm> _dorms;
 	
@@ -46,5 +46,10 @@ public class CampusArea extends AbstractCollection<Dorm> {
 	
 	public String toString() {
 		return getName() + " " + _dorms.toString();
+	}
+
+	public int compareTo(CampusArea o) {
+		// TODO Auto-generated method stub
+		return _name.compareTo(o.getName());
 	}
 }

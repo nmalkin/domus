@@ -40,7 +40,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		_checkBoxes = new LinkedList<JCheckBox>();
 		_dormBoxes = new HashMap<Dorm, DormCheckBox>();
 		
-		State.getInstance().setSelectedHouseChangeListener(this);
+		State.getInstance().addSelectedHouseChangeListener(this);
 		
 		CheckBoxListener myListener = new CheckBoxListener();
 		

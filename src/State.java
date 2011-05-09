@@ -33,7 +33,7 @@ public class State {
 	private House _selectedHouse;
 	
 	/** listener for whether or not the house is changing */
-	private ChangeListener _selectedHouseChangeListener;
+	private List<ChangeListener> _selectedHouseChangeListeners;
 	
 	/** Should we use the regression probability method? (if false, "simple" technique will be used) */
 	private boolean _useRegressionProbability;
@@ -47,7 +47,7 @@ public class State {
 		_results = TreeMultimap.create();
 		_roomLists = new LinkedList<RoomList>();
 		_selectedHouse = null;
-		_selectedHouseChangeListener = null;
+		_selectedHouseChangeListeners = new LinkedList<ChangeListener>();
 		_useRegressionProbability = false;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
@@ -59,7 +59,7 @@ public class State {
 		return _group;
 	}
 	
-	protected void setGroup(Group group) { //TODO: do we want to expose it like this?
+	protected void setGroup(Group group) { //TODO: do we want to expose it like this?  -RE: No...? -Sumner
 		_group = group;
 	}
 	
@@ -106,9 +106,11 @@ public class State {
 	public void setSelectedHouse(House h) {
 		_selectedHouse = h;
 		
-		if(_selectedHouseChangeListener != null) {
+		for (ChangeListener l : _selectedHouseChangeListeners) {
+			if (l == null)
+				continue;
 			ChangeEvent e = new ChangeEvent(this);
-			_selectedHouseChangeListener.stateChanged(e);
+			l.stateChanged(e);
 		}
 	}
 	
@@ -122,8 +124,9 @@ public class State {
 	 * 
 	 * @param l
 	 */
-	public void setSelectedHouseChangeListener(ChangeListener l) {
-		_selectedHouseChangeListener = l;
+	public void addSelectedHouseChangeListener(ChangeListener l) {
+		if (l != null)
+			_selectedHouseChangeListeners.add(l);
 	}
 	
 	public void updateResults() {

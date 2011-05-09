@@ -10,6 +10,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 public class House extends CanvasComponent implements Iterable<SubGroup>, Comparable<House> {
 	/** the subgroups that make up this house */
 	private Collection<SubGroup> _subgroups;
@@ -22,6 +25,9 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	
 	/** used for comparing house, strictly increasing */
 	private static int _houseCount = 0;
+	
+	/** listener for changes in location preferences */
+	private ChangeListener _locationPreferenceChangeListener;
 	
 	private int _width = 0, _height = 0;
 	
@@ -98,6 +104,21 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	
 	public void setLocationPreference(LocationPreference l) {
 		_locations = l;
+		
+		if (_locationPreferenceChangeListener != null) {
+			ChangeEvent e = new ChangeEvent(this);
+			_locationPreferenceChangeListener.stateChanged(e);
+		}
+	}
+	
+	/**
+	 * Attaches the given ChangeListener such that
+	 * a ChangeEvent is fired whenever the selected house is changed.
+	 * 
+	 * @param l
+	 */
+	public void setLocationPreferenceChangeListener(ChangeListener l) {
+		_locationPreferenceChangeListener = l;
 	}
 	
 	/** Used for sorting in results display */

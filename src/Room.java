@@ -182,7 +182,7 @@ public class Room implements Comparable<Room> {
 	 * If two rooms have the same probability, they are compared lexicographically.
 	 * 
 	 * @return a number less than 0 if this room has a lower probability,
-	 * or if the two probabilities are equal but this building+room comes first alphabetically
+	 * or if the two probabilities are equal but this building+room comes first lexicographically
 	 */
 	@Override
 	public int compareTo(Room o) {
