@@ -186,17 +186,8 @@ public class Room implements Comparable<Room> {
 	 */
 	@Override
 	public int compareTo(Room o) {
-		double myProbability = getProbability();
-		double theirProbability = o.getProbability();
-		
-		if(myProbability < theirProbability) {
-			return -1;
-		} else if(myProbability > theirProbability) {
-			return 1;
-		} else { // if the two probabilities are equal
-			String myRoomString = _dorm.getName() + " " + _number; // full string identifying this room
-			String theirRoomString = o.getDorm().getName() + " " + o.getNumber();
-			return myRoomString.compareTo(theirRoomString);
-		}
+		String myName = getDorm().getName() + " " + getNumber();
+		String theirName = o.getDorm().getName() + " " + o.getNumber();
+		return myName.compareTo(theirName);
 	}
 }
