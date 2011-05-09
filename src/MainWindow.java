@@ -171,9 +171,39 @@ public class MainWindow extends JFrame {
 		optionsMenu.add(yearsMenuItem);
 		optionsMenu.add(sophomoreOnlyMenuItem);
 		
+		
+		JMenu helpMenu = new JMenu("Help");
+		helpMenu.setMnemonic(KeyEvent.VK_H);
+		
+		JMenuItem guideMenuItem = new JMenuItem("Guide");
+		guideMenuItem.setMnemonic(KeyEvent.VK_G);
+		guideMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new HelpWindow();
+				/*
+				 * TODO: after the help window opens, 
+				 * the JMenu seems to permanently lose focus. 
+				 */
+			}
+		});
+		helpMenu.add(guideMenuItem);
+		
+		JMenuItem aboutMenuItem = new JMenuItem("About");
+		aboutMenuItem.setMnemonic(KeyEvent.VK_A);
+		aboutMenuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO: better about message
+				showMessage("Domus\nVersion " + Constants.VERSION);
+			}
+		});
+		helpMenu.add(aboutMenuItem);
+		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(fileMenu);
 		menuBar.add(optionsMenu);
+		menuBar.add(helpMenu);
 		
 		this.setJMenuBar(menuBar);
 		
