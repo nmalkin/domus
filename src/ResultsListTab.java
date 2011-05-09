@@ -34,6 +34,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private JLabel _label;
 	private JPanel _itemsPanel;
 	private JPanel _labelsPanel;
+	private ProbabilityDisplay _probabilityDisplay;
 	private Dorm _dorm;
 	private double _comparisonValue;
 	private boolean _isOpen;
@@ -71,8 +72,13 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		_tab.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		_tab.add(_labelsPanel);
 		
-		//Set up addToListButton (actually a blank label with an icon)
 		_tab.add(Box.createHorizontalGlue());
+		
+		// add probability display (average probability for this dorm)
+		_probabilityDisplay = new ProbabilityDisplay(0);
+		_tab.add(_probabilityDisplay);
+		
+		//Set up addToListButton (actually a blank label with an icon)
 		JLabel addButton = new JLabel(_addToListIcon);
 		addButton.addMouseListener(new AddListener(this));
 		_tab.add(addButton);
@@ -138,10 +144,19 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	}
 
 	public void updateProbabilities() {
+		double probabilitySum = 0, itemCount = 0;
+		
 		for (Component c : _itemsPanel.getComponents()) {
 			ResultsListItem listItem = (ResultsListItem) c;
 			listItem.updateProbability();
+			
+			probabilitySum += listItem.getComparisonValue(); // getComparisonValue returns the probability for this room
+			itemCount++;
 		}
+		
+		// update this tab's probability display
+		if(itemCount == 0) itemCount = 1; // avoid divide-by-zero error
+		_probabilityDisplay.setProbability(probabilitySum / itemCount);
 	}
 	
 	/** 
