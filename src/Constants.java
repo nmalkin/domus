@@ -72,7 +72,7 @@ public class Constants {
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
 	// Lottery panel
-	protected static final int LOTTERY_PANEL_WIDTH = 200;
+	protected static final int LOTTERY_PANEL_WIDTH = 130;
 	protected static final int LOTTERY_PANEL_HEIGHT = 500;
 
 	/** the value that the slider starts with */
@@ -95,9 +95,9 @@ public class Constants {
 	protected static final int RESULTS_LIST_ITEM_WIDTH = 150;
 	protected static final int RESULTS_LIST_ITEM_HEIGHT = 15;
 	protected static final int RESULTS_HEADER_HEIGHT = 30;
-	protected static final int RESULTS_PANEL_WIDTH = 1200;
+	protected static final int RESULTS_PANEL_WIDTH = 850;
 	protected static final int RESULTS_PANEL_HEIGHT = RESULTS_LIST_HEIGHT + RESULTS_HEADER_HEIGHT;
-	protected static final int RESULTS_LISTS_DISPLAYED = 3;
+	protected static final int RESULTS_LISTS_DISPLAYED = 2;
 	protected static final int RESULTS_PANEL_HORIZONTAL_GAP = 5;
 	
 	// Probability display
