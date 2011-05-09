@@ -151,7 +151,8 @@ public class DomusXML {
 			list.addAttribute("color", l.getColor().getRGB() + "");
 			
 			Element room;
-			for(Room r : l) {
+			for(ResultsListItem rli : l) {
+				Room r = rli.getRoom();
 				room = DocumentHelper.createElement("room");
 				list.add(room);
 				
@@ -289,7 +290,8 @@ public class DomusXML {
 					
 					Room newRoom = Room.getRoom(dorm, roomNumber);
 					Database.updateRoomData(newRoom); // get lottery results/coefficients if necessary
-					rl.add(newRoom);
+					ResultsListItem newItem = new ResultsListItem(newRoom, null);
+					rl.add(newItem);
 					newRoom.addToRoomList(rl); //TODO: is it really necessary to call both?
 				}
 				

@@ -23,7 +23,6 @@ import javax.swing.border.EmptyBorder;
 public class ListPanel extends JPanel {
 
 	private RoomList _list;
-	private Map<JLabel, Room> _roomMap;
 	private ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
 	private JList _panel;
 	private JScrollPane _scroller;
@@ -37,7 +36,6 @@ public class ListPanel extends JPanel {
 	public ListPanel(RoomList list) {
 		super();
 		_list = list;
-		_roomMap = new HashMap<JLabel, Room>();
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(_listWidth, _listHeight));
 		this.setSize(new Dimension(_listWidth, _listHeight));
@@ -88,38 +86,30 @@ public class ListPanel extends JPanel {
 		_panel.removeAll();
 		_panel.setPreferredSize(new Dimension(_itemWidth, 0));
 		_panel.setSize(new Dimension(_itemWidth, 0));
-		MouseListener hoverListener = new HoverListener();
-		for (Room r : _list) {
-			JPanel p = new JPanel();
-			p.setPreferredSize(new Dimension(_itemWidth, _itemHeight));
-			p.setLayout(new BoxLayout(p, BoxLayout.LINE_AXIS));
-			JLabel label = new JLabel(r.getDorm() + " " + r.getNumber());
-			label.setFont(_font);
-			p.add(label);
-			p.add(Box.createHorizontalGlue());
-			JLabel removeLabel = new JLabel(_removeIcon);
-			removeLabel.setVisible(false);
-			removeLabel.addMouseListener(new RemoveListener());
-			p.add(removeLabel);
-			p.setBorder(new EmptyBorder(new Insets(0, Constants.INSET, 0, Constants.INSET)));
-			p.addMouseListener(hoverListener);
-			_roomMap.put(removeLabel, r);
+//		MouseListener hoverListener = new HoverListener();
+		for (ResultsListItem r : _list) {
+			r.setButtonIcon(_removeIcon);
+			r.setButtonMouseListener(new RemoveListener());
+//			removeLabel.setVisible(false);
+//			removeLabel.addMouseListener(new RemoveListener());
+//			r.addMouseListener(hoverListener);
+//			_roomMap.put(removeLabel, r);
 			Dimension size = _panel.getPreferredSize();
-			_panel.setPreferredSize(new Dimension(size.width, size.height + _itemHeight));
-			_panel.setSize(new Dimension(size.width, size.height + _itemHeight));
-			_panel.add(p);
+			_panel.setPreferredSize(new Dimension(size.width, size.height + r.getSize().height));
+			_panel.setSize(new Dimension(size.width, size.height + r.getSize().height));
+			_panel.add(r);
+			r.updateProbability();
 		}
 		
 	}
 	
-	/** Removes a room from list */
-	public void removeRoom(Room r) {
+	/** Removes a ResultsListItem from list */
+	public void removeResultsListItem(ResultsListItem r) {
 		_list.remove(r);
-		r.removeFromRoomList(_list);
-		for (ResultsListItem rli : r.getListItems()) {
+		r.getRoom().removeFromRoomList(_list);
+		r.getRoom().removeFromListItem(r);
+		for (ResultsListItem rli : r.getRoom().getListItems()) {
 			rli.validateListLabels();
-			ResultsListTab rlt = (ResultsListTab) rli.getParent().getParent();
-			rlt.validateListLabels();
 		}
 		updateList();
 	}
@@ -147,19 +137,14 @@ public class ListPanel extends JPanel {
 	}
 	
 	
-	/** Listener for room removal */
+	/** Listener for ResultsListItem removal */
 	private class RemoveListener extends MouseAdapter {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			JLabel label = (JLabel) e.getSource();
-			removeRoom(_roomMap.get(label));
-		}
-		
-		@Override
-		public void mouseExited(MouseEvent e) {
-			JLabel label = (JLabel) e.getSource();
-			label.setVisible(false);
+			ResultsListItem item = (ResultsListItem) label.getParent();
+			removeResultsListItem(item);
 		}
 
 	}
@@ -169,11 +154,12 @@ public class ListPanel extends JPanel {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			Room[] rooms = _list.toArray(new Room[0]);
-			for (int i = 0; i < rooms.length; ++i) {
-				removeRoom(rooms[i]);
+			ResultsListItem[] items = _list.toArray(new ResultsListItem[0]);
+			for (int i = 0; i < items.length; ++i) {
+				removeResultsListItem(items[i]);
 			}
 			State.getInstance().removeRoomList(_list);
+			_list.clear();
 			_list = null;
 			ListsTab.getInstance().removeList(ListPanel.this);
 			ListsTab.getInstance().updateLists();

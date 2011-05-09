@@ -5,12 +5,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 
-public class RoomList extends AbstractCollection<Room> {
+public class RoomList extends AbstractCollection<ResultsListItem> {
 	/** the name by which this RoomList will be referred to */
 	private String _name;
 	
 	/** the rooms that make up this RoomList */
-	private Collection<Room> _rooms;
+	private Collection<ResultsListItem> _resultsListItems;
 	
 	/** the color for this list, used on results tab */
 	private Color _listColor;
@@ -20,7 +20,7 @@ public class RoomList extends AbstractCollection<Room> {
 	 */
 	public RoomList(String name) {
 		_name = name;
-		_rooms = new LinkedList<Room>();
+		_resultsListItems = new LinkedList<ResultsListItem>();
 		_listColor = null;
 	}
 	
@@ -29,9 +29,9 @@ public class RoomList extends AbstractCollection<Room> {
 	 * with the given Rooms.
 	 * @param dorms
 	 */
-	public RoomList(Collection<Room> rooms, String name) {
+	public RoomList(Collection<ResultsListItem> items, String name) {
 		_name = name;
-		_rooms = rooms;
+		_resultsListItems = items;
 		_listColor = null;
 	}
 	
@@ -47,34 +47,34 @@ public class RoomList extends AbstractCollection<Room> {
 	 * with the given Rooms.
 	 * @param dorms
 	 */
-	public RoomList(Collection<Room> rooms) {
-		this(rooms, "");
+	public RoomList(Collection<ResultsListItem> items) {
+		this(items, "");
 	}
 	
 	@Override
-	public boolean add(Room e) {
-		if (!_rooms.contains(e)) {
-			return _rooms.add(e);
+	public boolean add(ResultsListItem e) {
+		if (!_resultsListItems.contains(e)) {
+			return _resultsListItems.add(e);
 		}
 		return false;
 	}
 	
 	@Override
 	public boolean remove(Object e) {
-		if (_rooms.contains(e)) {
-			return _rooms.remove(e);
+		if (_resultsListItems.contains(e)) {
+			return _resultsListItems.remove(e);
 		}
 		return false;
 	}
 
 	@Override
-	public Iterator<Room> iterator() {
-		return _rooms.iterator();
+	public Iterator<ResultsListItem> iterator() {
+		return _resultsListItems.iterator();
 	}
 
 	@Override
 	public int size() {
-		return _rooms.size();
+		return _resultsListItems.size();
 	}
 	
 	public String getName() {

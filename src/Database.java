@@ -2,6 +2,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Database {
 	private static final Database INSTANCE = new Database();
@@ -140,8 +142,8 @@ public class Database {
 	 * @return
 	 * @throws SQLException 
 	 */
-	protected static RoomList getResults(Collection<Dorm> locations, int occupancy, Integer[] years, boolean genderNeutral, boolean sophomoreEligible) {
-		RoomList rooms = new RoomList();
+	protected static Collection<Room> getResults(Collection<Dorm> locations, int occupancy, Integer[] years, boolean genderNeutral, boolean sophomoreEligible) {
+		List<Room> rooms = new LinkedList<Room>();
 
 		try {
 			for(Dorm d: locations) {

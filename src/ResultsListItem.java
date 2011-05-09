@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Box;
@@ -27,15 +28,13 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private AccordionList<ResultsListTab, ResultsListItem> _parentList;
 	private Room _room;
 	private JLabel _label;
-	private JLabel _probLabel;
-	private JLabel _addButton;
+	private JLabel _button;
 	private JPanel _labelsPanel;
 	private ProbabilityDisplay _probabilityDisplay;
 	private boolean _isOpen;
 	private boolean _fullWidth;
-	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
+	private static ImageIcon _buttonIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 	private double _comparisonValue;
-	private int _numLists;
 	private static Font _unselectedFont = new Font("Verdana", Font.PLAIN, 12);
 	private static Color _unselectedBackgroundColor;
 	private static Color _selectedBackgroundColor;
@@ -50,10 +49,9 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		Dimension size = new Dimension(_itemWidth, _itemHeight);
 		this.setPreferredSize(size);
 		this.setSize(size);
-		_numLists = 0;
 		_room = room;
 		_room.addToListItem(this);
-		_comparisonValue = _room.getAverageResult();
+		_comparisonValue = _room.getProbability();
 		_isOpen = false;
 		_fullWidth = true;
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
@@ -71,11 +69,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		this.add(_probabilityDisplay);
 		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		
-		_addButton = new JLabel(_addToListIcon);
-		_addButton.setPreferredSize(new Dimension(_addToListIcon.getIconWidth(), _addToListIcon.getIconHeight()));
-		_addButton.setPreferredSize(new Dimension(_addToListIcon.getIconWidth(), _addToListIcon.getIconHeight()));
-		_addButton.addMouseListener(new AddListener(this));
-		this.add(_addButton);
+		_button = new JLabel(_buttonIcon);
+		_button.setPreferredSize(new Dimension(_buttonIcon.getIconWidth(), _buttonIcon.getIconHeight()));
+		_button.setPreferredSize(new Dimension(_buttonIcon.getIconWidth(), _buttonIcon.getIconHeight()));
+		_button.addMouseListener(new AddListener(this));
+		this.add(_button);
 		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		this.addMouseListener(new SelectedListener());
 		_unselectedBackgroundColor = this.getBackground();
@@ -112,6 +110,25 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	/** Returns the room associated with this item */
 	public Room getRoom() {
 		return _room;
+	}
+	
+	public void updateProbability() {
+		_comparisonValue = getRoom().getProbability();
+		_probabilityDisplay.setProbability(_comparisonValue);
+	}
+
+	public void setButtonIcon(ImageIcon icon) {
+		_buttonIcon = icon;
+	}
+	
+	public void setButtonMouseListener(MouseListener l) {
+		MouseListener[] listeners = _button.getMouseListeners();
+		for (int i = 0; i < listeners.length; ++i) {
+			MouseListener ml = listeners[i];
+			_button.removeMouseListener(ml);
+		}
+		if (l != null)
+			_button.addMouseListener(l);
 	}
 	
 	@Override
@@ -186,7 +203,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 				boolean exists = false;
 				for (RoomList rl : State.getInstance().getRoomLists()) {
 					if (rl.getName().equals(selected)) {
-						rl.add(_room);
+						rl.add(new ResultsListItem(_room, null));
 						_room.addToRoomList(rl);
 						ListsTab.getInstance().updateLists();
 						exists = true;
@@ -196,16 +213,17 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 				if (!exists) {
 					RoomList list = new RoomList(selected);
 					State.getInstance().addRoomList(list);
-					list.add(_room);
+					list.add(new ResultsListItem(_room, null));
 					_room.addToRoomList(list);
-					++_numLists;
 					ListsTab.getInstance().updateLists();
 				}
 			}
 			for (ResultsListItem rli : getRoom().getListItems()) {
 				rli.validateListLabels();
-				ResultsListTab rlt = (ResultsListTab) rli.getParent().getParent();
-				rlt.validateListLabels();
+				if (_parentList != null) {
+					ResultsListTab rlt = (ResultsListTab) rli.getParent().getParent();
+					rlt.validateListLabels();
+				}
 			}
 			_prompt.setVisible(false);
 			_prompt.dispose();
@@ -219,16 +237,13 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			setOpen(!isOpen());
-			if (isOpen())
-				_parentList.setSelectedItem(ResultsListItem.this);
-			else
-				_parentList.setSelectedItem(null);
+			if (_parentList != null) {
+				if (isOpen())
+					_parentList.setSelectedItem(ResultsListItem.this);
+				else
+					_parentList.setSelectedItem(null);
+			}
 		}
 	}
-
-	public void updateProbability() {
-		_comparisonValue = getRoom().getProbability();
-		_probabilityDisplay.setProbability(_comparisonValue);
-	}
 	
-} // end of ResultsListItem
+}

@@ -151,6 +151,9 @@ public class State {
 			_selectedHouseChangeListeners.add(l);
 	}
 	
+	/**
+	 * Fetches results from the Database based on new preferences.
+	 */
 	public void updateResults() {
 		_results.clear();
 		Integer[] years = getYears();
@@ -158,7 +161,7 @@ public class State {
 		for (House h : _group) {
 			Collection<Dorm> locations = h.getLocationPreference();
 			for (SubGroup sg : h) {
-				RoomList results = Database.getResults(locations, sg.getOccupancy(), years, (! sg.sameGender()), sophomoreOnlyEligible);
+				Collection<Room> results = Database.getResults(locations, sg.getOccupancy(), years, (! sg.sameGender()), sophomoreOnlyEligible);
 				for (Room r : results) {
 					_results.put(sg, r);
 				}

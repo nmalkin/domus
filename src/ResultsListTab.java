@@ -149,6 +149,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	 * of the vertical scrollbar on the parent components
 	 * changes.
 	 */
+	@Override
 	public void resizeItem(Dimension d) {
 		//determine if components need to be resized
 		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
@@ -292,7 +293,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 					if (rl.getName().equals(selected)) {
 						for (Component c : _itemsPanel.getComponents()) {
 							ResultsListItem rli = (ResultsListItem) c;
-							rl.add(rli.getRoom());
+							rl.add(new ResultsListItem(rli.getRoom(), null));
 							rli.getRoom().addToRoomList(rl);
 						}
 						ListsTab.getInstance().updateLists();
@@ -305,7 +306,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 					State.getInstance().addRoomList(list);
 					for (Component c : _itemsPanel.getComponents()) {
 						ResultsListItem rli = (ResultsListItem) c;
-						list.add(rli.getRoom());
+						list.add(new ResultsListItem(rli.getRoom(), null));
 						rli.getRoom().addToRoomList(list);
 					}
 					ListsTab.getInstance().updateLists();
