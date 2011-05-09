@@ -190,7 +190,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	
 	@Override
 	public int compareTo(AccordionItem o) {
-		return _comparisonValue < o.getComparisonValue() ? -1 : (_comparisonValue > o.getComparisonValue() ? 1 : 0);
+		return _room.compareTo(((ResultsListItem) o).getRoom());
 	}
 	
 	@Override
