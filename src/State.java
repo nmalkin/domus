@@ -32,13 +32,18 @@ public class State {
 	/** the house that's currently selected on the screen */
 	private House _selectedHouse;
 	
-	/** listener for whether or not the house is changing */
+	/** listeners for whether or not the selected house is changing */
 	private List<ChangeListener> _selectedHouseChangeListeners;
+	
+	/** listener for whether the probability model is changning */
+	private ChangeListener _selectedProbabilityModelChangeListener;
 	
 	/** Should we use the regression probability method? (if false, "simple" technique will be used) */
 	private boolean _useRegressionProbability;
+	
 	/** Years to use for calculating probability. */
 	private List<Integer> _years;
+	
 	/** Years NOT to use for calculating probability. */
 	private List<Integer> _ignoredYears;
 
@@ -48,6 +53,7 @@ public class State {
 		_roomLists = new LinkedList<RoomList>();
 		_selectedHouse = null;
 		_selectedHouseChangeListeners = new LinkedList<ChangeListener>();
+		_selectedProbabilityModelChangeListener = null;
 		_useRegressionProbability = false;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
@@ -79,6 +85,22 @@ public class State {
 	 */
 	public void useRegressionProbability(boolean use) {
 		_useRegressionProbability = use;
+		
+		if (_selectedProbabilityModelChangeListener != null) {
+			ChangeEvent e = new ChangeEvent(this);
+			_selectedProbabilityModelChangeListener.stateChanged(e);
+		}
+	}
+	
+	/**
+	 * Attaches the given ChangeListener such that
+	 * a ChangeEvent is fired whenever the selected house is changed.
+	 * 
+	 * @param l
+	 */
+	public void setSelectedProbabilityModelChangeListener(ChangeListener l) {
+		if (l != null)
+			_selectedProbabilityModelChangeListener = l;
 	}
 	
 	public Integer[] getYears() {
@@ -167,4 +189,5 @@ public class State {
 	public void load(String filename) {
 		// TODO: consider returning boolean depending on success/failure
 	}
+
 }

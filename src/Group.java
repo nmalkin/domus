@@ -21,17 +21,14 @@ public class Group extends AbstractCollection<House> {
 	/** Is this a sophomore group? (Are they eligible for sophomore-only housing?) */
 	private boolean _sophomore;
 	
-	/** listener for changes in the sophomore status */
-	private ChangeListener _sophomoreStatusChangeListener;
-	
-	/** listener for changes in lottery number */
-	private ChangeListener _lotteryNumberChangeListener;
+	/** listener for changes in the sophomore status or lottery number*/
+	private ChangeListener _groupStateChangeListener;
 	
 	public Group() {
 		_houses = new LinkedList<House>();
 		_position = new Point(0,0);
 		_sophomore = false;
-		_sophomoreStatusChangeListener = null;
+		_groupStateChangeListener = null;
 	}
 	
 	@Override
@@ -70,20 +67,10 @@ public class Group extends AbstractCollection<House> {
 	public void setLotteryNumber(int number) {
 		_lotteryNumber = number;
 		
-		if (_lotteryNumberChangeListener != null) {
-			ChangeEvent e = new ChangeEvent(this);
-			_lotteryNumberChangeListener.stateChanged(e);
+		if (_groupStateChangeListener != null) {
+			ChangeEvent e = new GroupChangeEvent(this, GroupChangeEvent.UPDATE_PROBABILITIES);
+			_groupStateChangeListener.stateChanged(e);
 		}
-	}
-	
-	/**
-	 * Attaches the given ChangeListener such that
-	 * a ChangeEvent is fired whenever the selected house is changed.
-	 * 
-	 * @param l
-	 */
-	public void setLotteryNumberChangeListener(ChangeListener l) {
-		_lotteryNumberChangeListener = l;
 	}
 	
 	/**
@@ -94,9 +81,9 @@ public class Group extends AbstractCollection<House> {
 	public void setSophomoreStatus(boolean soph) {
 		_sophomore = soph;
 		
-		if (_sophomoreStatusChangeListener != null) {
-			ChangeEvent e = new ChangeEvent(this);
-			_sophomoreStatusChangeListener.stateChanged(e);
+		if (_groupStateChangeListener != null) {
+			ChangeEvent e = new GroupChangeEvent(this, GroupChangeEvent.UPDATE_RESULTS);
+			_groupStateChangeListener.stateChanged(e);
 		}
 	}
 	
@@ -110,8 +97,8 @@ public class Group extends AbstractCollection<House> {
 	 * 
 	 * @param l
 	 */
-	public void setSophomoreStatusChangeListener(ChangeListener l) {
-		_sophomoreStatusChangeListener = l;
+	public void setGroupStateChangeListener(ChangeListener l) {
+		_groupStateChangeListener = l;
 	}
 	
 	/**
@@ -127,5 +114,25 @@ public class Group extends AbstractCollection<House> {
 		}
 		
 		return count;
+	}
+	
+	public class GroupChangeEvent extends ChangeEvent {
+
+		// constants for what to update
+		private static final boolean UPDATE_RESULTS = true;
+		private static final boolean UPDATE_PROBABILITIES = false;
+		
+		// field for update status of event
+		private boolean _updateType;
+		
+		public GroupChangeEvent(Object source, boolean updateType) {
+			super(source);
+			_updateType = updateType;
+		}
+		
+		public boolean getUpdateType() {
+			return _updateType;
+		}
+		
 	}
 }

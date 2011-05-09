@@ -66,9 +66,9 @@ public class ResultsPanel extends JPanel implements Runnable {
 		_listsMap = new HashMap<SubGroup, AccordionList<ResultsListTab, ResultsListItem>>();
 	}
 	
-	public void updateResultsLists(boolean probabilitiesOnly) {
+	public void updateResultsLists(boolean updateEverything) {
 		// if only updating probability displays, do so and return
-		if (probabilitiesOnly) {
+		if (!updateEverything) {
 			updateProbabilities();
 			return;
 		}

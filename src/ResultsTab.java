@@ -20,23 +20,24 @@ public class ResultsTab extends JPanel {
 		this.add(_resultsPanel);
 		
 		this.add(new LotteryNumberPanel(), BorderLayout.LINE_END);
-		State.getInstance().getGroup().setSophomoreStatusChangeListener(new SophomoreStatusChangeListener());
-		State.getInstance().getGroup().setLotteryNumberChangeListener(new LotteryNumberChangeListener());
+		State.getInstance().getGroup().setGroupStateChangeListener(new GroupStateChangeListener());
 		State.getInstance().addSelectedHouseChangeListener(new SelectedHouseChangeListener());
+		State.getInstance().setSelectedProbabilityModelChangeListener(new SelectedProbabilityModelChangeListener());
 	}
 	
-	private void updateResults(boolean probabilitiesOnly) {
-		if (!probabilitiesOnly) {
+	private void updateResults(boolean updateEverything) {
+		if (updateEverything) {
 			State.getInstance().updateResults();
 		}
-		_resultsPanel.updateResultsLists(probabilitiesOnly);
+		_resultsPanel.updateResultsLists(updateEverything);
 	}
 	
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
-			updateResults(false);
+			// update results, not just probabilities
+			updateResults(true);
 			
 			this.remove(_preferencePanel);
 			_preferencePanel = new PreferencePanel();
@@ -50,28 +51,13 @@ public class ResultsTab extends JPanel {
 	 * 
 	 * @author jswarren
 	 */
-	private class SophomoreStatusChangeListener implements ChangeListener {
+	private class GroupStateChangeListener implements ChangeListener {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			if (isVisible())
-				updateResults(false);
-		}
-		
-	}
-	
-	/**
-	 * Listens for changes in the lottery number. If the results tab is
-	 * visible and this happens, then the results should be updated.
-	 * 
-	 * @author jswarren
-	 */
-	private class LotteryNumberChangeListener implements ChangeListener {
-		
-		@Override
-		public void stateChanged(ChangeEvent e) {
-			if (isVisible())
-				updateResults(true);
+				// update what should be updated based on the GroupChangeEvent updateType
+				updateResults(((Group.GroupChangeEvent) e).getUpdateType());
 		}
 		
 	}
@@ -87,7 +73,25 @@ public class ResultsTab extends JPanel {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			if (isVisible())
-				updateResults(false);
+				// update results, not just probabilities
+				updateResults(true);
+		}
+		
+	}
+	
+	/** 
+	 * Listens for the selected probability model to change. If the results tab is
+	 * visible and this happens, then the results should be updated.
+	 * 
+	 * @author jswarren
+	 */
+	private class SelectedProbabilityModelChangeListener implements ChangeListener {
+		
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			if (isVisible())
+				// update results, not just probabilities
+				updateResults(true);
 		}
 		
 	}
