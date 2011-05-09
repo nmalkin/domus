@@ -25,17 +25,6 @@ import com.google.common.collect.TreeMultimap;
  */
 public class AccordionList<K extends JComponent & AccordionItem, V extends JComponent & AccordionItem> extends JPanel {
 	
-	/** Free vertical space */
-	private int _availSpace;
-	
-	/** Variables for controlling animations */
-	private int _shownSpace;
-	private int _hiddenSpace;
-	private int _timeStep = 10;
-	
-	private int _listWidth;
-	private int _listHeight;
-	
 	/** A multimap of tabs to items */
 	private Multimap<K, V> _lists;
 	
@@ -56,8 +45,6 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	
 	private AccordionList(int width, int height, int headerHeight) {
 		super();
-		_listWidth = width;
-		_listHeight = height + headerHeight;
 		_lists = TreeMultimap.create();
 		this.setPreferredSize(new Dimension(width, height + headerHeight));
 		FlowLayout layout = (FlowLayout) this.getLayout();

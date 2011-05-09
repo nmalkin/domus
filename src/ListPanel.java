@@ -62,7 +62,7 @@ public class ListPanel extends JPanel {
 		removeLabel.setVisible(false);
 		panel.addMouseListener(new HoverListener());
 		removeLabel.addMouseListener(new RemoveListListener());;
-//		panel.add(Box.createHorizontalGlue());
+		panel.add(Box.createHorizontalGlue());
 		panel.add(removeLabel);
 		panel.setBorder(new EmptyBorder(0, Constants.INSET + 1, 0, Constants.INSET + 1));
 		this.add(panel);
