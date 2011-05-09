@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -582,9 +583,10 @@ public class Canvas extends JLayeredPane {
 		
 		// new people icons
 		g.setColor(Constants.NEW_PERSON_TEXT_COLOR);
+		g.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 16));
 		
 		// new guy
-		String text = "New Guy";
+		String text = "new guy";
 		int textWidth = g.getFontMetrics().stringWidth(text);
 		int textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2; 
 		g.drawString(text, textPosition, _new_male_y_position - 20);
@@ -592,7 +594,7 @@ public class Canvas extends JLayeredPane {
 		g.drawImage(Gender.MALE.getImage(), _new_male_x_position, _new_male_y_position, null);
 		
 		// new girl
-		text = "New Girl";
+		text = "new girl";
 		textWidth = g.getFontMetrics().stringWidth(text);
 		textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2;
 		g.drawString(text, textPosition, _new_female_y_position - 20);

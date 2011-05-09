@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -10,6 +11,8 @@ public class Constants {
 	
 	protected static final int GROUP_SIZE_LIMIT = 12; // people
 	protected static final int SUBGROUP_SIZE_LIMIT = 8; // people
+	
+	protected static final Font DOMUS_FONT = FontLoader.load("resources/GOTHIC.TTF");
 	
 	// General Graphics
 	protected static final int INSET = 5; // pixels
@@ -29,9 +32,9 @@ public class Constants {
 	protected static final double INTERSECTION_FRACTION = 0.5;
 	
 	protected static final int SIDEBAR_WIDTH = 120;
-	protected static final Color SIDEBAR_COLOR = Color.GRAY;
+	protected static final Color SIDEBAR_COLOR = new Color(181,181,181);
 	
-	protected static final Color NEW_PERSON_TEXT_COLOR = Color.LIGHT_GRAY;
+	protected static final Color NEW_PERSON_TEXT_COLOR = Color.BLACK;
 	protected static final String NEW_PERSON_DEFAULT_NAME = "A Person";
 	
 //	protected static final String TRASH_FILE = "img/trash.png";
@@ -57,7 +60,7 @@ public class Constants {
 	
 	
 	// SubGroup
-	protected static final Color SUBGROUP_COLOR = new Color(243,158,33);
+	protected static final Color SUBGROUP_COLOR = new Color(251,232,195);
 	protected static final int SUBGROUP_PADDING = 25; // pixels
 	protected static final Color SUBGROUP_COLOR_TRANSPARENT = new Color(
 			SUBGROUP_COLOR.getRed(), SUBGROUP_COLOR.getGreen(), SUBGROUP_COLOR.getBlue(), 

@@ -87,8 +87,8 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		_semesterLevelBox.setSelectedIndex(semesterIndex);
 
 		this.add(Box.createRigidArea(new Dimension(0,10)));
-		JLabel lotteryNumTitle = new JLabel("LOTTERY NUMBER");
-		lotteryNumTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD,12));
+		JLabel lotteryNumTitle = new JLabel("lottery number");
+		lotteryNumTitle.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 16));
 		lotteryNumTitle.setAlignmentX(CENTER_ALIGNMENT);
 		this.add(lotteryNumTitle);
 		
@@ -96,8 +96,8 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 
 		this.add(Box.createRigidArea(new Dimension(0,10)));
 		
-		JLabel semesterLevelTitle = new JLabel("SEMESTER LEVEL");
-		semesterLevelTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD,12));
+		JLabel semesterLevelTitle = new JLabel("semester");
+		semesterLevelTitle.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 16));
 		semesterLevelTitle.setAlignmentX(CENTER_ALIGNMENT);
 		this.add(semesterLevelTitle);
 		
@@ -105,8 +105,8 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 
 		this.add(Box.createRigidArea(new Dimension(0,10)));
 
-		JLabel optimismLevelTitle = new JLabel("LEVEL OF OPTIMISM");
-		optimismLevelTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD,12));
+		JLabel optimismLevelTitle = new JLabel("optimism");
+		optimismLevelTitle.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 16));
 		optimismLevelTitle.setAlignmentX(CENTER_ALIGNMENT);
 		this.add(optimismLevelTitle);
 
