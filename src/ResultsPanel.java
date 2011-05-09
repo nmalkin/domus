@@ -72,10 +72,8 @@ public class ResultsPanel extends JPanel implements Runnable {
 		_results = State.getInstance().getResults();
 		for (SubGroup sg : _results.keySet()) {
 			for (Room r : _results.get(sg)) {
-				DormAverage average = null;
-				if (_dormAverages.get(r.getDorm()) != null)
-					average = _dormAverages.get(r.getDorm());
-				else
+				DormAverage average = _dormAverages.get(r.getDorm());
+				if (average == null)
 					average = new DormAverage();
 				average.add(r.getProbability());
 				_dormAverages.put(r.getDorm(), average);
@@ -164,7 +162,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 			
 			panel.add(label);
 			panel.add(Box.createRigidArea(new Dimension(5, 0)));
-			if (p.getName() != "A Person") {
+			if (! p.getName().equals(Constants.NEW_PERSON_DEFAULT_NAME)) {
 				label.setToolTipText(p.getName());
 				if (i == 0)
 					names += p.getName();
@@ -253,7 +251,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 	private class DormAverage {
 		
 		private int _size;
-		private int _sum;
+		private double _sum;
 		
 		public DormAverage() {
 			_sum = 0;
@@ -266,7 +264,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 		}
 		
 		public double getAverage() {
-			return (double) _sum / _size;
+			return (double) (_sum / _size);
 		}
 	}
 	

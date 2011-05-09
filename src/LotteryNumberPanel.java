@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -31,6 +32,9 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 	private static ImageIcon _happyImage = new ImageIcon(Constants.HAPPY_FILE, "yay!");
 	private static ImageIcon _okayImage = new ImageIcon(Constants.OKAY_FILE, "eh");
 	private static ImageIcon _sadImage = new ImageIcon(Constants.SAD_FILE, "booo");
+	private static ImageIcon _sadImageDim = new ImageIcon(Constants.SAD_FILE_DIM, "booo");
+	private static ImageIcon _happyImageDim = new ImageIcon(Constants.HAPPY_FILE_DIM, "yay!");
+	private static ImageIcon _okayImageDim = new ImageIcon(Constants.OKAY_FILE_DIM, "eh");
 
 	private JLabel _happyButton;
 	private JLabel _okayButton;
@@ -54,6 +58,8 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(new MatteBorder(0,1,0,0,Color.GRAY));
 		
+		this.setBackground(Constants.SIDEBAR_COLOR);
+		
 		// slider
 		_numberSlider = new JSlider(JSlider.VERTICAL, 1, Database.getMaxLotteryNumber(), Constants.DEFAULT_LOTTERY_NUMBER);
 		_numberSlider.addChangeListener(this);
@@ -61,6 +67,7 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		_numberSlider.setPaintTicks(true);
 		_numberSlider.setPaintLabels(true);
 		_numberSlider.setAlignmentX(CENTER_ALIGNMENT);
+		_numberSlider.setBackground(Constants.SIDEBAR_COLOR);
 
 		// semester level
 		Integer[] semesterLevels = {3, 4, 5, 6, 7, 8, 9, 10}; 
@@ -72,12 +79,14 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 		_semesterLevelBox.setMaximumSize(new Dimension(100,25));
 		_semesterLevelBox.setEditable(false);
 		_semesterLevelBox.setAlignmentX(CENTER_ALIGNMENT);
+		_semesterLevelBox.setBackground(Constants.SIDEBAR_COLOR);
 
 		// set semester level for current number
 		int semesterLevel = Database.semesterFromLotteryNumber(Constants.DEFAULT_LOTTERY_NUMBER);
 		int semesterIndex = semesterLevel - 3;
 		_semesterLevelBox.setSelectedIndex(semesterIndex);
 
+		this.add(Box.createRigidArea(new Dimension(0,10)));
 		JLabel lotteryNumTitle = new JLabel("LOTTERY NUMBER");
 		lotteryNumTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD,12));
 		lotteryNumTitle.setAlignmentX(CENTER_ALIGNMENT);
@@ -122,18 +131,25 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 			}
 		};
 		
-		_happyButton = new JLabel(_happyImage);
+		_happyButton = new JLabel();
+		_happyButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		_happyButton.setIcon(_happyImageDim);
 		_happyButton.addMouseListener(optimismButtonListener);
 
-		_okayButton = new JLabel(_okayImage);
+		_okayButton = new JLabel();
+		_okayButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		_okayButton.setIcon(_okayImageDim);
 		_okayButton.addMouseListener(optimismButtonListener);
 
-		_sadButton = new JLabel(_sadImage);
+		_sadButton = new JLabel();
+		_sadButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		_sadButton.setIcon(_sadImageDim);
 		_sadButton.addMouseListener(optimismButtonListener);
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
+		buttonPanel.setBackground(Constants.SIDEBAR_COLOR);
 		
 		buttonPanel.add(_happyButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));
@@ -195,19 +211,19 @@ public class LotteryNumberPanel extends JPanel implements ChangeListener, Action
 	 * @see Constants for allowed optimism levels
 	 */
 	protected void selectOptimism(int optimism) {
-		_happyButton.setBorder(null);
-		_okayButton.setBorder(null);
-		_sadButton.setBorder(null);
+		_happyButton.setIcon(_happyImageDim);
+		_okayButton.setIcon(_okayImageDim);
+		_sadButton.setIcon(_sadImageDim);
 		
 		switch(optimism) {
 			case Constants.OPTIMISM_HIGH:
-				_happyButton.setBorder(new LineBorder(Color.GRAY));
+				_happyButton.setIcon(_happyImage);
 				break;
 			case Constants.OPTIMISM_MEDIUM:
-				_okayButton.setBorder(new LineBorder(Color.GRAY));
+				_okayButton.setIcon(_okayImage);
 				break;
 			case Constants.OPTIMISM_LOW:
-				_sadButton.setBorder(new LineBorder(Color.GRAY));
+				_sadButton.setIcon(_sadImage);
 				break;
 		}
 	}

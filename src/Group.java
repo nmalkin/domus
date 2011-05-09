@@ -27,6 +27,12 @@ public class Group extends AbstractCollection<House> {
 	@Override
 	public boolean add(House e) {
 		return _houses.add(e);
+		
+	}
+	
+	public boolean remove(House e) {
+		return _houses.remove(e);
+		
 	}
 	
 	@Override

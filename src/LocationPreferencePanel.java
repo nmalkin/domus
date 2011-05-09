@@ -53,9 +53,11 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		ParentCheckBox masterBox = new ParentCheckBox("I'm willing to live anywhere!");
 		_checkBoxes.add(masterBox);
 		
-		JPanel topPanel = new JPanel(new BorderLayout());
-		topPanel.add(title, BorderLayout.WEST);
-		topPanel.add(masterBox, BorderLayout.EAST);
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		topPanel.add(title);
+		topPanel.add(Box.createRigidArea(new Dimension(10,0)));
+		topPanel.add(masterBox);
 		
 		JPanel locations = new JPanel();
 		locations.setLayout(new BoxLayout(locations, BoxLayout.X_AXIS));

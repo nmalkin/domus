@@ -158,7 +158,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	@Override
 	public void setOpen(boolean open) {
 		_isOpen = open;
-		_parentList.tabDisplayChanged(this, open, _itemsPanel.getPreferredSize().height);
+		_parentList.tabDisplayChanged(open, _itemsPanel.getPreferredSize().height);
 		int bottom = 1;
 		if (_isOpen)
 			bottom = 0;

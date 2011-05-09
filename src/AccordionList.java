@@ -93,7 +93,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	}
 	
 	/** Changes the size of the panel if a tab is opened or closed */
-	public void tabDisplayChanged(K tab, boolean open, int heightChange) {
+	public void tabDisplayChanged(boolean open, int heightChange) {
 		Dimension size = _listsPanel.getPreferredSize();
 		int height = size.height;
 		if (open)

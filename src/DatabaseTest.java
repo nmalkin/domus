@@ -1,3 +1,5 @@
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,11 +25,11 @@ public class DatabaseTest {
 		
 		//System.out.println(Database.getMaxLotteryNumber());
 		
-		ArrayList<CampusArea> areas = (ArrayList<CampusArea>) Database.getCampusAreas();
+		//ArrayList<CampusArea> areas = (ArrayList<CampusArea>) Database.getCampusAreas();
 		//for(int i = 0; i < areas.size(); i++) System.out.println(areas.get(i).toString());
 		
-		int[] years = Database.getYears();
-		for(int i = 0; i < years.length; i++) System.out.println(years[i]);
+		/*int[] years = Database.getYears();
+		for(int i = 0; i < years.length; i++) System.out.println(years[i]);*/
 		
 		/*Class.forName("org.sqlite.JDBC");
 		Connection connection = DriverManager.getConnection("jdbc:sqlite:" + Constants.DATABASE_NAME);

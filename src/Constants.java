@@ -32,6 +32,7 @@ public class Constants {
 	protected static final Color SIDEBAR_COLOR = Color.GRAY;
 	
 	protected static final Color NEW_PERSON_TEXT_COLOR = Color.LIGHT_GRAY;
+	protected static final String NEW_PERSON_DEFAULT_NAME = "A Person";
 	
 //	protected static final String TRASH_FILE = "img/trash.png";
 	protected static final String TRASH_CLOSED_FILE = "img/trashcan_closed.png";
@@ -78,6 +79,11 @@ public class Constants {
 	/** the value that the slider starts with */
 	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	
+	// Preference panel
+	protected final static int PREFERENCE_PANEL_WIDTH = 250;
+	/* very bad. fix this (TODO) */
+	protected final static int PREFERENCE_PANEL_HEIGHT = 901;
+	
 	// Results and lists icons
 	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";
 	protected static final String OPEN_FILE = "img/open_results_tab_new.png";
@@ -86,6 +92,7 @@ public class Constants {
 	protected static final String LEFT_ARROW = "img/left_arrow_smaller.png";
 	protected static final String RIGHT_ARROW = "img/right_arrow_smaller.png";
 	protected static final int OPEN_ICON_WIDTH = 15;
+	protected static final int REMOVE_ICON_HEIGHT = 16;
 	
 	// Results
 	protected static final int RESULTS_LIST_WIDTH = 350;
@@ -108,7 +115,13 @@ public class Constants {
 	protected static final int PROBABILIY_DISPLAY_CATEGORIES = 5; // very unlikely, unlikely, average, likely, very likely
 	/** The colors for each probability category, from least probability to highest probability.
 	 * (PROBABILITY_DISPLAY_COLORS.length must equal PROBABILIY_DISPLAY_CATEGORIES) */
-	protected static final Color[] PROBABILITY_DISPLAY_COLORS = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE };
+	protected static final Color[] PROBABILITY_DISPLAY_COLORS = { 
+		new Color(250, 100, 80), 	// red
+		new Color(250, 200, 150), 	// orange
+		new Color(250, 250, 150), 	// yellow
+		new Color(150, 250, 150), 	// light green
+		new Color(100, 150, 100)	// dark green
+	};
 	protected static final Color PROBABILITY_DISPLAY_BACKGROUND_COLOR = Color.WHITE;
 	
 	// Lists
@@ -126,8 +139,12 @@ public class Constants {
 			"You may make as many lists as you like and " +
 			"add individual rooms or entire dorms to them.<p><p>" +
 			"You can also remove items or an entire list if you want.<p><p>" +
-			"Lastly, you can reorder the elements in these list " +
+			"Lastly, you can reorder the elements in these lists " +
 			"by simply dragging them to a new location.</center></html>";
+	
+	protected static final String PREFERENCE_PANEL_INSTRUCTIONS = "<html><center>View preferences for your houses here. " +
+			"Remove them if you like, and the results will update instantly. Mouse over the people if you need to remember" +
+			" who is in each house.</center></html>";
 	
 	// Database
 	protected static final String DATABASE_NAME = "data/housingdata.db";
@@ -145,8 +162,10 @@ public class Constants {
 	protected static final String HAPPY_FILE = "img/Grin.png";
 	protected static final String OKAY_FILE = "img/Undecided.png";
 	protected static final String SAD_FILE = "img/Crying.png";
+	protected static final String SAD_FILE_DIM = "img/Crying2.png";
+	protected static final String OKAY_FILE_DIM = "img/Undecided2.png";
+	protected static final String HAPPY_FILE_DIM = "img/Grin2.png";
 
-	protected static final int OPTIMISM_BUTTON_WIDTH = 18;
 	
 	// XML i/o
 	protected static final String XML_TRANFORM_FILE = "transform.xsl";
