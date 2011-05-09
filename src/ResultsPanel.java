@@ -72,12 +72,10 @@ public class ResultsPanel extends JPanel implements Runnable {
 		_results = State.getInstance().getResults();
 		for (SubGroup sg : _results.keySet()) {
 			for (Room r : _results.get(sg)) {
-				DormAverage average = null;
-				if (_dormAverages.get(r.getDorm()) != null)
-					average = _dormAverages.get(r.getDorm());
-				else
+				DormAverage average = _dormAverages.get(r.getDorm());
+				if (average == null)
 					average = new DormAverage();
-				average.add(r.getAverageResult());
+				average.add(r.getProbability());
 				_dormAverages.put(r.getDorm(), average);
 			}
 		}
@@ -101,20 +99,24 @@ public class ResultsPanel extends JPanel implements Runnable {
 				list = AccordionList.create(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_HEIGHT, Constants.RESULTS_HEADER_HEIGHT);
 			}
 			list.setHeader(createListHeader(sg));
-			ResultsListTab[] tabsArray = list.getTabs().toArray(new ResultsListTab[0]);
-			for (int i = 0; i < tabsArray.length; ++i) {
-				ResultsListTab rlt = tabsArray[i];
-				if (!_dormAverages.containsKey(rlt.getDorm()))
-					list.removeTab(rlt);
-			}
 			Collection<ResultsListTab> tabs = list.getTabs();
+			for (Iterator<ResultsListTab> iter = tabs.iterator(); iter.hasNext();) {
+				ResultsListTab rlt = iter.next();
+				if (!_dormAverages.containsKey(rlt.getDorm())) {
+					iter.remove();
+					list.removeTab(rlt);
+				}
+			}
+			tabs = list.getTabs();
 			for (Dorm d : dormMap.get(sg)) {
 				ResultsListTab tab = containsDormTab(tabs, d);
 				if (tab != null) {
 					intersectResultsWithTab(sg, d, list, tab);
+					tab.setComparisonValue(_dormAverages.get(d).getAverage());
 				}
 				else {
 					tab = new ResultsListTab(d, sg, list);
+					tab.setComparisonValue(_dormAverages.get(d).getAverage());
 					list.addTab(tab);
 					for (Room r : _results.get(sg)) {
 						if (r.getDorm() == d) {
@@ -122,7 +124,6 @@ public class ResultsPanel extends JPanel implements Runnable {
 						}
 					}
 				}
-				tab.setComparisonValue((int) _dormAverages.get(d).getAverage());
 				tab.validateListLabels();
 			}
 			_listsMap.put(sg, list);
@@ -250,20 +251,20 @@ public class ResultsPanel extends JPanel implements Runnable {
 	private class DormAverage {
 		
 		private int _size;
-		private int _sum;
+		private double _sum;
 		
 		public DormAverage() {
 			_sum = 0;
 			_size = 0;
 		}
 		
-		public void add(int value) {
-			_sum += value;
+		public void add(double d) {
+			_sum += d;
 			++_size;
 		}
 		
 		public double getAverage() {
-			return (double) _sum / _size;
+			return (double) (_sum / _size);
 		}
 	}
 	

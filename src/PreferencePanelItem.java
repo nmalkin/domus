@@ -18,6 +18,7 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 	private JPanel _labelsPanel;
 	private boolean _isOpen;
 	private JLabel _label;
+	private boolean _fullWidth;
 	private static Font _unselectedFont = new Font("Verdana", Font.PLAIN, 12);
 	private ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
 	private static Color _unselectedBackgroundColor;
@@ -39,6 +40,7 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 		_house = house;
 		_dorm = dorm;
 		
+		_fullWidth = true;
 		_isOpen = false;
 		
 		_label = new JLabel(dorm.getName());
@@ -67,9 +69,12 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 		_selectedBackgroundColor = _unselectedBackgroundColor.darker();
 	}
 
-
+	public Dorm getDorm () {
+		return _dorm;
+	}
+	
 	@Override
-	public int getComparisonValue() {
+	public double getComparisonValue() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -86,7 +91,7 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 	public void removeItem(AccordionItem item) {	}
 
 	@Override
-	public void setComparisonValue(int index) {
+	public void setComparisonValue(double index) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -150,11 +155,22 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 
 	@Override
 	public int compareTo(AccordionItem o) {
-		// TODO Auto-generated method stub
-		return 0;
+//		System.out.println(_dorm.getName() + " " + ((PreferencePanelItem) o).getDorm().getName() + " " + _dorm.getName().compareTo(((PreferencePanelItem) o).getDorm().getName()));
+		return _dorm.getName().compareTo(((PreferencePanelItem) o).getDorm().getName());
 	}
 
 	@Override
-	public void resizeItem(Dimension d) {	}
+	public void resizeItem(Dimension d) {
+		// determine if component needs to be resized
+		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
+		
+		// resize if necessary
+		if (resize) {
+			Dimension size = getPreferredSize();
+			setPreferredSize(new Dimension(size.width + d.width, size.height));
+			setSize(new Dimension(size.width + d.width, size.height));
+			_fullWidth = !_fullWidth;
+		}
+	}
 
 }

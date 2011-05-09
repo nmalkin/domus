@@ -5,7 +5,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.Iterator;
 
 import javax.swing.*;
@@ -15,6 +14,7 @@ public class Canvas extends JLayeredPane {
 	public static Canvas getInstance() { return INSTANCE; }
 	
 	private Image _trashImage;
+	private Image _trashOpenImage, _trashClosedImage;
 	private Image _domusImage;
 	
 	// image positions
@@ -43,11 +43,13 @@ public class Canvas extends JLayeredPane {
 		
 		// load trash icon and watermark
 		try {
-			_trashImage = javax.imageio.ImageIO.read(new java.io.File(Constants.TRASH_FILE));
+			_trashOpenImage   = javax.imageio.ImageIO.read(new java.io.File(Constants.TRASH_OPEN_FILE));
+			_trashClosedImage = javax.imageio.ImageIO.read(new java.io.File(Constants.TRASH_CLOSED_FILE));
 			_domusImage = javax.imageio.ImageIO.read(new java.io.File(Constants.DOMUS_FILE));
 		} catch(java.io.IOException e) {
 			//TODO: yell, or break silently? break silently..duh..
 		}
+		_trashImage = _trashClosedImage;
 
 		_new_male_x_position = (0 + Constants.SIDEBAR_WIDTH) / 2 - Gender.MALE.getImageDimension().width / 2;
 		_new_female_x_position = (0 + Constants.SIDEBAR_WIDTH) / 2 - Gender.FEMALE.getImageDimension().width / 2;
@@ -73,10 +75,31 @@ public class Canvas extends JLayeredPane {
 		}
 	}
 	
-	private boolean intersecting(DraggablePositionableComponent a, DraggablePositionableComponent b) {
+	/**
+	 * Returns true if the two given components are intersecting.
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	private static boolean intersecting(DraggablePositionableComponent a, DraggablePositionableComponent b) {
 		return GraphicsSupport.intersectionAreaFraction(
 				a.getRectangle(), 
 				b.getRectangle()) > Constants.INTERSECTION_FRACTION;
+	}
+	
+	public void openTrash() {
+		if(_trashImage != _trashOpenImage) {
+			_trashImage = _trashOpenImage;
+			repaint();
+		}
+	}
+	
+	public void closeTrash() {
+		if(_trashImage != _trashClosedImage) {
+			_trashImage = _trashClosedImage;
+			repaint();
+		}
 	}
 	
 	/**
@@ -437,6 +460,8 @@ public class Canvas extends JLayeredPane {
 				}
 			}
 			
+			closeTrash();
+			
 			return true;
 		}
 		
@@ -470,6 +495,8 @@ public class Canvas extends JLayeredPane {
 			if(currentHouse != null) {
 				currentHouse.updateSubGroupPositions();
 			}
+			
+			closeTrash();
 			
 			return true;
 		}
@@ -505,6 +532,8 @@ public class Canvas extends JLayeredPane {
 			}
 			
 			removeIfEmpty(h);
+			
+			closeTrash();
 			
 			return true;
 		}

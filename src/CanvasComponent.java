@@ -1,5 +1,8 @@
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 /**
  * An abstract class representing objects that will be drawn on the Canvas.
@@ -7,12 +10,19 @@ import java.awt.Rectangle;
  * (hence, this is a subclass of DraggablePositionableComponent).
  * They also share functionality related to movement constraints
  * (they can't move off the Canvas)
- * and transparency.
+ * and certain behavior (hovering over trash).
  * 
  * @author nmalkin
  *
  */
 public abstract class CanvasComponent extends DraggablePositionableComponent {
+	
+	protected CanvasComponent() {
+		super();
+		
+		this.addMouseMotionListener(new TrashHoverListener());
+	}
+	
 	/**
 	 * Given how much you want this component to move,
 	 * returns how much you can *actually* move this component
@@ -80,6 +90,42 @@ public abstract class CanvasComponent extends DraggablePositionableComponent {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	/**
+	 * Returns true if this CanvasComponent is over the trash icon on the Canvas.
+	 * 
+	 * TODO: consider caching this value, since now it's being recalculated several times between moves
+	 * 
+	 * @return
+	 */
+	protected boolean overTrashIcon() {
+		return Canvas.getInstance().overTrashIcon(this);
+	}
+	
+	
+	protected class TrashHoverListener extends MouseAdapter {
+		private boolean _trashOpened;
+		
+		private TrashHoverListener() {
+			_trashOpened = false;
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			CanvasComponent source = (CanvasComponent) e.getSource();
+			if(source.overTrashIcon()) {
+				if(! _trashOpened) { // if we haven't already opened the trash
+					Canvas.getInstance().openTrash();
+					_trashOpened = true;
+				}
+			} else {
+				if(_trashOpened) { // if we haven't already closed the trash
+					Canvas.getInstance().closeTrash();
+					_trashOpened = false;
+				}
+			}
 		}
 	}
 }

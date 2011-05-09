@@ -65,8 +65,8 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		for(CampusArea area : Database.getCampusAreas()) {
 			JPanel areaPanel = new JPanel();
 			areaPanel.setLayout(new BoxLayout(areaPanel, BoxLayout.Y_AXIS));
-			areaPanel.setPreferredSize(new Dimension(200,260));
-			areaPanel.setMinimumSize(new Dimension(200,260));
+//			areaPanel.setPreferredSize(new Dimension(200,260));
+//			areaPanel.setMinimumSize(new Dimension(200,260));
 			areaPanel.setBorder(new LineBorder(Color.GRAY));
 			
 			JPanel areaNamePanel = new JPanel();
@@ -74,8 +74,8 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 			MatteBorder line = new MatteBorder(0, 0, 1, 0, Color.GRAY);
 			
 			areaNamePanel.setBorder(line);
-			areaNamePanel.setPreferredSize(new Dimension(200,25));
-			areaNamePanel.setMinimumSize(new Dimension(200,25));
+//			areaNamePanel.setPreferredSize(new Dimension(200,25));
+//			areaNamePanel.setMinimumSize(new Dimension(200,25));
 			
 			ParentCheckBox areaBox = new ParentCheckBox(area.getName());
 			areaBox.setSelected(false);
@@ -88,8 +88,8 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 			for(Dorm dorm : area) {
 				JPanel dormPanel = new JPanel();
 				dormPanel.setLayout(new BoxLayout(dormPanel, BoxLayout.X_AXIS));
-				dormPanel.setPreferredSize(new Dimension(200, 25));
-				dormPanel.setMinimumSize(new Dimension(200,25));
+//				dormPanel.setPreferredSize(new Dimension(200, 25));
+//				dormPanel.setMinimumSize(new Dimension(200,25));
 				
 				DormCheckBox dormBox = new DormCheckBox(dorm);
 				

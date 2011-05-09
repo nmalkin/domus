@@ -116,7 +116,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		_listsPanel.setPreferredSize(new Dimension(size.width, height));
 		_listsPanel.setSize(new Dimension(size.width, height));
 	}
-	
+		
 	/** Add an item to a tab in the list */
 	public void addListItem(K tab, V item) {
 		_lists.put(tab, item);
@@ -182,7 +182,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 
 	private class ScrollBarVisibilityListener extends ComponentAdapter {
 		
-		boolean _scrollbarVisible = false;
+		boolean _scrollbarVisible;
 		
 		@Override
 		public void componentResized(ComponentEvent e) {
@@ -198,7 +198,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 				// change the width of each list
 				for (K tab : _lists.keySet()) {
 					Dimension size = tab.getSize();
-					tab.resizeItem(new Dimension(size.width + width, size.height));
+					tab.resizeItem(new Dimension(width, size.height));
 				}
 				_scrollbarVisible = visible;
 				int bottom = 0;

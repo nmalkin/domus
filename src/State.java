@@ -127,9 +127,6 @@ public class State {
 	}
 	
 	public void addRoomList(RoomList list) {
-		if (_roomLists.size() == 0) {
-			//TODO enable Cart tab
-		}
 		_roomLists.add(list);
 	}
 	

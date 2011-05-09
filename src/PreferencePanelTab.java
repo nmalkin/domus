@@ -17,6 +17,8 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 	private boolean _isOpen;
 	private JLabel _expandIcon;
 	private JPanel _itemsPanel;
+	private boolean _fullWidth;
+	private House _house;
 	private AccordionList<PreferencePanelTab, PreferencePanelItem> _parentList;
 
 	private static ImageIcon _openIcon = new ImageIcon(Constants.OPEN_FILE, "open results list");
@@ -33,6 +35,8 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 		this.setSize(new Dimension(_listWidth, _tabHeight));
 		_isOpen = false;
 		_parentList = list;
+		_fullWidth = true;
+		_house = house;
 
 		_expandIcon = new JLabel();
 		_expandIcon.setIcon(_closedIcon);
@@ -70,6 +74,10 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 		this.add(_itemsPanel);
 	}
 
+	public House getHouse () {
+		return _house;
+	}
+	
 	@Override
 	public void addItem(AccordionItem item) {
 		_itemsPanel.add((JComponent) item);
@@ -80,7 +88,7 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 	}
 
 	@Override
-	public int getComparisonValue() {
+	public double getComparisonValue() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -97,11 +105,60 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 	}
 
 	@Override
-	public void setComparisonValue(int index) {
+	public void setComparisonValue(double index) {
 		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	public void setOpen(boolean open) {
+		_parentList.tabDisplayChanged(open, _itemsPanel.getPreferredSize().height);
+		_isOpen = open;
+	}
 
+	@Override
+	public int compareTo(AccordionItem o) {
+		return _house.compareTo(((PreferencePanelTab) o).getHouse());
+	}
+
+	/** 
+	 * Resizes the list. Called when the visibility
+	 * of the vertical scrollbar on the parent components
+	 * changes.
+	 */
+	public void resizeItem(Dimension d) {
+		//determine if components need to be resized
+		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
+		
+		//resize this component
+		Dimension size = this.getSize();
+		if (resize) {
+			this.setPreferredSize(new Dimension(size.width + d.width, size.height));
+			this.setSize(new Dimension(size.width + d.width, size.height));
+		}
+		
+		//resize tab
+		size = _tab.getSize();
+		if (resize) {
+			_tab.setPreferredSize(new Dimension(size.width + d.width, size.height));
+			_tab.setSize(new Dimension(size.width + d.width, size.height));
+		}
+
+		//resize itemsPanel
+		size = _itemsPanel.getSize();
+		if (resize) {
+			_itemsPanel.setPreferredSize(new Dimension(size.width + d.width, size.height));
+			_itemsPanel.setSize(new Dimension(size.width + d.width, size.height));
+			_fullWidth = !_fullWidth;
+		}
+		
+		//resize items
+		for (Component c : _itemsPanel.getComponents()) {
+			AccordionItem item = (AccordionItem) c;
+			item.resizeItem(d);
+		}
+	}
+	
 	private class ExpandListener extends MouseAdapter {
 
 		@Override
@@ -123,47 +180,6 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 			}	
 		}
 
-	}
-
-	@Override
-	public void setOpen(boolean open) {
-		_parentList.tabDisplayChanged(open, _itemsPanel.getPreferredSize().height);
-		_isOpen = open;
-	}
-
-	@Override
-	public int compareTo(AccordionItem o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/** 
-	 * Resizes the list. Called when the visibility
-	 * of the vertical scrollbar on the parent components
-	 * changes.
-	 */
-	public void resizeItem(Dimension d) {
-		//resize this component
-		Dimension size = this.getSize();
-		this.setPreferredSize(new Dimension(d.width, size.height));
-		this.setSize(new Dimension(d.width, size.height));
-		
-		//resize tab
-		size = _tab.getSize();
-		_tab.setPreferredSize(new Dimension(d.width, size.height));
-		_tab.setSize(new Dimension(d.width, size.height));
-
-		//resize itemsPanel
-		size = _itemsPanel.getSize();
-		_itemsPanel.setPreferredSize(new Dimension(d.width, size.height));
-		_itemsPanel.setSize(new Dimension(d.width, size.height));
-		
-		//resize items
-		for (Component c : _itemsPanel.getComponents()) {
-			size = c.getSize();
-			c.setPreferredSize(new Dimension(d.width, size.height));
-			c.setSize(new Dimension(d.width, size.height));
-		}
 	}
 
 }

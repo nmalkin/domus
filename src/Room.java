@@ -109,7 +109,7 @@ public class Room implements Comparable<Room> {
 		for(LotteryResult r: _results) resultString += r.getLotteryNumber() + " ";
 		resultString += "]";
 		
-		return _dorm.getName() + " " + _number + "; " + resultString + ";";
+		return _dorm.getName() + " " + _number + "; " + resultString + ";" + getProbability() + ";";
 	}
 	
 	public void addResult(LotteryResult result) {
@@ -144,10 +144,26 @@ public class Room implements Comparable<Room> {
 			_listItems.remove(item);
 	}
 
+	/**
+	 * Compares two rooms based on their probability.
+	 * If two rooms have the same probability, they are compared lexicographically.
+	 * 
+	 * @return a number less than 0 if this room has a lower probability,
+	 * or if the two probabilities are equal but this building+room comes first alphabetically
+	 */
 	@Override
 	public int compareTo(Room o) {
 		double myProbability = getProbability();
 		double theirProbability = o.getProbability();
-		return myProbability < theirProbability ? -1 : (myProbability > theirProbability ? 1 : 0);
+		
+		if(myProbability < theirProbability) {
+			return -1;
+		} else if(myProbability > theirProbability) {
+			return 1;
+		} else { // if the two probabilities are equal
+			String myRoomString = _dorm.getName() + " " + _number; // full string identifying this room
+			String theirRoomString = o.getDorm().getName() + " " + o.getNumber();
+			return myRoomString.compareTo(theirRoomString);
+		}
 	}
 }

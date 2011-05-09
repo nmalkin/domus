@@ -36,8 +36,9 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private JPanel _itemsPanel;
 	private JPanel _labelsPanel;
 	private Dorm _dorm;
-	private int _index;
+	private double _comparisonValue;
 	private boolean _isOpen;
+	private boolean _fullWidth;
 	private static ImageIcon _openIcon = new ImageIcon(Constants.OPEN_FILE, "open results list");
 	private static ImageIcon _closedIcon = new ImageIcon(Constants.CLOSED_FILE, "closed results list");
 	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
@@ -51,6 +52,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		this.setPreferredSize(new Dimension(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_TAB_HEIGHT));
 		this.setSize(new Dimension(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_TAB_HEIGHT));
 		_isOpen = false;
+		_fullWidth = true;
 		
 		//Set up expandable tab
 		_tab = new JPanel();
@@ -139,13 +141,13 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	}
 
 	@Override
-	public int getComparisonValue() {
-		return _index;
+	public double getComparisonValue() {
+		return _comparisonValue;
 	}
 	
 	@Override
-	public void setComparisonValue(int index) {
-		_index = index;
+	public void setComparisonValue(double d) {
+		_comparisonValue = d;
 	}
 
 	@Override
@@ -187,32 +189,44 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	 * changes.
 	 */
 	public void resizeItem(Dimension d) {
+		//determine if components need to be resized
+		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
+		
 		//resize this component
 		Dimension size = this.getSize();
-		this.setPreferredSize(new Dimension(d.width, size.height));
-		this.setSize(new Dimension(d.width, size.height));
+		if (resize) {
+			this.setPreferredSize(new Dimension(size.width + d.width, size.height));
+			this.setSize(new Dimension(size.width + d.width, size.height));
+		}
 		
 		//resize tab
 		size = _tab.getSize();
-		_tab.setPreferredSize(new Dimension(d.width, size.height));
-		_tab.setSize(new Dimension(d.width, size.height));
+		if (resize) {
+			_tab.setPreferredSize(new Dimension(size.width + d.width, size.height));
+			_tab.setSize(new Dimension(size.width + d.width, size.height));
+		}
 
 		//resize itemsPanel
 		size = _itemsPanel.getSize();
-		_itemsPanel.setPreferredSize(new Dimension(d.width, size.height));
-		_itemsPanel.setSize(new Dimension(d.width, size.height));
+		if (resize) {
+			_itemsPanel.setPreferredSize(new Dimension(size.width + d.width, size.height));
+			_itemsPanel.setSize(new Dimension(size.width + d.width, size.height));
+			_fullWidth = !_fullWidth;
+		}
 		
 		//resize items
 		for (Component c : _itemsPanel.getComponents()) {
-			size = c.getSize();
-			c.setPreferredSize(new Dimension(d.width, size.height));
-			c.setSize(new Dimension(d.width, size.height));
+			AccordionItem item = (AccordionItem) c;
+			item.resizeItem(d);
 		}
 	}
 	
 	@Override
 	public int compareTo(AccordionItem o) {
-		return _index < o.getComparisonValue() ? -1 : (_index > o.getComparisonValue() ? 1 : 0);
+		if (this == o)
+			return 0;
+		else
+			return _comparisonValue < o.getComparisonValue() ? -1 : (_comparisonValue > o.getComparisonValue() ? 1 : 0);
 	}
 	
 	@Override

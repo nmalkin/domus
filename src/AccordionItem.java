@@ -5,7 +5,7 @@ public interface AccordionItem extends Comparable<AccordionItem> {
 	/**
 	 * Returns the index of the AccordionItem in its parent list.
 	 */
-	public int getComparisonValue();
+	public double getComparisonValue();
 	
 	/**
 	 * Returns the state of the AccordionItem.
@@ -15,7 +15,7 @@ public interface AccordionItem extends Comparable<AccordionItem> {
 	/**
 	 * Sets the index of the AccordionItem in its parent list.
 	 */
-	public void setComparisonValue(int index);
+	public void setComparisonValue(double d);
 	
 	/**
 	 * Sets the state of the AccordionItem.

@@ -191,7 +191,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	 * @return
 	 */
 	private Color getColor() {
-		if(Canvas.getInstance().overTrashIcon(this)) { // if hovering over trash, draw this transparently
+		if(this.overTrashIcon()) { // if hovering over trash, draw this transparently
 			return Constants.HOUSE_COLOR_TRANSPARENT;
 		} else {
 			return Constants.HOUSE_COLOR;

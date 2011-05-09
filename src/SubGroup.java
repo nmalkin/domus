@@ -182,8 +182,8 @@ public class SubGroup extends CanvasComponent implements Iterable<Person>, Compa
 	 * @return
 	 */
 	private Color getColor() {
-		if(Canvas.getInstance().overTrashIcon(this) || // if hovering over trash, draw this transparently 
-			_house != null && Canvas.getInstance().overTrashIcon(_house)) // if my house is over the trash, also draw transparently
+		if(this.overTrashIcon() || // if hovering over trash, draw this transparently 
+			_house != null && _house.overTrashIcon()) // if my house is over the trash, also draw transparently
 		{ 
 			return Constants.SUBGROUP_COLOR_TRANSPARENT;
 		} else {

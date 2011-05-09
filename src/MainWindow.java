@@ -158,7 +158,7 @@ public class MainWindow extends JFrame {
 		
 		
 		JMenu optionsMenu = new JMenu("Settings");
-		optionsMenu.setMnemonic(KeyEvent.VK_O);
+		optionsMenu.setMnemonic(KeyEvent.VK_S);
 		
 		JMenuItem yearsMenuItem = new JMenuItem("Choose years");
 		yearsMenuItem.addActionListener(new ActionListener() {
