@@ -108,7 +108,13 @@ public class Constants {
 	protected static final int PROBABILIY_DISPLAY_CATEGORIES = 5; // very unlikely, unlikely, average, likely, very likely
 	/** The colors for each probability category, from least probability to highest probability.
 	 * (PROBABILITY_DISPLAY_COLORS.length must equal PROBABILIY_DISPLAY_CATEGORIES) */
-	protected static final Color[] PROBABILITY_DISPLAY_COLORS = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE };
+	protected static final Color[] PROBABILITY_DISPLAY_COLORS = { 
+		new Color(250, 100, 80), 	// red
+		new Color(250, 200, 150), 	// orange
+		new Color(250, 250, 150), 	// yellow
+		new Color(150, 250, 150), 	// light green
+		new Color(100, 150, 100)	// dark green
+	};
 	protected static final Color PROBABILITY_DISPLAY_BACKGROUND_COLOR = Color.WHITE;
 	
 	// Lists
