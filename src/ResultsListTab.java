@@ -151,9 +151,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	 */
 	public void resizeItem(Dimension d) {
 		//determine if components need to be resized
-		boolean fullWidth = _fullWidth;
 		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
-		System.out.println();
 		
 		//resize this component
 		Dimension size = this.getSize();

@@ -185,8 +185,7 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 
 	@Override
 	public int compareTo(AccordionItem o) {
-//		System.out.println(_dorm.getName() + " " + ((PreferencePanelItem) o).getDorm().getName() + " " + _dorm.getName().compareTo(((PreferencePanelItem) o).getDorm().getName()));
-		return _dorm.getName().compareTo(((PreferencePanelItem) o).getDorm().getName());
+		return _dorm.compareTo(((PreferencePanelItem) o).getDorm());
 	}
 
 	@Override
