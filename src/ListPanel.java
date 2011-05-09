@@ -23,7 +23,7 @@ import javax.swing.border.EmptyBorder;
 public class ListPanel extends JPanel {
 
 	private RoomList _list;
-	private ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
+	private static ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
 	private JList _panel;
 	private JScrollPane _scroller;
 	private static Font _font = new Font("Verdana", Font.PLAIN, 12);

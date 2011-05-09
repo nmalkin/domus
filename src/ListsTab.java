@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -19,7 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.border.EmptyBorder;
-
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class ListsTab extends JPanel implements Runnable {
 
@@ -41,29 +43,30 @@ public class ListsTab extends JPanel implements Runnable {
 	
 	private ListsTab() {
 		super();
+		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(Constants.LISTS_PANEL_WIDTH, Constants.LISTS_HEIGHT));
-		
-		//create a panel for the instructions which will be displayed whenever there are no lists
+
+		// create a panel for the instructions which will be displayed whenever there are no lists
 		_instructionsLabel = new JLabel(Constants.LISTS_INSTRUCTIONS);
 		_instructionsLabel.setPreferredSize(new Dimension(Constants.LISTS_INSTRUCTIONS_WIDTH, Constants.LISTS_INSTRUCTIONS_HEIGHT));
 		
-		//create the panel to hold the lists
+		// create the panel to hold the lists
 		_listsPanel = new JPanel();
 		_listsPanel.setLayout(new BoxLayout(_listsPanel, BoxLayout.LINE_AXIS));
 		_listsPanel.setBorder(new EmptyBorder(new Insets(0, 0, 0, 0)));
 		
-		//add the instructions initially
+		// add the instructions initially
 		_listsPanel.add(_instructionsLabel);
 		_listsPanel.setPreferredSize(new Dimension(_instructionsLabel.getPreferredSize().width, Constants.LISTS_HEIGHT));
 		_listsPanel.setSize(new Dimension(_instructionsLabel.getPreferredSize().width, Constants.LISTS_HEIGHT));
 		
-		//create a scroll pane to hold the panel of lists
+		// create a scroll pane to hold the panel of lists
 		_scroller = new JScrollPane(_listsPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		_scroller.setPreferredSize(new Dimension(_listsPanel.getSize().width, Constants.LISTS_HEIGHT));
 		_scroller.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
 		_scroller.getHorizontalScrollBar().setBorder(new EmptyBorder(0, 0, 0, 0));
 		
-		//create and add the scroll buttons which will be visible when necessary
+		// create and add the scroll buttons which will be visible when necessary
 		_leftButton = new JLabel(_leftButtonIcon);
 		_leftButton.setVisible(false);
 		_rightButton = new JLabel(_rightButtonIcon);
@@ -71,20 +74,30 @@ public class ListsTab extends JPanel implements Runnable {
 		MouseListener listener = new ScrollButtonListener();
 		_leftButton.addMouseListener(listener);
 		_rightButton.addMouseListener(listener);
-		this.add(_leftButton);
-		this.add(_scroller);
-		this.add(_rightButton);
 		
-		//create a list to hold all of the individual lists
+		// create a panel for the lists
+		JPanel mainPanel = new JPanel();
+		mainPanel.add(_leftButton);
+		mainPanel.add(_scroller);
+		mainPanel.add(_rightButton);
+		this.add(mainPanel, BorderLayout.CENTER);
+		
+		// create and add a new LotteryNumberPanel
+		this.add(new LotteryNumberPanel(), BorderLayout.LINE_END);
+		
+		// create a list to hold all of the individual lists
 		_lists = new LinkedList<ListPanel>();
 		_INSTANCE = this;
+		
+		// add a GroupStateChangeListener to the Group for lotteryNumber differences
+		State.getInstance().getGroup().addGroupStateChangeListener(new GroupStateChangeListener());
 	}
 	
 	public void updateLists() {
 		int i = 0;
 		for (RoomList rl : State.getInstance().getRoomLists()) {
 			if (i >= _lists.size()) {
-				//remove the instructions if no lists exist yet
+				// remove the instructions if no lists exist yet
 				if (i == 0) {
 					_listsPanel.removeAll();
 					_listsPanel.setPreferredSize(new Dimension(0, Constants.LISTS_HEIGHT));
@@ -93,7 +106,7 @@ public class ListsTab extends JPanel implements Runnable {
 					_scroller.setPreferredSize(new Dimension(0, Constants.LISTS_HEIGHT));
 				}
 				
-				//create a new list and add it to the lists panel, as well as a spacing component
+				// create a new list and add it to the lists panel, as well as a spacing component
 				ListPanel lp = new ListPanel(rl);
 				_lists.add(lp);
 				_listsPanel.add(lp);
@@ -103,12 +116,12 @@ public class ListsTab extends JPanel implements Runnable {
 					extra = Constants.LISTS_HORIZONTAL_GAP;
 				}
 				
-				//reset the size of the lists panel
+				// reset the size of the lists panel
 				Dimension size = _listsPanel.getPreferredSize();
 				_listsPanel.setPreferredSize(new Dimension(size.width + Constants.LISTS_WIDTH + extra, size.height));
 				_listsPanel.setSize(new Dimension(size.width + Constants.LISTS_WIDTH + extra, size.height));
 				
-				//reset the size of the scroll pane if needed
+				// reset the size of the scroll pane if needed
 				if (i < Constants.LISTS_DISPLAYED) {
 					size = _scroller.getPreferredSize();
 					_scroller.setPreferredSize(new Dimension(size.width + Constants.LISTS_WIDTH + extra, size.height));
@@ -118,7 +131,7 @@ public class ListsTab extends JPanel implements Runnable {
 			i++;
 		}
 		
-		//set the button visibility and update all pre-existing lists
+		// set the button visibility and update all pre-existing lists
 		setButtonVisibility();
 		for (ListPanel lp : _lists) {
 			lp.updateList();
@@ -130,11 +143,11 @@ public class ListsTab extends JPanel implements Runnable {
 	 * @param list
 	 */
 	void removeList(ListPanel list) {
-		//if the list doesn't exist, return
+		// if the list doesn't exist, return
 		if (!_lists.remove(list))
 			return;
 		
-		//figure out which component the list belongs to
+		// figure out which component the list belongs to
 		Component[] comps = _listsPanel.getComponents();
 		int index = -1;
 		for (int i = 0; i < comps.length; ++i) {
@@ -143,16 +156,16 @@ public class ListsTab extends JPanel implements Runnable {
 			}
 		}
 		
-		//if none, return
+		// if none, return
 		if (index == -1) {
 			return;
 		}
 		
-		//remove the component containing the list
+		// remove the component containing the list
 		_listsPanel.remove(index);
 		_listsPanel.remove(index);
 		
-		//reset the size of the lists panel
+		// reset the size of the lists panel
 		Dimension size = _listsPanel.getPreferredSize();
 		int extra = 0;
 		if (_lists.size() > 0)
@@ -160,14 +173,14 @@ public class ListsTab extends JPanel implements Runnable {
 		_listsPanel.setPreferredSize(new Dimension(size.width - Constants.LISTS_WIDTH - extra, size.height));
 		_listsPanel.setSize(new Dimension(size.width - Constants.LISTS_WIDTH - extra, size.height));
 		
-		//reset the size of the scroll pane if necessary
+		// reset the size of the scroll pane if necessary
 		if (_lists.size() < Constants.LISTS_DISPLAYED) {
 			size = _scroller.getPreferredSize();
 			_scroller.setPreferredSize(new Dimension(size.width - Constants.LISTS_WIDTH - extra, size.height));
 			_scroller.setSize(new Dimension(size.width - Constants.LISTS_WIDTH - extra, size.height));
 		}
 		
-		//add the instructions back to the panel if there are no lists
+		// add the instructions back to the panel if there are no lists
 		if (_lists.size() == 0) {
 			_listsPanel.add(_instructionsLabel);
 			_listsPanel.setPreferredSize(new Dimension(_instructionsLabel.getPreferredSize().width, Constants.LISTS_HEIGHT));
@@ -175,7 +188,7 @@ public class ListsTab extends JPanel implements Runnable {
 			_scroller.setPreferredSize(new Dimension(_listsPanel.getSize().width, Constants.LISTS_HEIGHT));
 		}
 		
-		//set the button visibility
+		// set the button visibility
 		setButtonVisibility();
 		validate();
 	}
@@ -319,5 +332,25 @@ public class ListsTab extends JPanel implements Runnable {
 //				_scrollRight = false;
 //			}
 //		}
+	}
+	
+	/**
+	 * Listens for changes in the sophomoreOnly status. If the results tab is
+	 * visible and this happens, then the results should be updated.
+	 * 
+	 * @author jswarren
+	 */
+	private class GroupStateChangeListener implements ChangeListener {
+
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			if (!((Group.GroupChangeEvent) e).getUpdateType())
+				for (RoomList rl : State.getInstance().getRoomLists()) {
+					for (ResultsListItem rli : rl) {
+						rli.updateProbability();
+					}
+				}
+		}
+		
 	}
 }

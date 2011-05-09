@@ -54,7 +54,7 @@ public class State {
 		_selectedHouse = null;
 		_selectedHouseChangeListeners = new LinkedList<ChangeListener>();
 		_selectedProbabilityModelChangeListener = null;
-		_useRegressionProbability = false;
+		_useRegressionProbability = true;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
 		

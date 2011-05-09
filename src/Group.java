@@ -3,6 +3,7 @@ import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -22,13 +23,13 @@ public class Group extends AbstractCollection<House> {
 	private boolean _sophomore;
 	
 	/** listener for changes in the sophomore status or lottery number*/
-	private ChangeListener _groupStateChangeListener;
+	private List<ChangeListener> _groupStateChangeListeners;
 	
 	public Group() {
 		_houses = new LinkedList<House>();
 		_position = new Point(0,0);
 		_sophomore = false;
-		_groupStateChangeListener = null;
+		_groupStateChangeListeners = new LinkedList<ChangeListener>();
 	}
 	
 	@Override
@@ -67,9 +68,11 @@ public class Group extends AbstractCollection<House> {
 	public void setLotteryNumber(int number) {
 		_lotteryNumber = number;
 		
-		if (_groupStateChangeListener != null) {
-			ChangeEvent e = new GroupChangeEvent(this, GroupChangeEvent.UPDATE_PROBABILITIES);
-			_groupStateChangeListener.stateChanged(e);
+		for (ChangeListener l : _groupStateChangeListeners) {
+			if (l != null) {
+				ChangeEvent e = new GroupChangeEvent(this, GroupChangeEvent.UPDATE_PROBABILITIES);
+				l.stateChanged(e);
+			}
 		}
 	}
 	
@@ -81,9 +84,11 @@ public class Group extends AbstractCollection<House> {
 	public void setSophomoreStatus(boolean soph) {
 		_sophomore = soph;
 		
-		if (_groupStateChangeListener != null) {
-			ChangeEvent e = new GroupChangeEvent(this, GroupChangeEvent.UPDATE_RESULTS);
-			_groupStateChangeListener.stateChanged(e);
+		for (ChangeListener l : _groupStateChangeListeners) {
+			if (l != null) {
+				ChangeEvent e = new GroupChangeEvent(this, GroupChangeEvent.UPDATE_RESULTS);
+				l.stateChanged(e);
+			}
 		}
 	}
 	
@@ -97,8 +102,9 @@ public class Group extends AbstractCollection<House> {
 	 * 
 	 * @param l
 	 */
-	public void setGroupStateChangeListener(ChangeListener l) {
-		_groupStateChangeListener = l;
+	public void addGroupStateChangeListener(ChangeListener l) {
+		if (l != null)
+			_groupStateChangeListeners.add(l);
 	}
 	
 	/**
