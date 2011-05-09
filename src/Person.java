@@ -78,14 +78,12 @@ public class Person extends CanvasComponent {
 	 * @return
 	 */
 	private float getAlphaValue() {
-		if(Canvas.getInstance().overTrashIcon(this) || // if hovering over trash, draw this transparently
-			_subgroup != null && Canvas.getInstance().overTrashIcon(_subgroup) || // if my subgroup is over the trash, also draw transparently
-			_subgroup != null && _subgroup.getHouse() != null && Canvas.getInstance().overTrashIcon(_subgroup.getHouse()))  // same for house
+		if(this.overTrashIcon() || // if hovering over trash, draw this transparently
+			_subgroup != null && _subgroup.overTrashIcon() || // if my subgroup is over the trash, also draw transparently
+			_subgroup != null && _subgroup.getHouse() != null && _subgroup.getHouse().overTrashIcon())  // same for house
 		{ 
-			Canvas.getInstance().openTrash();
 			return Constants.TRASH_OVERLAY_ALPHA_FRACTION;
 		} else {
-			Canvas.getInstance().closeTrash();
 			return 1.0f;
 		}
 	}
