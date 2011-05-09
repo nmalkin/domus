@@ -360,7 +360,6 @@ public class ResultsPanel extends JPanel implements Runnable {
 				tab.updateProbabilities();
 			}
 		}
-		ListsTab.getInstance().updateLists();
 	}
 	
 	/**

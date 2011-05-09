@@ -53,6 +53,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		_listsPanel = new JPanel();
 		_listsPanel.setPreferredSize(new Dimension(width, 0));
 		_listsPanel.setSize(new Dimension(width, 0));
+		_listsPanel.setMaximumSize(new Dimension(width, 0));
 		_listsPanel.addComponentListener(new ScrollBarVisibilityListener());
 		layout = (FlowLayout) _listsPanel.getLayout();
 		layout.setVgap(0);
@@ -78,6 +79,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		Dimension size = _listsPanel.getPreferredSize();
 		_listsPanel.setPreferredSize(new Dimension(size.width, size.height + tab.getPreferredSize().height));
 		_listsPanel.setSize(new Dimension(size.width, size.height + tab.getPreferredSize().height));
+		_listsPanel.setMaximumSize(new Dimension(size.width, size.height + tab.getPreferredSize().height));
 		tab.setVisible(true);
 		_lastTab = tab;
 	}
@@ -89,6 +91,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 		Dimension size = _listsPanel.getPreferredSize();
 		_listsPanel.setPreferredSize(new Dimension(size.width, size.height - tab.getPreferredSize().height));
 		_listsPanel.setSize(new Dimension(size.width, size.height - tab.getPreferredSize().height));
+		_listsPanel.setMaximumSize(new Dimension(size.width, size.height - tab.getPreferredSize().height));
 		tab.setVisible(false);
 	}
 	
@@ -102,6 +105,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 			height -= heightChange;
 		_listsPanel.setPreferredSize(new Dimension(size.width, height));
 		_listsPanel.setSize(new Dimension(size.width, height));
+		_listsPanel.setMaximumSize(new Dimension(size.width, height));
 	}
 		
 	/** Add an item to a tab in the list */

@@ -190,6 +190,11 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 			_itemsPanel.setPreferredSize(new Dimension(size.width + d.width, size.height));
 			_itemsPanel.setSize(new Dimension(size.width + d.width, size.height));
 			_fullWidth = !_fullWidth;
+//			int bottom = 1;
+//			if (!_fullWidth && this == _parentList.getLastTab())
+//				bottom = 0;
+//			System.out.println(bottom);
+//			_itemsPanel.setBorder(BorderFactory.createMatteBorder(0, 1, bottom, 1, Color.BLACK));
 		}
 		
 		//resize items
