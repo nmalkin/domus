@@ -99,6 +99,7 @@ public class ListPanel extends JPanel {
 			_panel.setSize(new Dimension(size.width, size.height + r.getSize().height));
 			_panel.add(r);
 			r.updateProbability();
+			r.validateListLabels();
 		}
 		
 	}

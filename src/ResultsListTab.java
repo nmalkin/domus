@@ -309,8 +309,8 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 					if (rl.getName().equals(selected)) {
 						for (Component c : _itemsPanel.getComponents()) {
 							ResultsListItem rli = (ResultsListItem) c;
-							rl.add(new ResultsListItem(rli.getRoom(), null));
 							rli.getRoom().addToRoomList(rl);
+							rl.add(new ResultsListItem(rli.getRoom(), null));
 						}
 						ListsTab.getInstance().updateLists();
 						exists = true;
@@ -322,8 +322,8 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 					State.getInstance().addRoomList(list);
 					for (Component c : _itemsPanel.getComponents()) {
 						ResultsListItem rli = (ResultsListItem) c;
-						list.add(new ResultsListItem(rli.getRoom(), null));
 						rli.getRoom().addToRoomList(list);
+						list.add(new ResultsListItem(rli.getRoom(), null));
 					}
 					ListsTab.getInstance().updateLists();
 				}
