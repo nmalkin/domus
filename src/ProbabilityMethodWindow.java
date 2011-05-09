@@ -1,33 +1,45 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-public class YearWindow extends JFrame {
+public class ProbabilityMethodWindow extends JFrame {
 	JList useList;
 	JList ignoreList;
 	DefaultListModel ignoreHandler;
 	DefaultListModel useHandler;
+	JRadioButton _regressionMethod;
+	JRadioButton _stupidMethod;
 
-	protected YearWindow() {
-		super("Select years");
-		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
+	protected ProbabilityMethodWindow() {
+		super("Probability Model");
+		this.setLayout(new FlowLayout(FlowLayout.LEADING));
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		// look and feel
 		try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }
 		catch (Exception e) { e.printStackTrace(); }
-		this.setPreferredSize(new Dimension(345,220));
+		this.setPreferredSize(new Dimension(400,250));
 		this.setResizable(false);
-
+		
+		JPanel yearLists = new JPanel();
+		yearLists.setLayout(new BoxLayout(yearLists, BoxLayout.X_AXIS));
+		
 		ignoreHandler = new DefaultListModel();
 		for(int year: State.getInstance().getIgnoredYears()) ignoreHandler.addElement(year);
 		sort(ignoreHandler);
 
+		JPanel ignoreContainer = new JPanel(new BorderLayout());
+		
+		JLabel ignoreTitle = new JLabel("years to ignore");
+		
 		ignoreList = new JList(ignoreHandler);
 		ignoreList.setBackground(new Color(238, 238, 238));
 		ignoreList.setLayoutOrientation(JList.VERTICAL);
@@ -40,10 +52,17 @@ public class YearWindow extends JFrame {
 		ignorePanel.setBorder(new LineBorder(Color.GRAY));
 		ignorePanel.add(ignoreList, BorderLayout.NORTH);
 
+		ignoreContainer.add(ignoreTitle, BorderLayout.NORTH);
+		ignoreContainer.add(ignorePanel, BorderLayout.AFTER_LINE_ENDS);
+		
 		useHandler = new DefaultListModel();
 		for(int year: State.getInstance().getYears()) useHandler.addElement(year);
 		sort(useHandler);
 
+		JPanel useContainer = new JPanel(new BorderLayout());
+		
+		JLabel useTitle = new JLabel("years to use");
+		
 		useList = new JList(useHandler);
 		useList.setBackground(new Color(238, 238, 238));
 		useList.setLayoutOrientation(JList.VERTICAL);
@@ -52,9 +71,12 @@ public class YearWindow extends JFrame {
 
 		JPanel usePanel = new JPanel(new BorderLayout());
 		usePanel.setPreferredSize(new Dimension(120,160));
-		usePanel.setMaximumSize(new Dimension(120,160));
+		usePanel.setMaximumSize(new Dimension(120,200));
 		usePanel.setBorder(new LineBorder(Color.GRAY));
 		usePanel.add(useList, BorderLayout.NORTH);
+		
+		useContainer.add(useTitle, BorderLayout.NORTH);
+		useContainer.add(usePanel, BorderLayout.AFTER_LINE_ENDS);
 
 		JButton add = new JButton(">>");
 		add.addActionListener(new AddListener());
@@ -67,15 +89,55 @@ public class YearWindow extends JFrame {
 		buttonPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 		buttonPanel.add(remove);
 
-		this.add(Box.createRigidArea(new Dimension(20, 0)));
-		this.add(ignorePanel);
-		this.add(Box.createRigidArea(new Dimension(10, 0)));
-		this.add(buttonPanel);
-		this.add(Box.createRigidArea(new Dimension(10, 0)));
-		this.add(usePanel);
+		yearLists.add(Box.createRigidArea(new Dimension(50, 0)));
+		yearLists.add(ignoreContainer);
+		yearLists.add(Box.createRigidArea(new Dimension(10, 0)));
+		yearLists.add(buttonPanel);
+		yearLists.add(Box.createRigidArea(new Dimension(10, 0)));
+		yearLists.add(useContainer);
 
+		_regressionMethod = new JRadioButton("Calculate probability using regression (best results)");
+		_regressionMethod.addItemListener(new MethodListener());
+		this.add(_regressionMethod);
+		
+		_stupidMethod = new JRadioButton("Calculate probability using past results for lottery number");
+		_stupidMethod.addItemListener(new MethodListener());
+		this.add(_stupidMethod);
+		
+		if(State.getInstance().useRegressionProbability()) {
+			_regressionMethod.setSelected(true);
+			useList.setEnabled(false);
+			ignoreList.setEnabled(false);
+		}
+		else _stupidMethod.setSelected(true);
+		
+		ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(_regressionMethod);
+		buttonGroup.add(_stupidMethod);
+		
+		this.add(yearLists);
+		
 		this.pack();
 		this.setVisible(true);
+	}
+	
+	public class MethodListener implements ItemListener {
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if(e.getItemSelectable() == _regressionMethod) {
+				State.getInstance().useRegressionProbability(true);
+				useList.setEnabled(false);
+				ignoreList.setEnabled(false);
+			}
+			else {
+				State.getInstance().useRegressionProbability(false);
+				useList.setEnabled(true);
+				ignoreList.setEnabled(true);
+			}
+			
+		}
+		
 	}
 
 	public class AddListener implements ActionListener {

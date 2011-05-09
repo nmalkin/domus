@@ -160,11 +160,11 @@ public class MainWindow extends JFrame {
 		JMenu optionsMenu = new JMenu("Settings");
 		optionsMenu.setMnemonic(KeyEvent.VK_S);
 		
-		JMenuItem yearsMenuItem = new JMenuItem("Choose years");
+		JMenuItem yearsMenuItem = new JMenuItem("Choose probability model");
 		yearsMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new YearWindow();
+				new ProbabilityMethodWindow();
 			}
 		});
 		
