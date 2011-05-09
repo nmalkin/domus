@@ -77,6 +77,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		// add probability display (average probability for this dorm)
 		_probabilityDisplay = new ProbabilityDisplay(0);
 		_tab.add(_probabilityDisplay);
+		_tab.add(Box.createRigidArea(new Dimension(Constants.PROBABILITY_DISPLAY_RIGHT_SPACING, 0)));
 		
 		//Set up addToListButton (actually a blank label with an icon)
 		JLabel addButton = new JLabel(_addToListIcon);

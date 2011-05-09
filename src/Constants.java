@@ -110,6 +110,7 @@ public class Constants {
 	// Probability display
 	protected static final int PROBABILITY_DISPLAY_WIDTH  = 40;
 	protected static final int PROBABILITY_DISPLAY_HEIGHT = 10;
+	protected static final int PROBABILITY_DISPLAY_RIGHT_SPACING = 15;
 	
 	/** How many different categories are we dividing probabilities into? */
 	protected static final int PROBABILIY_DISPLAY_CATEGORIES = 5; // very unlikely, unlikely, average, likely, very likely
