@@ -90,9 +90,9 @@ public class Constants {
 	// Results
 	protected static final int RESULTS_LIST_WIDTH = 350;
 	protected static final int RESULTS_LIST_HEIGHT = 800;
-	protected static final int RESULTS_LIST_TAB_WIDTH = 150;
+	protected static final int RESULTS_LIST_TAB_WIDTH = 350;
 	protected static final int RESULTS_LIST_TAB_HEIGHT = 25;
-	protected static final int RESULTS_LIST_ITEM_WIDTH = 150;
+	protected static final int RESULTS_LIST_ITEM_WIDTH = 350;
 	protected static final int RESULTS_LIST_ITEM_HEIGHT = 15;
 	protected static final int RESULTS_HEADER_HEIGHT = 30;
 	protected static final int RESULTS_PANEL_WIDTH = 1200;

@@ -31,6 +31,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private JLabel _addButton;
 	private JPanel _labelsPanel;
 	private boolean _isOpen;
+	private boolean _fullWidth;
 	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 	private int _index;
 	private int _numLists;
@@ -53,6 +54,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_room.addToListItem(this);
 		_index = _room.getAverageResult();
 		_isOpen = false;
+		_fullWidth = true;
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
 		_label.setFont(_unselectedFont);
 		this.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
@@ -116,7 +118,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	}
 	
 	@Override
-	public int getComparisonValue() {
+	public double getComparisonValue() {
 		return _index;
 	}
 
@@ -126,7 +128,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	}
 
 	@Override
-	public void setComparisonValue(int index) { }
+	public void setComparisonValue(double d) { }
 	
 	/** 
 	 * ResultsListItems cannot be open, so instead this
@@ -152,7 +154,18 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	public void removeItem(AccordionItem item) { }
 	
 	@Override
-	public void resizeItem(Dimension d) { }
+	public void resizeItem(Dimension d) {
+		// determine if component needs to be resized
+		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
+		
+		// resize if necessary
+		if (resize) {
+			Dimension size = getPreferredSize();
+			setPreferredSize(new Dimension(size.width + d.width, size.height));
+			setSize(new Dimension(size.width + d.width, size.height));
+			_fullWidth = !_fullWidth;
+		}
+	}
 	
 	@Override
 	public int compareTo(AccordionItem o) {

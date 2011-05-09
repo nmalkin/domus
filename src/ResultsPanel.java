@@ -67,7 +67,6 @@ public class ResultsPanel extends JPanel implements Runnable {
 	}
 	
 	public void updateResultsLists() {
-		System.out.println("update");
 		SetMultimap<SubGroup, Dorm> dormMap = TreeMultimap.create(Ordering.natural(), new DormComparator());
 		_dormAverages = new HashMap<Dorm, DormAverage>();
 		_results = State.getInstance().getResults();
@@ -78,7 +77,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 					average = _dormAverages.get(r.getDorm());
 				else
 					average = new DormAverage();
-				average.add(r.getAverageResult());
+				average.add(r.getProbability());
 				_dormAverages.put(r.getDorm(), average);
 			}
 		}
@@ -101,22 +100,25 @@ public class ResultsPanel extends JPanel implements Runnable {
 			if ((list = _listsMap.get(sg)) == null) {
 				list = AccordionList.create(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_HEIGHT, Constants.RESULTS_HEADER_HEIGHT);
 			}
-			list.setUpdating(true);
 			list.setHeader(createListHeader(sg));
-			ResultsListTab[] tabsArray = list.getTabs().toArray(new ResultsListTab[0]);
-			for (int i = 0; i < tabsArray.length; ++i) {
-				ResultsListTab rlt = tabsArray[i];
-				if (!_dormAverages.containsKey(rlt.getDorm()))
-					list.removeTab(rlt);
-			}
 			Collection<ResultsListTab> tabs = list.getTabs();
+			for (Iterator<ResultsListTab> iter = tabs.iterator(); iter.hasNext();) {
+				ResultsListTab rlt = iter.next();
+				if (!_dormAverages.containsKey(rlt.getDorm())) {
+					iter.remove();
+					list.removeTab(rlt);
+				}
+			}
+			tabs = list.getTabs();
 			for (Dorm d : dormMap.get(sg)) {
 				ResultsListTab tab = containsDormTab(tabs, d);
 				if (tab != null) {
 					intersectResultsWithTab(sg, d, list, tab);
+					tab.setComparisonValue(_dormAverages.get(d).getAverage());
 				}
 				else {
 					tab = new ResultsListTab(d, sg, list);
+					tab.setComparisonValue(_dormAverages.get(d).getAverage());
 					list.addTab(tab);
 					for (Room r : _results.get(sg)) {
 						if (r.getDorm() == d) {
@@ -124,12 +126,10 @@ public class ResultsPanel extends JPanel implements Runnable {
 						}
 					}
 				}
-				tab.setComparisonValue((int) _dormAverages.get(d).getAverage());
 				tab.validateListLabels();
 			}
 			_listsMap.put(sg, list);
 			_resultsPanel.add(list);
-			list.setUpdating(false);
 		}
 		int numLists = _listsMap.values().size();
 		int displayLists = Math.min(numLists, Constants.RESULTS_LISTS_DISPLAYED);
@@ -260,8 +260,8 @@ public class ResultsPanel extends JPanel implements Runnable {
 			_size = 0;
 		}
 		
-		public void add(int value) {
-			_sum += value;
+		public void add(double d) {
+			_sum += d;
 			++_size;
 		}
 		
