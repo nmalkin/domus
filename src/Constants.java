@@ -47,7 +47,7 @@ public class Constants {
 	
 	// House
 	protected static final Color HOUSE_COLOR = new Color(171, 171, 171);
-	protected static final int HOUSE_PADDING = 45; // pixels
+	protected static final int HOUSE_PADDING = 25; // pixels
 	protected static final Color HOUSE_COLOR_TRANSPARENT = new Color(
 			HOUSE_COLOR.getRed(), HOUSE_COLOR.getGreen(), HOUSE_COLOR.getBlue(), 
 			TRASH_OVERLAY_ALPHA);
