@@ -288,6 +288,7 @@ public class DomusXML {
 					String roomNumber = room.attributeValue("number");
 					
 					Room newRoom = Room.getRoom(dorm, roomNumber);
+					Database.updateRoomData(newRoom); // get lottery results/coefficients if necessary
 					rl.add(newRoom);
 					newRoom.addToRoomList(rl); //TODO: is it really necessary to call both?
 				}
