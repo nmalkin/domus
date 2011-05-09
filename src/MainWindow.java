@@ -80,7 +80,7 @@ public class MainWindow extends JFrame {
 							 */
 							final int NUMBER_OF_TABS = 3;
 							tabbedPane.setSelectedIndex((tabbedPane.getSelectedIndex()+1) % NUMBER_OF_TABS);
-							tabbedPane.setSelectedIndex((tabbedPane.getSelectedIndex()-1) % NUMBER_OF_TABS);
+							tabbedPane.setSelectedIndex((tabbedPane.getSelectedIndex()+2) % NUMBER_OF_TABS);
 						}
 					}
 				} catch (IOException e1) {
