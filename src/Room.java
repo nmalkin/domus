@@ -89,13 +89,46 @@ public class Room implements Comparable<Room> {
 	/** 
 	 * Returns the probability of receiving this room based on group's lottery number.
 	 * 
-	 * To compute the probability, we use the coefficients from the logistic regression
+	 * To compute the probability using the "regression technique," we use the coefficients from the logistic regression
 	 * (set using setCoefficients) and plug the lottery number into the logistic function:
 	 * 1/(1+e^-(b0 + b1*x))
-	 * where x is the lottery number
+	 * where x is the lottery number.
+	 * 
+	 * To compute the probability using the "simple technique," we compute the theoretical success rate in previous years,
+	 * using this number.
+	 * i.e., if you had this number during each of the previous years, would you have gotten this room?
 	 */
 	public double getProbability() {
-		return 1.0 / (1.0 + Math.exp(-1 * (_b0_coefficient + _b1_coefficient * State.getInstance().getGroup().getLotteryNumber())));
+		if(State.getInstance().useRegressionProbability()) {
+			/*
+			 * The regression probability technique uses pre-calculated beta coefficients,
+			 * and the logistic function.
+			 */
+			return 1.0 / (1.0 + Math.exp(-1 * (_b0_coefficient + _b1_coefficient * State.getInstance().getGroup().getLotteryNumber())));
+		} else {
+			Integer[] years = State.getInstance().getYears();
+			int lotteryNumber = State.getInstance().getGroup().getLotteryNumber();
+			int successCount = 0;
+			
+			for(LotteryResult result : _results) {
+				for(int year : years) {
+					if(result.getYear() == year) {
+						if(lotteryNumber <= result.getLotteryNumber()){
+							successCount++;
+						}
+						
+						break;
+					}
+				}
+			}
+			
+			if(_results.size() == 0) {
+				return 0;
+			} else {
+				return successCount / (_results.size() + 0.0);
+			}
+			
+		}
 	}
 	
 	public void setCoefficients(double b0, double b1) {

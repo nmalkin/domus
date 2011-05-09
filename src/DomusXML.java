@@ -301,6 +301,13 @@ public class DomusXML {
 			// but which one? it would be nice to know. (TODO)
 		}
 		
+		// validate the new group
+		if(newGroup.numberOfPeople() > Constants.GROUP_SIZE_LIMIT) {
+			throw new DocumentException("input document contains more than " 
+					+ Constants.GROUP_SIZE_LIMIT + " people, which is not allowed");
+		}
+		
+		// replace state values with new data
 		State.getInstance().setGroup(newGroup);
 		for(RoomList rl : lists) {
 			State.getInstance().addRoomList(rl);
