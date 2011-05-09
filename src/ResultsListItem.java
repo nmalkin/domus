@@ -189,6 +189,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	}
 	
 	@Override
+	@Deprecated
 	public int compareTo(AccordionItem o) {
 		return _room.compareTo(((ResultsListItem) o).getRoom());
 	}

@@ -255,6 +255,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	 * or if the two probabilities are equal but this tab's dorm comes first lexicographically
 	 */
 	@Override
+	@Deprecated
 	public int compareTo(AccordionItem o) {	
 		double ave1 = this.getComparisonValue();
 		double ave2 = o.getComparisonValue();

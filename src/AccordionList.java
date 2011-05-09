@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 
@@ -45,7 +46,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	
 	private AccordionList(int width, int height, int headerHeight) {
 		super();
-		_lists = TreeMultimap.create();
+		_lists = LinkedListMultimap.create();
 		this.setPreferredSize(new Dimension(width, height + headerHeight));
 		FlowLayout layout = (FlowLayout) this.getLayout();
 		layout.setVgap(0);

@@ -35,8 +35,11 @@ public class State {
 	/** listeners for whether or not the selected house is changing */
 	private List<ChangeListener> _selectedHouseChangeListeners;
 	
-	/** listener for whether the probability model is changning */
+	/** listener for whether the selected probability model is changing */
 	private ChangeListener _selectedProbabilityModelChangeListener;
+	
+	/** listener for whether the selected years are changing */
+	private ChangeListener _selectedYearsChangeListener;
 	
 	/** Should we use the regression probability method? (if false, "simple" technique will be used) */
 	private boolean _useRegressionProbability;
@@ -54,6 +57,7 @@ public class State {
 		_selectedHouse = null;
 		_selectedHouseChangeListeners = new LinkedList<ChangeListener>();
 		_selectedProbabilityModelChangeListener = null;
+		_selectedYearsChangeListener = null;
 		_useRegressionProbability = true;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
@@ -86,6 +90,7 @@ public class State {
 	public void useRegressionProbability(boolean use) {
 		_useRegressionProbability = use;
 		
+		// notify the listener that the selected probability model have changed
 		if (_selectedProbabilityModelChangeListener != null) {
 			ChangeEvent e = new ChangeEvent(this);
 			_selectedProbabilityModelChangeListener.stateChanged(e);
@@ -118,11 +123,34 @@ public class State {
 	public void addYear (Integer year) {
 		_years.add(year);
 		_ignoredYears.remove(year);
+		
+		// notify the listener that the selected years have changed
+		if (_selectedYearsChangeListener != null) {
+			ChangeEvent e = new ChangeEvent(this);
+			_selectedYearsChangeListener.stateChanged(e);
+		}	
 	}
 	
 	public void removeYear (Integer year) {
 		_years.remove(year);
 		_ignoredYears.add(year);
+		
+		// notify the listener that the selected years have changed
+		if (_selectedYearsChangeListener != null) {
+			ChangeEvent e = new ChangeEvent(this);
+			_selectedYearsChangeListener.stateChanged(e);
+		}
+	}
+	
+	/**
+	 * Attaches the given ChangeListener such that
+	 * a ChangeEvent is fired whenever the selected house is changed.
+	 * 
+	 * @param l
+	 */
+	public void setSelectedYearsChangeListener(ChangeListener l) {
+		if (l != null)
+			_selectedYearsChangeListener = l;
 	}
 	
 	public void setSelectedHouse(House h) {

@@ -20,11 +20,21 @@ public class ResultsTab extends JPanel {
 		this.add(_resultsPanel);
 		
 		this.add(new LotteryNumberPanel(), BorderLayout.LINE_END);
+		
+		// add listeners to Group and State for updating results based on certain user interactions
 		State.getInstance().getGroup().addGroupStateChangeListener(new GroupStateChangeListener());
 		State.getInstance().addSelectedHouseChangeListener(new SelectedHouseChangeListener());
 		State.getInstance().setSelectedProbabilityModelChangeListener(new SelectedProbabilityModelChangeListener());
+		State.getInstance().setSelectedYearsChangeListener(new SelectedYearsChangeListener());
 	}
 	
+	/**
+	 * Updates the results lists based on the boolean argument. If it's true,
+	 * then fetch new results from the database. If it's false, then
+	 * just update the probabilities for each result.
+	 * 
+	 * @param updateEverything, fetch new results if true, update probabilities if false
+	 */
 	private void updateResults(boolean updateEverything) {
 		if (updateEverything) {
 			State.getInstance().updateResults();
@@ -92,8 +102,25 @@ public class ResultsTab extends JPanel {
 		
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			if (isVisible())
+//			if (isVisible())
 				// update results, not just probabilities
+				updateResults(false);
+		}
+		
+	}
+	
+	/**
+	 * Listens for the selected years to change. If the results tab is visible and this
+	 * happens, then the results should be updated.
+	 * 
+	 * @author jswarren
+	 */
+	private class SelectedYearsChangeListener implements ChangeListener {
+		
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			if (isVisible())
+				// update the results, not just probabilities
 				updateResults(true);
 		}
 		

@@ -58,6 +58,12 @@ public class PreferencePanel extends JPanel {
 		this.add(preferenceList);
 	}
 	
+	/**
+	 * Compares Dorms by CampusArea (alphabetically) and then
+	 * lexicographically inside of that.
+	 * 
+	 * @author jswarren
+	 */
 	private class DormComparator implements Comparator<Dorm> {
 
 		Map<Dorm, CampusArea> _campusAreas;
