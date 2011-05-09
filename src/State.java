@@ -35,7 +35,11 @@ public class State {
 	/** listener for whether or not the house is changing */
 	private ChangeListener _selectedHouseChangeListener;
 	
+	/** Should we use the regression probability method? (if false, "simple" technique will be used) */
+	private boolean _useRegressionProbability;
+	/** Years to use for calculating probability. */
 	private List<Integer> _years;
+	/** Years NOT to use for calculating probability. */
 	private List<Integer> _ignoredYears;
 
 	private State() {
@@ -44,6 +48,7 @@ public class State {
 		_roomLists = new LinkedList<RoomList>();
 		_selectedHouse = null;
 		_selectedHouseChangeListener = null;
+		_useRegressionProbability = false;
 		_years = new LinkedList<Integer>();
 		_ignoredYears = new LinkedList<Integer>();
 		
@@ -56,6 +61,24 @@ public class State {
 	
 	protected void setGroup(Group group) { //TODO: do we want to expose it like this?
 		_group = group;
+	}
+	
+	/**
+	 * Returns whether or not the user has chosen to use regression probability.
+	 * 
+	 * @return true if you should use the regression probability technique
+	 */
+	public boolean useRegressionProbability() {
+		return _useRegressionProbability;
+	}
+	
+	/**
+	 * Allows you to set whether or not to use the regression probability technique.
+	 * 
+	 * @param use true if we should use the regression probability technique, false if we shouldn't
+	 */
+	public void useRegressionProbability(boolean use) {
+		_useRegressionProbability = use;
 	}
 	
 	public Integer[] getYears() {
