@@ -67,7 +67,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		
 		_probabilityDisplay = new ProbabilityDisplay(_room.getProbability());
 		this.add(_probabilityDisplay);
-		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
+		this.add(Box.createRigidArea(new Dimension(Constants.PROBABILITY_DISPLAY_RIGHT_SPACING, 0)));
 		
 		_button = new JLabel(_buttonIcon);
 		_button.setPreferredSize(new Dimension(_buttonIcon.getIconWidth(), _buttonIcon.getIconHeight()));

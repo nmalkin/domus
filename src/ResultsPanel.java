@@ -154,6 +154,9 @@ public class ResultsPanel extends JPanel implements Runnable {
 					}
 				}
 				
+				// make sure tabs display the average of their components' probabilities
+				tab.updateProbabilities();
+				
 				// make sure the ResultsListTab is displaying all of the list labels it should be
 				tab.validateListLabels();
 			}			

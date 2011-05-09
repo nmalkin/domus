@@ -47,8 +47,8 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 		this.setLayout(new BorderLayout());
 		this.setBorder(new MatteBorder(1,0,0,0,Color.GRAY));
 		
-		JLabel title = new JLabel("LOCATION PREFERENCES");
-		title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+		JLabel title = new JLabel("LOCATION PREFERENCES".toLowerCase());
+		title.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 24));
 		
 		ParentCheckBox masterBox = new ParentCheckBox("I'm willing to live anywhere!");
 		_checkBoxes.add(masterBox);
