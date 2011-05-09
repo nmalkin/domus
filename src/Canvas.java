@@ -639,7 +639,7 @@ public class Canvas extends JLayeredPane {
 			if(newPersonGender != null) {
 				// before adding a person, make sure the group hasn't reached its size limit
 				if(State.getInstance().getGroup().numberOfPeople() < Constants.GROUP_SIZE_LIMIT) {
-					Person newPerson = new Person("A Person", newPersonGender);
+					Person newPerson = new Person(Constants.NEW_PERSON_DEFAULT_NAME, newPersonGender);
 					
 					switch(newPersonGender) {
 					case MALE:

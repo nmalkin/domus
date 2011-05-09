@@ -282,6 +282,40 @@ public class Database {
 			return -1; //TODO: fix this too
 		}
 	}
+	
+	/**
+	 * Given a room, makes sure its coefficients and lottery results have been set.
+	 * If they have not, sets them using database values.
+	 * @param room
+	 */
+	public static void updateRoomData(Room room) {
+		try {
+			if(room.getResults().isEmpty()) {
+				int[] years = getYears();
+				
+				// if the results list is empty, we will assume that
+				// the room has NEITHER results NOR coefficients
+				// and populate it with both of them
+				ResultSet result = statement.executeQuery("SELECT * FROM " + Constants.ROOM_TABLE + " WHERE building='" + room.getDorm().getName()
+						+ "' AND roomNumber='" + room.getNumber() + "';");
+				
+				
+				if(result.next()) {
+					// save coefficients
+					room.setCoefficients(result.getDouble("b0"), result.getDouble("b1"));
+					
+					for(int i = 0; i < years.length; i++) {
+						if(result.getInt("y" + years[i]) != 0) {
+							LotteryResult lotteryResult = new LotteryResult(years[i], result.getInt("y" + years[i]));
+							room.addResult(lotteryResult);
+						}
+					}
+				}
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	protected static void closeDatabase() {
 		INSTANCE.close();

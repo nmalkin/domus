@@ -162,7 +162,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 			
 			panel.add(label);
 			panel.add(Box.createRigidArea(new Dimension(5, 0)));
-			if (p.getName() != "A Person") {
+			if (! p.getName().equals(Constants.NEW_PERSON_DEFAULT_NAME)) {
 				label.setToolTipText(p.getName());
 				if (i == 0)
 					names += p.getName();
