@@ -9,15 +9,17 @@ public class Constants {
 	protected static final int VERSION = 1;
 	protected static final int FILE_FORMAT_VERSION = 1;
 	
+	protected static final String PATH_PREFIX = "";
+	
 	protected static final int GROUP_SIZE_LIMIT = 12; // people
 	protected static final int SUBGROUP_SIZE_LIMIT = 8; // people
 	
-	protected static final Font DOMUS_FONT = FontLoader.load("resources/GOTHIC.TTF");
+	protected static final Font DOMUS_FONT = FontLoader.load(PATH_PREFIX + "resources/GOTHIC.TTF");
 	
 	// General Graphics
 	protected static final int INSET = 5; // pixels
 	protected static final Border EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
-	protected static final String DOMUS_FILE = "img/domus.png";
+	protected static final String DOMUS_FILE = PATH_PREFIX + "img/domus.png";
 
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
@@ -38,8 +40,8 @@ public class Constants {
 	protected static final String NEW_PERSON_DEFAULT_NAME = "A Person";
 	
 //	protected static final String TRASH_FILE = "img/trash.png";
-	protected static final String TRASH_CLOSED_FILE = "img/trashcan_closed.png";
-	protected static final String TRASH_OPEN_FILE = "img/trashcan_open.png";
+	protected static final String TRASH_CLOSED_FILE = PATH_PREFIX + "img/trashcan_closed.png";
+	protected static final String TRASH_OPEN_FILE = PATH_PREFIX + "img/trashcan_open.png";
 	protected static final int TRASH_WIDTH = 77; // pixels
 	protected static final int TRASH_HEIGHT = 140; // pixels
 	protected static final float TRASH_OVERLAY_ALPHA_FRACTION = 0.25f;
@@ -67,11 +69,11 @@ public class Constants {
 			TRASH_OVERLAY_ALPHA);
 	
 	// Person images & dimensions
-	protected static final String MAN_FILE   = "img/man.png";
+	protected static final String MAN_FILE   = PATH_PREFIX + "img/man.png";
 	protected static final int    MAN_WIDTH  = 37; // pixels
 	protected static final int    MAN_HEIGHT = 100; // pixels
 
-	protected static final String WOMAN_FILE   = "img/woman.png";
+	protected static final String WOMAN_FILE   = PATH_PREFIX + "img/woman.png";
 	protected static final int    WOMAN_WIDTH  = 46; // pixels
 	protected static final int    WOMAN_HEIGHT = 100; // pixels
 	
@@ -88,12 +90,12 @@ public class Constants {
 	protected final static int PREFERENCE_PANEL_HEIGHT = 901;
 	
 	// Results and lists icons
-	protected static final String CLOSED_FILE = "img/closed_results_tab_new.png";
-	protected static final String OPEN_FILE = "img/open_results_tab_new.png";
-	protected static final String ADD_FILE = "img/add_to_list_black.png";
-	protected static final String REMOVE_FILE = "img/remove_from_list_thin.png";
-	protected static final String LEFT_ARROW = "img/left_arrow_smaller.png";
-	protected static final String RIGHT_ARROW = "img/right_arrow_smaller.png";
+	protected static final String CLOSED_FILE 	= PATH_PREFIX + "img/closed_results_tab_new.png";
+	protected static final String OPEN_FILE 	= PATH_PREFIX + "img/open_results_tab_new.png";
+	protected static final String ADD_FILE 		= PATH_PREFIX + "img/add_to_list_black.png";
+	protected static final String REMOVE_FILE 	= PATH_PREFIX + "img/remove_from_list_thin.png";
+	protected static final String LEFT_ARROW 	= PATH_PREFIX + "img/left_arrow_smaller.png";
+	protected static final String RIGHT_ARROW 	= PATH_PREFIX + "img/right_arrow_smaller.png";
 	protected static final int OPEN_ICON_WIDTH = 15;
 	protected static final int REMOVE_ICON_HEIGHT = 16;
 	
@@ -151,7 +153,7 @@ public class Constants {
 			" who is in each house.</center></html>";
 	
 	// Database
-	protected static final String DATABASE_NAME = "data/housingdata.db";
+	protected static final String DATABASE_NAME = PATH_PREFIX + "data/housingdata.db";
 	protected static final String ROOM_TABLE = "rooms_with_regressions";
 	protected static final String GENDER_TABLE = "genderNeutral";
 	protected static final String SOPHOMORE_TABLE = "sophomoreOnly";
@@ -163,12 +165,12 @@ public class Constants {
 	protected static final int OPTIMISM_MEDIUM = 1;
 	protected static final int OPTIMISM_LOW = 2;
 	
-	protected static final String HAPPY_FILE = "img/Grin.png";
-	protected static final String OKAY_FILE = "img/Undecided.png";
-	protected static final String SAD_FILE = "img/Crying.png";
-	protected static final String SAD_FILE_DIM = "img/Crying2.png";
-	protected static final String OKAY_FILE_DIM = "img/Undecided2.png";
-	protected static final String HAPPY_FILE_DIM = "img/Grin2.png";
+	protected static final String HAPPY_FILE 		= PATH_PREFIX + "img/Grin.png";
+	protected static final String OKAY_FILE 		= PATH_PREFIX + "img/Undecided.png";
+	protected static final String SAD_FILE 			= PATH_PREFIX + "img/Crying.png";
+	protected static final String SAD_FILE_DIM 		= PATH_PREFIX + "img/Crying2.png";
+	protected static final String OKAY_FILE_DIM 	= PATH_PREFIX + "img/Undecided2.png";
+	protected static final String HAPPY_FILE_DIM 	= PATH_PREFIX + "img/Grin2.png";
 
 	
 	// XML i/o
