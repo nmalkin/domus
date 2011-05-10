@@ -52,7 +52,7 @@ public class Database {
 
 			int[] years = new int[numberOfYears];
 
-			for(int i = 2; i < numberOfYears + 2; i++) years[i - 2] = Integer.parseInt(metaData.getColumnName(i).replace("y", ""));
+			for (int i = 2; i < numberOfYears + 2; i++) years[i - 2] = Integer.parseInt(metaData.getColumnName(i).replace("y", ""));
 
 			rs.close();
 
@@ -91,8 +91,8 @@ public class Database {
 			while(dorms.next()) {
 				Dorm dorm = new Dorm(dorms.getString("building"));
 				
-				for(CampusArea ca : _campusAreas) {
-					if(dorms.getString("campusArea").equals(ca.getName())) {
+				for (CampusArea ca : _campusAreas) {
+					if (dorms.getString("campusArea").equals(ca.getName())) {
 						INSTANCE._dorms.put(dorm.getName(), dorm);
 						ca.add(dorm);
 						break;
@@ -102,7 +102,8 @@ public class Database {
 
 			dorms.close();
 			
-			for(Dorm d: INSTANCE._dorms.values()) d.setGenderNeutral(isGenderNeutral(d));
+			for (Dorm d : INSTANCE._dorms.values()) d.setGenderNeutral(isGenderNeutral(d));
+			for (Dorm d : INSTANCE._dorms.values()) d.setSophomoreOnly(isSophomoreOnly(d));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("ERROR: unable to retrieve campus areas");
@@ -150,22 +151,28 @@ public class Database {
 		List<Room> rooms = new LinkedList<Room>();
 
 		try {
-			for(Dorm d: locations) {
-				if((sophomoreEligible || !INSTANCE.isSophomoreOnly(d)) && (!genderNeutral || INSTANCE.isGenderNeutral(d))) { 
+			for (Dorm d: locations) {
+				if ((sophomoreEligible || !d.isSophomoreOnly()) && (!genderNeutral || d.isGenderNeutral())) { 
 					ResultSet subRooms = statement.executeQuery("select * from " + Constants.ROOM_TABLE + " where occupancy=" + occupancy
 							+ " and building='" + d.getName() + "';");
 
-					while(subRooms.next()) {
+					while (subRooms.next()) {
 						Room room = Room.getRoom(INSTANCE._dorms.get(subRooms.getString("building")), subRooms.getString("roomNumber"));
 						
 						// save coefficients
 						room.setCoefficients(subRooms.getDouble("b0"), subRooms.getDouble("b1"));
 						
+						// save occupancy
+						room.setOccupancy(occupancy);
+						
+						// save apartement fee status
+						room.setApartmentFee(subRooms.getInt("apartmentRate") == 1);
+						
 						// save past lottery results (replacing the current ones, if necessary)
 						room.clearResults();
 						
-						for(int i = 0; i < years.length; i++) {
-							if(subRooms.getInt("y" + years[i]) != 0) {
+						for (int i = 0; i < years.length; i++) {
+							if (subRooms.getInt("y" + years[i]) != 0) {
 								LotteryResult result = new LotteryResult(years[i], subRooms.getInt("y" + years[i]));
 								room.addResult(result);
 							}
@@ -192,7 +199,7 @@ public class Database {
 
 			int sum = 0;
 
-			for(int i = 0; i < years.length; i++) {
+			for (int i = 0; i < years.length; i++) {
 				ResultSet totalNums = statement.executeQuery("select count(number) as count from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + ";");
 				int total = totalNums.getInt("count");
 				totalNums.close();
@@ -201,8 +208,8 @@ public class Database {
 				int firstNum = firstNumber.getInt("firstNum");
 				firstNumber.close();
 
-				if(lotteryNumber < firstNum + total / 3) sum += Constants.OPTIMISM_HIGH;
-				else if(lotteryNumber > firstNum + 2 * total / 3 + 1) sum += Constants.OPTIMISM_LOW;
+				if (lotteryNumber < firstNum + total / 3) sum += Constants.OPTIMISM_HIGH;
+				else if (lotteryNumber > firstNum + 2 * total / 3 + 1) sum += Constants.OPTIMISM_LOW;
 				else sum += Constants.OPTIMISM_MEDIUM;
 			}
 
@@ -233,7 +240,7 @@ public class Database {
 			for (int i = 0; i < years.length; i++) {
 				sum += semesters.getInt("y" + years[i]);
 
-				if(semesters.getInt(years[i] - 2004) != 0) count++;
+				if (semesters.getInt(years[i] - 2004) != 0) count++;
 			}
 
 			return Math.round(sum / count);
@@ -262,7 +269,7 @@ public class Database {
 		int first, last;
 
 		try {
-			for(int i = 0; i < years.length; i++) {
+			for (int i = 0; i < years.length; i++) {
 				ResultSet totalNums = statement.executeQuery("select count(number) as count from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester + ";");
 				int total = totalNums.getInt("count");
 				totalNums.close();
@@ -271,7 +278,7 @@ public class Database {
 				int firstNum = firstNumber.getInt("firstNum");
 				firstNumber.close();
 
-				if(optimism == Constants.OPTIMISM_HIGH) {
+				if (optimism == Constants.OPTIMISM_HIGH) {
 					first = firstNum;
 					last = firstNum + total / 3;
 				}
@@ -286,7 +293,7 @@ public class Database {
 
 				ResultSet numbers = statement.executeQuery("select * from " + Constants.SEMESTER_TABLE + " where y" + years[i] + "=" + semester	+ " and number between " + first + " and " + last + ";");
 
-				while(numbers.next()) {
+				while (numbers.next()) {
 					sum += numbers.getInt("number");
 					count++;
 				}
@@ -307,7 +314,7 @@ public class Database {
 	 */
 	public static void updateRoomData(Room room) {
 		try {
-			if(room.getResults().isEmpty()) {
+			if (room.getResults().isEmpty()) {
 				int[] years = getYears();
 				
 				// if the results list is empty, we will assume that
@@ -317,19 +324,19 @@ public class Database {
 						+ "' AND roomNumber='" + room.getNumber() + "';");
 				
 				
-				if(result.next()) {
+				if (result.next()) {
 					// save coefficients
 					room.setCoefficients(result.getDouble("b0"), result.getDouble("b1"));
 					
-					for(int i = 0; i < years.length; i++) {
-						if(result.getInt("y" + years[i]) != 0) {
+					for (int i = 0; i < years.length; i++) {
+						if (result.getInt("y" + years[i]) != 0) {
 							LotteryResult lotteryResult = new LotteryResult(years[i], result.getInt("y" + years[i]));
 							room.addResult(lotteryResult);
 						}
 					}
 				}
 			}
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}

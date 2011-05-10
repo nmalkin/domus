@@ -171,13 +171,13 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	@Override
 	public void resizeItem(Dimension d) {
 		//determine if components need to be resized
-		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
+		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth) || getHeight() != d.height;
 		
 		//resize this component
 		Dimension size = this.getSize();
 		if (resize) {
-			this.setPreferredSize(new Dimension(size.width + d.width, size.height));
-			this.setSize(new Dimension(size.width + d.width, size.height));
+			this.setPreferredSize(new Dimension(size.width + d.width, size.height + d.height));
+			this.setSize(new Dimension(size.width + d.width, size.height + d.height));
 		}
 		
 		//resize tab
@@ -190,8 +190,8 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		//resize itemsPanel
 		size = _itemsPanel.getSize();
 		if (resize) {
-			_itemsPanel.setPreferredSize(new Dimension(size.width + d.width, size.height));
-			_itemsPanel.setSize(new Dimension(size.width + d.width, size.height));
+			_itemsPanel.setPreferredSize(new Dimension(size.width + d.width, size.height + d.height));
+			_itemsPanel.setSize(new Dimension(size.width + d.width, size.height + d.height));
 			_fullWidth = !_fullWidth;
 //			int bottom = 1;
 //			if (!_fullWidth && this == _parentList.getLastTab())
@@ -225,7 +225,10 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	@Override
 	public void setOpen(boolean open) {
 		_isOpen = open;
-		_parentList.tabDisplayChanged(open, _itemsPanel.getPreferredSize().height);
+		int height = _itemsPanel.getPreferredSize().height;
+		if (!_isOpen)
+			height = -height;
+		_parentList.tabDisplayChanged(height);
 		int bottom = 1;
 		if (_isOpen)
 			bottom = 0;

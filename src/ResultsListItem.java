@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -87,6 +88,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		panel.add(_button);
 		panel.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		panel.addMouseListener(new SelectedListener());
+		this.add(panel);
 		
 		// make sure the room has the proper list labels
 		validateListLabels();
@@ -106,7 +108,69 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		if (_room.isGenderNeutral()) {
 			JLabel genLabel = new JLabel("G");
 			propertiesPanel.add(genLabel);
+			size = propertiesPanel.getSize();
+			propertiesPanel.setPreferredSize(new Dimension(size.width + genLabel.getSize().width, size.height));
+			propertiesPanel.setSize(new Dimension(size.width + genLabel.getSize().width, size.height));
 		}
+		if (_room.hasApartmentRate()) {
+			JLabel rateLabel = new JLabel("A");
+			propertiesPanel.add(rateLabel);
+			size = propertiesPanel.getSize();
+			propertiesPanel.setPreferredSize(new Dimension(size.width + rateLabel.getSize().width, size.height));
+			propertiesPanel.setSize(new Dimension(size.width + rateLabel.getSize().width, size.height));
+		}
+		if (_room.getDorm().isSophomoreOnly()) {
+			JLabel sophLabel = new JLabel("S"); 
+			propertiesPanel.add(sophLabel);
+			size = propertiesPanel.getSize();
+			propertiesPanel.setPreferredSize(new Dimension(size.width + sophLabel.getSize().width, size.height));
+			propertiesPanel.setSize(new Dimension(size.width + sophLabel.getSize().width, size.height));
+		}
+		_infoPanel.add(propertiesPanel);
+		
+		// create a panel for the past lottery results
+		JPanel pastResultsPanel = new JPanel();
+		pastResultsPanel.setLayout(new BoxLayout(pastResultsPanel, BoxLayout.PAGE_AXIS));
+		size = new Dimension(0, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
+		pastResultsPanel.setPreferredSize(size);
+		pastResultsPanel.setSize(size);
+		
+		// create a panel for each past result
+		for (LotteryResult lotteryResult : _room.getResults()) {
+			JPanel pastResult = new JPanel();
+			pastResult.setLayout(new BoxLayout(pastResult, BoxLayout.PAGE_AXIS));
+			pastResult.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.BLACK));
+			
+			// create a label for the year and for the result
+			JLabel year = new JLabel(lotteryResult.getYear() + "");
+			year.setHorizontalAlignment(JLabel.CENTER);
+			year.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+			JLabel result = new JLabel(lotteryResult.getLotteryNumber() + "");
+			year.setHorizontalAlignment(JLabel.CENTER);
+			
+			// add the labels and reset the size
+			pastResult.add(year);
+			pastResult.add(result);
+			int width = Math.max(year.getSize().width, result.getSize().width);
+			size = pastResult.getSize();
+			size = new Dimension(size.width + width, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
+			pastResult.setPreferredSize(size);
+			pastResult.setSize(size);
+			
+			// add the panel to the past lottery results panel
+			// and resize it
+			pastResultsPanel.add(pastResult);
+			size = pastResultsPanel.getSize();
+			size = new Dimension(size.width + pastResult.getSize().width, size.height);
+			pastResultsPanel.setPreferredSize(size);
+			pastResultsPanel.setSize(size);
+		}
+		_infoPanel.add(pastResultsPanel);
+		
+		// add info panel to ResultsListItem (initally not visible)
+		_infoPanel.setVisible(false);
+		this.add(_infoPanel);
+		
 	}
 	
 	/** Makes sure the list labels for this item are updated */
@@ -186,14 +250,27 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	 */
 	@Override
 	public void setOpen(boolean open) {
+		_isOpen = open;
+		int height = _infoPanel.getPreferredSize().height;
 		if (open) {
-			// TODO
-			_isOpen = true;
+//			_infoPanel.setVisible(true);
 		}
 		else {
-			// TODO
-			_isOpen = false;
+//			_infoPanel.setVisible(false);
+			height = -height;
 		}
+//		System.out.println(height);
+//		Dimension size = getSize();
+//		size = new Dimension(size.width, size.height + height);
+//		this.setPreferredSize(size);
+//		this.setSize(size);
+//		ResultsListTab tab = (ResultsListTab) getParent().getParent();
+//		tab.resizeItem(new Dimension(0, height));
+//		size = tab.getSize();
+//		size = new Dimension(size.width, size.height + height);
+//		tab.setPreferredSize(size);
+//		tab.setSize(size);
+//		_parentList.tabDisplayChanged(height);
 	}
 	
 	@Override

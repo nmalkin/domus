@@ -138,7 +138,7 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 			((JPanel) itemsPanel.getParent()).setSize(size);
 				
 			itemsPanel.validate();
-			_parentList.tabDisplayChanged(false, Constants.REMOVE_ICON_HEIGHT);
+			_parentList.tabDisplayChanged(-Constants.REMOVE_ICON_HEIGHT);
 			_parentList.validate();
 			
 			LocationPreference l = _house.getLocationPreference();

@@ -97,13 +97,9 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	}
 	
 	/** Changes the size of the panel if a tab is opened or closed */
-	public void tabDisplayChanged(boolean open, int heightChange) {
+	public void tabDisplayChanged(int heightChange) {
 		Dimension size = _listsPanel.getPreferredSize();
-		int height = size.height;
-		if (open)
-			height += heightChange;
-		else
-			height -= heightChange;
+		int height = size.height + heightChange;
 		_listsPanel.setPreferredSize(new Dimension(size.width, height));
 		_listsPanel.setSize(new Dimension(size.width, height));
 		_listsPanel.setMaximumSize(new Dimension(size.width, height));
@@ -190,7 +186,7 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 				// change the width of each list
 				for (K tab : _lists.keySet()) {
 					Dimension size = tab.getSize();
-					tab.resizeItem(new Dimension(width, size.height));
+					tab.resizeItem(new Dimension(width, 0));
 				}
 				_scrollbarVisible = visible;
 				int bottom = 0;

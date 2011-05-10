@@ -112,7 +112,10 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 	
 	@Override
 	public void setOpen(boolean open) {
-		_parentList.tabDisplayChanged(open, _itemsPanel.getPreferredSize().height);
+		int height = _itemsPanel.getPreferredSize().height;
+		if (!open)
+			height = -height;
+		_parentList.tabDisplayChanged(height);
 		_isOpen = open;
 	}
 

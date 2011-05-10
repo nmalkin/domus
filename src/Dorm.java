@@ -6,24 +6,38 @@ public class Dorm implements Comparable<Dorm> {
 	/** the genderNeutral status of this Dorm */
 	private boolean _isGenderNeutral;
 	
+	/** sophomore only status of this Dorm */
+	private boolean _isSophomoreOnly;
+	
 	public Dorm(String name) {
 		_name = name;
+		_isGenderNeutral = false;
+		_isGenderNeutral = false;
 	}
 	
 	public String getName() {
 		return _name;
 	}
 	
-	public String toString() {
-		return getName();
-	}
-	
 	public boolean isGenderNeutral() {
 		return _isGenderNeutral;
 	}
 	
+	public boolean isSophomoreOnly() {
+		return _isSophomoreOnly;
+	}
+	
 	public void setGenderNeutral(boolean isGenderNeutral) {
 		_isGenderNeutral = true;
+	}
+	
+	public void setSophomoreOnly(boolean isSophomoreOnly) {
+		_isSophomoreOnly = isSophomoreOnly;
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
 	}
 	
 	@Override

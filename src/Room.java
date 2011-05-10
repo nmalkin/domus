@@ -27,6 +27,9 @@ public class Room implements Comparable<Room> {
 	/** The occupancy of this room. */
 	private int _occupancy;
 	
+	/** Whether or not this room requires an apartment fee. */
+	private boolean _hasApartmentRate;
+	
 	/** This room's history in the lottery. */
 	private List<LotteryResult> _results;
 	
@@ -60,6 +63,8 @@ public class Room implements Comparable<Room> {
 		
 		_b0_coefficient = 0;
 		_b1_coefficient = 0;
+		_occupancy = 0;
+		_hasApartmentRate = false;
 	}
 	
 	/** Returns the Dorm to which this Room belongs */
@@ -85,6 +90,21 @@ public class Room implements Comparable<Room> {
 		if (_occupancy > 1) 
 			return _dorm.isGenderNeutral();
 		return false;
+	}
+	
+	/**
+	 * Returns whether or not this room has an apartment fee
+	 * associated with it.
+	 */
+	public boolean hasApartmentRate() {
+		return _hasApartmentRate;
+	}
+	
+	/**
+	 * Sets the apartment fee status of this Room.
+	 */
+	public void setApartmentFee(boolean hasApartmentRate) {
+		_hasApartmentRate = hasApartmentRate;
 	}
 	
 	/** Returns the average lottery result for this Room. */
@@ -153,6 +173,10 @@ public class Room implements Comparable<Room> {
 	public void setCoefficients(double b0, double b1) {
 		_b0_coefficient = b0;
 		_b1_coefficient = b1;
+	}
+	
+	public void setOccupancy(int occupancy) {
+		_occupancy = occupancy;
 	}
 
 	public String toString() {
