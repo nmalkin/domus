@@ -17,7 +17,19 @@ public class Dorm implements Comparable<Dorm> {
 
 	@Override
 	public int compareTo(Dorm o) {
-		// TODO Auto-generated method stub
 		return _name.compareTo(o.getName());
+	}
+	
+	@Override
+	public int hashCode() {
+		return _name.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(! (o instanceof Dorm)) return false;
+		else {
+			return _name.equals(((Dorm) o).getName());
+		}
 	}
 }
