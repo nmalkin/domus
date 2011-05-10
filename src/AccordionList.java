@@ -119,12 +119,14 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	public void addListItem(K tab, V item) {
 		_lists.put(tab, item);
 		tab.addItem(item);
-//		System.out.println(tab.isFullWidth());
-//		if (!_lists.keySet().isEmpty()) {
-//			K tabs = (K) _lists.keySet().toArray()[0];
-//			if ()
-			tab.resizeItem(new Dimension(-_scroller.getVerticalScrollBar().getSize().width, 0));
-//		}
+		if (!_lists.keySet().isEmpty()) {
+			K previousTab = null;
+			for (K t : _lists.keySet())
+				if (t != null)
+					previousTab = t;
+			if (previousTab.isFullWidth())
+				previousTab.resizeItem(new Dimension(-_scroller.getVerticalScrollBar().getSize().width, 0));
+		}
 	}
 	
 	/** Remove an item from the list */
