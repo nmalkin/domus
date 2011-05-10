@@ -1,3 +1,4 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -294,9 +295,28 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 		
 		// if selected, draw border
 		if(this == State.getInstance().getSelectedHouse()) {
-//			g2.setPaint(getBorderColor());
-//			g2.setStroke(new java.awt.BasicStroke(Constants.SELECTED_HOUSE_BORDER_WIDTH));
+			// set stroke and color
+			g2.setPaint(getBorderColor());
+			g2.setStroke(new java.awt.BasicStroke(Constants.SELECTED_HOUSE_BORDER_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+			
+			// drawing the outline (looks ugly, prefer method below)
 //			g2.draw(houseBox);
+//			g2.drawPolygon(xPoints, yPoints, 3);
+			
+			// draw the border lines individually 
+			// (roof)
+			g.drawLine(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
+			g.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
+			
+			// (house)
+			int houseLeftBoundary = Constants.INSET;
+			int houseRightBoundary = Constants.INSET + width - 2 * Constants.INSET;
+			int houseTopBoundary = Constants.HOUSE_ROOF_HEIGHT + Constants.INSET;
+			int houseBottomBoundary = Constants.HOUSE_ROOF_HEIGHT + Constants.INSET + height - 2 * Constants.HOUSE_ROOF_HEIGHT  - 2 * Constants.INSET;
+			
+			g.drawLine(houseRightBoundary, houseTopBoundary, houseRightBoundary, houseBottomBoundary);
+			g.drawLine(houseRightBoundary, houseBottomBoundary, houseLeftBoundary, houseBottomBoundary);
+			g.drawLine(houseLeftBoundary, houseBottomBoundary, houseLeftBoundary, houseTopBoundary);
 		}
 	}
 	
