@@ -175,6 +175,7 @@ public class Database {
 							if (subRooms.getInt("y" + years[i]) != 0) {
 								LotteryResult result = new LotteryResult(years[i], subRooms.getInt("y" + years[i]));
 								room.addResult(result);
+//								System.out.println(years[i]);
 							}
 						}
 

@@ -34,7 +34,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private JPanel _infoPanel;
 	private boolean _isOpen;
 	private boolean _fullWidth;
-	private static ImageIcon _buttonIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
+	private ImageIcon _buttonIcon;
 	private double _comparisonValue;
 	
 	private int _listWidth = Constants.RESULTS_LIST_ITEM_WIDTH;
@@ -61,6 +61,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_comparisonValue = _room.getProbability();
 		_isOpen = false;
 		_fullWidth = true;
+		_buttonIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 		
 		// create label for Room name/number
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
