@@ -163,6 +163,10 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		_probabilityDisplay.setProbability(probabilitySum / itemCount);
 	}
 	
+	public boolean isFullWidth() {
+		return _fullWidth;
+	}
+	
 	/** 
 	 * Resizes the list. Called when the visibility
 	 * of the vertical scrollbar on the parent components

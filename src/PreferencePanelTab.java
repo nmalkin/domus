@@ -185,5 +185,10 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 		}
 
 	}
+	
+	@Override
+	public boolean isFullWidth() {
+		return _fullWidth;
+	}
 
 }

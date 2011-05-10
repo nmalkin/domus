@@ -36,5 +36,10 @@ public interface AccordionItem extends Comparable<AccordionItem> {
 	 * Resizes the item.
 	 */
 	public void resizeItem(Dimension d);
+	
+	/**
+	 * Returns whether the item is at full width or not.
+	 */
+	public boolean isFullWidth();
 
 }

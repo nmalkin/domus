@@ -145,7 +145,7 @@ public class ListPanel extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			JLabel label = (JLabel) e.getSource();
-			ResultsListItem item = (ResultsListItem) label.getParent();
+			ResultsListItem item = (ResultsListItem) label.getParent().getParent();
 			removeResultsListItem(item);
 		}
 
@@ -156,15 +156,17 @@ public class ListPanel extends JPanel {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			ResultsListItem[] items = _list.toArray(new ResultsListItem[0]);
-			for (int i = 0; i < items.length; ++i) {
-				removeResultsListItem(items[i]);
+			if (_list != null) {
+				ResultsListItem[] items = _list.toArray(new ResultsListItem[0]);
+				for (int i = 0; i < items.length; ++i) {
+					removeResultsListItem(items[i]);
+				}
+				State.getInstance().removeRoomList(_list);
+				_list.clear();
+				_list = null;
+				ListsTab.getInstance().removeList(ListPanel.this);
+				ListsTab.getInstance().updateLists();
 			}
-			State.getInstance().removeRoomList(_list);
-			_list.clear();
-			_list = null;
-			ListsTab.getInstance().removeList(ListPanel.this);
-			ListsTab.getInstance().updateLists();
 		}
 		
 		@Override

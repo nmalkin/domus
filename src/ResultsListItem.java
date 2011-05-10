@@ -338,6 +338,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	}
 	
 	@Override
+	public boolean isFullWidth() {
+		return _fullWidth;
+	}
+	
+	@Override
 	@Deprecated
 	public int compareTo(AccordionItem o) {
 		return _room.compareTo(((ResultsListItem) o).getRoom());
