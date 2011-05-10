@@ -112,6 +112,9 @@ public class Constants {
 	protected static final int RESULTS_LISTS_DISPLAYED = 2;
 	protected static final int RESULTS_PANEL_HORIZONTAL_GAP = 5;
 	
+	// probability
+	protected static final double PROBABILITY_NO_DATA = -1; // this must be < 0 or > 1 to avoid accidental conflicts! 
+	
 	// Probability display
 	protected static final int PROBABILITY_DISPLAY_WIDTH  = 40;
 	protected static final int PROBABILITY_DISPLAY_HEIGHT = 10;

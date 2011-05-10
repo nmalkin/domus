@@ -28,7 +28,11 @@ public class ProbabilityDisplay extends JPanel {
 	 * @return String representation of probability
 	 */
 	private String getProbabilityString() {
-		return (int) (_probability * 100) + "%";
+		if(_probability == Constants.PROBABILITY_NO_DATA) {
+			return "N/A";
+		} else {
+			return (int) (_probability * 100) + "%";
+		}
 	}
 	
 	/**
@@ -46,28 +50,30 @@ public class ProbabilityDisplay extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		Graphics2D g2 = (Graphics2D) g;
-		
-		// draw background rectangle
-		g2.setPaint(Constants.PROBABILITY_DISPLAY_BACKGROUND_COLOR);
-		g2.fill(new Rectangle(0, 0, Constants.PROBABILITY_DISPLAY_WIDTH, Constants.PROBABILITY_DISPLAY_HEIGHT));
-		
-		// how far should we fill?
-		int fillWidth = (int) (Constants.PROBABILITY_DISPLAY_WIDTH * _probability);
-		
-		// which category does this fit in?
-		int category = (int) (_probability / (1.0 / Constants.PROBABILIY_DISPLAY_CATEGORIES));
-		
-		// special case: if probability is 1, 
-		// the above formula would've assigned it to a non-existent (n+1-nth) category.
-		// correct for this.
-		if(category >= Constants.PROBABILITY_DISPLAY_COLORS.length) {
-			category = Constants.PROBABILITY_DISPLAY_COLORS.length - 1; // assign it to the last category
+		if(_probability != Constants.PROBABILITY_NO_DATA) { // only draw bar if this is a valid probability value
+			Graphics2D g2 = (Graphics2D) g;
+			
+			// draw background rectangle
+			g2.setPaint(Constants.PROBABILITY_DISPLAY_BACKGROUND_COLOR);
+			g2.fill(new Rectangle(0, 0, Constants.PROBABILITY_DISPLAY_WIDTH, Constants.PROBABILITY_DISPLAY_HEIGHT));
+			
+			// how far should we fill?
+			int fillWidth = (int) (Constants.PROBABILITY_DISPLAY_WIDTH * _probability);
+			
+			// which category does this fit in?
+			int category = (int) (_probability / (1.0 / Constants.PROBABILIY_DISPLAY_CATEGORIES));
+			
+			// special case: if probability is 1, 
+			// the above formula would've assigned it to a non-existent (n+1-nth) category.
+			// correct for this.
+			if(category >= Constants.PROBABILITY_DISPLAY_COLORS.length) {
+				category = Constants.PROBABILITY_DISPLAY_COLORS.length - 1; // assign it to the last category
+			}
+			
+			// draw fill rectangle
+			g2.setPaint(Constants.PROBABILITY_DISPLAY_COLORS[category]); // color determined by category
+			g2.fill(new Rectangle(0, 0, fillWidth, Constants.PROBABILITY_DISPLAY_HEIGHT));
 		}
-		
-		// draw fill rectangle
-		g2.setPaint(Constants.PROBABILITY_DISPLAY_COLORS[category]); // color determined by category
-		g2.fill(new Rectangle(0, 0, fillWidth, Constants.PROBABILITY_DISPLAY_HEIGHT));
 	}
 	
 	@Override
