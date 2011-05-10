@@ -179,4 +179,10 @@ public class Constants {
 	
 	// XML i/o
 	protected static final String XML_TRANFORM_FILE = "transform.xsl";
+	
+	
+	// HelpWindow
+	protected static final String HELP_SCREEN_PREFERENCE_FILE = PATH_PREFIX + "help/preferences_screen_annotated.png";
+	protected static final String HELP_SCREEN_RESULTS_FILE = PATH_PREFIX + "help/results_screen.png";
+	protected static final String HELP_SCREEN_CART_FILE = PATH_PREFIX + "help/cart_screen.png";
 }

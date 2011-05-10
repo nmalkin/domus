@@ -13,9 +13,9 @@ public class HelpWindow extends JFrame {
 				
 		// tabs
 		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab("Preferences", newImageTab("help/preferences_screen_annotated.png"));
-		tabbedPane.addTab("Results", newImageTab("help/results_screen.png"));
-		tabbedPane.addTab("Cart", newImageTab("help/cart_screen.png"));
+		tabbedPane.addTab("Preferences", newImageTab(Constants.HELP_SCREEN_PREFERENCE_FILE));
+		tabbedPane.addTab("Results", newImageTab(Constants.HELP_SCREEN_RESULTS_FILE));
+		tabbedPane.addTab("Cart", newImageTab(Constants.HELP_SCREEN_CART_FILE));
 		
 		this.add(tabbedPane);
 		
