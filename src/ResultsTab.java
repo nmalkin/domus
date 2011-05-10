@@ -1,13 +1,17 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
-public class ResultsTab extends JPanel {
+public class ResultsTab extends JPanel implements ComponentListener {
 	
 	private ResultsPanel _resultsPanel;
 	private PreferencePanel _preferencePanel;
@@ -26,6 +30,14 @@ public class ResultsTab extends JPanel {
 		this.add(_resultsPanel);
 		
 		this.add(new LotteryNumberPanel(), BorderLayout.LINE_END);
+		
+		System.out.println(getHeight());
+		System.out.println(getSize().height);
+		System.out.println(getPreferredSize().height);
+		
+		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+		System.out.println(size);
+		_resultsPanel.updateHeight(Math.min(size.height - 100, Constants.RESULTS_PANEL_HEIGHT));
 		
 		// add listeners to Group and State for updating results based on certain user interactions
 		State.getInstance().getGroup().addGroupStateChangeListener(new GroupStateChangeListener());
@@ -136,6 +148,31 @@ public class ResultsTab extends JPanel {
 				// update the results, not just probabilities
 				updateResults(true);
 		}
+		
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		System.out.println(getSize().height);
+		System.out.println(getPreferredSize().height);
+		_resultsPanel.updateHeight(getSize().height);
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 }

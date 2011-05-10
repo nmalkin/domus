@@ -43,17 +43,21 @@ public class ResultsPanel extends JPanel implements Runnable {
 	private ImageIcon _rightButtonIcon = new ImageIcon(Constants.RIGHT_ARROW, "scroll right");
 	private boolean _scrollLeft, _scrollRight, _scrollOnce;
 	private int _scrollWidth, _scrollDelay;
+	
+	private int _listWidth, _listHeight;
 
 	public ResultsPanel() {
 		super();
-		this.setPreferredSize(new Dimension(Constants.RESULTS_PANEL_WIDTH, Constants.RESULTS_PANEL_HEIGHT));
+		_listWidth = Constants.RESULTS_LIST_WIDTH;
+		_listHeight = Constants.RESULTS_PANEL_HEIGHT;
+		this.setPreferredSize(new Dimension(_listWidth, _listHeight));
 		_resultsPanel = new JPanel();
-		_resultsPanel.setPreferredSize(new Dimension(0, Constants.RESULTS_PANEL_HEIGHT));
-		_resultsPanel.setSize(new Dimension(0, Constants.RESULTS_PANEL_HEIGHT));
+		_resultsPanel.setPreferredSize(new Dimension(0, _listHeight));
+		_resultsPanel.setSize(new Dimension(0, _listHeight));
 		_resultsPanel.setLayout(new BoxLayout(_resultsPanel, BoxLayout.LINE_AXIS));
 		_resultsPanel.setBorder(Constants.EMPTY_BORDER);
 		_scroller = new JScrollPane(_resultsPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		_scroller.setPreferredSize(new Dimension(0, Constants.RESULTS_PANEL_HEIGHT + _scroller.getHorizontalScrollBar().getPreferredSize().height));
+		_scroller.setPreferredSize(new Dimension(0, _listHeight + _scroller.getHorizontalScrollBar().getPreferredSize().height));
 		_scroller.setViewportBorder(Constants.EMPTY_BORDER);
 		_scroller.getHorizontalScrollBar().setBorder(Constants.EMPTY_BORDER);
 		_leftButton = new JLabel(_leftButtonIcon);
@@ -67,6 +71,17 @@ public class ResultsPanel extends JPanel implements Runnable {
 		this.add(_scroller);
 		this.add(_rightButton);
 		_listsMap = new HashMap<SubGroup, AccordionList<ResultsListTab, ResultsListItem>>();
+	}
+	
+	public void updateHeight(int height) {
+		_listHeight = height;
+		this.setPreferredSize(new Dimension(_listWidth, _listHeight));
+		_resultsPanel.setPreferredSize(new Dimension(0, _listHeight));
+		_resultsPanel.setSize(new Dimension(0, _listHeight));
+		_scroller.setPreferredSize(new Dimension(0, _listHeight + _scroller.getHorizontalScrollBar().getPreferredSize().height));
+		for (AccordionList<ResultsListTab, ResultsListItem> list : _listsMap.values()) {
+			list.updateHeight(height);
+		}
 	}
 
 	public void updateResultsLists(boolean updateEverything) {
@@ -106,7 +121,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 				// if there is not an existing AccordionList for this SubGroup, create a new one
 				AccordionList<ResultsListTab, ResultsListItem> list = null;
 				if ((list = _listsMap.get(sg)) == null) {
-					list = AccordionList.create(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_HEIGHT, Constants.RESULTS_HEADER_HEIGHT);
+					list = AccordionList.create(Constants.RESULTS_LIST_WIDTH, _listHeight - Constants.RESULTS_HEADER_HEIGHT, Constants.RESULTS_HEADER_HEIGHT);
 					_listsMap.put(sg, list);
 					_resultsPanel.add(list);
 				}
@@ -184,7 +199,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 		// make sure that size of the panel is updated properly
 		int numLists = _listsMap.values().size();
 		int displayLists = Math.min(numLists, Constants.RESULTS_LISTS_DISPLAYED);
-		Dimension size = new Dimension(numLists * Constants.RESULTS_LIST_WIDTH + ((numLists - 1) * Constants.RESULTS_PANEL_HORIZONTAL_GAP), Constants.RESULTS_PANEL_HEIGHT);
+		Dimension size = new Dimension(numLists * Constants.RESULTS_LIST_WIDTH + ((numLists - 1) * Constants.RESULTS_PANEL_HORIZONTAL_GAP), _listHeight);
 		_resultsPanel.setPreferredSize(size);
 		_resultsPanel.setSize(size);
 

@@ -44,8 +44,13 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	/** Last tab, for border display purposes only */
 	private K _lastTab;
 	
+	private int _width, _height, _headerHeight;
+	
 	private AccordionList(int width, int height, int headerHeight) {
 		super();
+		_width = width;
+		_height = height;
+		_headerHeight = headerHeight;
 		_lists = LinkedListMultimap.create();
 		this.setPreferredSize(new Dimension(width, height + headerHeight));
 		FlowLayout layout = (FlowLayout) this.getLayout();
@@ -72,6 +77,11 @@ public class AccordionList<K extends JComponent & AccordionItem, V extends JComp
 	/** Creates a new AccordionList */
 	public static <K extends JComponent & AccordionItem, V extends JComponent & AccordionItem> AccordionList<K,V> create(int width, int height, int headerHeight) {
 		return new AccordionList<K,V>(width, height, headerHeight);
+	}
+	
+	public void updateHeight(int height) {
+		_height = height;
+		this.setPreferredSize(new Dimension(_width, _height + _headerHeight));
 	}
 	
 	/** Add a tab (an expandable item) to the list */
