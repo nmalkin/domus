@@ -1,6 +1,9 @@
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -197,12 +200,40 @@ public class State {
 		_results.clear();
 		
 		boolean sophomoreOnlyEligible = _group.isSophomore();
-		for (House h : _group) {
+		for (House h : _group) { // for each house:
+			List<HashSet<Dorm>> dormsUsedBySubgroups = new LinkedList<HashSet<Dorm>>(); 
+			
 			Collection<Dorm> locations = h.getLocationPreference();
-			for (SubGroup sg : h) {
+			for (SubGroup sg : h) { // for each subgroup:
+				HashSet<Dorm> dormsUsedByThisSubgroup = new HashSet<Dorm>();
+				
+				// get results
 				Collection<Room> results = Database.getResults(locations, sg.getOccupancy(), years, (! sg.sameGender()), sophomoreOnlyEligible);
-				for (Room r : results) {
-					_results.put(sg, r);
+				
+				for (Room r : results) { // for each room in the results:
+					_results.put(sg, r); // save the room
+					
+					dormsUsedByThisSubgroup.add(r.getDorm()); // save what dorm it's in
+				}
+				
+				dormsUsedBySubgroups.add(dormsUsedByThisSubgroup);
+			}
+			
+			if(dormsUsedBySubgroups.isEmpty()) continue; // there are no results for this house. nothing to see here.
+			
+			// find all the dorms that are shared by the resulting rooms
+			Set<Dorm> commonDorms = dormsUsedBySubgroups.get(0);
+			for(HashSet<Dorm> dormUsedByASubgroup : dormsUsedBySubgroups) {
+				commonDorms.retainAll(dormUsedByASubgroup);
+			}
+			
+			// go back through the result rooms for this subgroup and remove any ones that are not in a shared dorm
+			for(SubGroup sg : h) {
+				Iterator<Room> it = _results.get(sg).iterator();
+				while(it.hasNext()) {
+					if(! commonDorms.contains(it.next().getDorm())) { // if the room has an un-common (unique) dorm
+						it.remove();
+					}
 				}
 			}
 		}
