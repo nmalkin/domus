@@ -116,8 +116,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		if (_room.isGenderNeutral()) {
 			JLabel genLabel = new JLabel("G ");
 			propertiesPanel.add(genLabel);
-			genLabel.setPreferredSize(new Dimension(5, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			genLabel.setSize(new Dimension(5, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			genLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			genLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
 			size = propertiesPanel.getPreferredSize();
 			propertiesPanel.setPreferredSize(new Dimension(size.width + genLabel.getPreferredSize().width, size.height));
 			propertiesPanel.setSize(new Dimension(size.width + genLabel.getPreferredSize().width, size.height));
@@ -125,8 +125,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		if (_room.hasApartmentRate()) {
 			JLabel rateLabel = new JLabel("A ");
 			propertiesPanel.add(rateLabel);
-			rateLabel.setPreferredSize(new Dimension(5, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			rateLabel.setSize(new Dimension(5, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			rateLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			rateLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
 			size = propertiesPanel.getPreferredSize();
 			propertiesPanel.setPreferredSize(new Dimension(size.width + rateLabel.getPreferredSize().width, size.height));
 			propertiesPanel.setSize(new Dimension(size.width + rateLabel.getPreferredSize().width, size.height));
@@ -134,19 +134,19 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		if (_room.getDorm().isSophomoreOnly()) {
 			JLabel sophLabel = new JLabel("S "); 
 			propertiesPanel.add(sophLabel);
-			sophLabel.setPreferredSize(new Dimension(5, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			sophLabel.setSize(new Dimension(5, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			sophLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			sophLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
 			size = propertiesPanel.getPreferredSize();
 			propertiesPanel.setPreferredSize(new Dimension(size.width + sophLabel.getPreferredSize().width, size.height));
 			propertiesPanel.setSize(new Dimension(size.width + sophLabel.getPreferredSize().width, size.height));
 		}
-		JLabel results = new JLabel("Past Results:"); 
-		propertiesPanel.add(results);
-		propertiesPanel.setPreferredSize(new Dimension(30, Constants.RESULTS_LIST_ITEM_HEIGHT));
-		propertiesPanel.setSize(new Dimension(30, Constants.RESULTS_LIST_ITEM_HEIGHT));
-		size = propertiesPanel.getPreferredSize();
-		propertiesPanel.setPreferredSize(new Dimension(size.width + results.getPreferredSize().width, size.height));
-		propertiesPanel.setSize(new Dimension(size.width + results.getPreferredSize().width, size.height));
+//		JLabel results = new JLabel("Past Results:"); 
+//		propertiesPanel.add(results);
+//		propertiesPanel.setPreferredSize(new Dimension(30, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//		propertiesPanel.setSize(new Dimension(30, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//		size = propertiesPanel.getPreferredSize();
+//		propertiesPanel.setPreferredSize(new Dimension(size.width + results.getPreferredSize().width, size.height));
+//		propertiesPanel.setSize(new Dimension(size.width + results.getPreferredSize().width, size.height));
 		holderPanel.add(propertiesPanel);
 		holderPanel.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		
