@@ -53,6 +53,7 @@ public class ResultsTab extends JPanel {
 		super.setVisible(visible);
 		if (visible) {
 			if(State.getInstance().getGroup().numberOfPeople() == 0) {
+				_resultsPanel.removeAll();
 				_resultsPanel.add(_noPeopleLabel);
 			}
 			else {

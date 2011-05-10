@@ -1,4 +1,7 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -22,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
+import javax.swing.border.MatteBorder;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Ordering;
@@ -99,54 +103,80 @@ public class ResultsPanel extends JPanel implements Runnable {
 
 		for(House h: State.getInstance().getGroup()) {
 			for (SubGroup sg : h) {
-				if(_results.get(sg) != null) {
-					// if there is not an existing AccordionList for this SubGroup, create a new one
-					AccordionList<ResultsListTab, ResultsListItem> list = null;
-					if ((list = _listsMap.get(sg)) == null) {
-						list = AccordionList.create(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_HEIGHT, Constants.RESULTS_HEADER_HEIGHT);
-						_listsMap.put(sg, list);
-						_resultsPanel.add(list);
-					}
+				// if there is not an existing AccordionList for this SubGroup, create a new one
+				AccordionList<ResultsListTab, ResultsListItem> list = null;
+				if ((list = _listsMap.get(sg)) == null) {
+					list = AccordionList.create(Constants.RESULTS_LIST_WIDTH, Constants.RESULTS_LIST_HEIGHT, Constants.RESULTS_HEADER_HEIGHT);
+					_listsMap.put(sg, list);
+					_resultsPanel.add(list);
+				}
+				
+				JPanel headerTop = createListHeader(sg);
+				
+				if(h.getLocationPreference().size() != 0) {
 
-					// set the header of the AccordionList (Person icons and names)
-					list.setHeader(createListHeader(sg));
+					if(dormMap.keySet().contains(sg)) {
+						// set the header of the AccordionList (Person icons and names)
+						list.setHeader(headerTop);
+						
+						// get the old ResultsListTabs from the AccordionList (could be empty if new list)
+						Collection<ResultsListTab> tabs = list.getTabs();
 
-					// get the old ResultsListTabs from the AccordionList (could be empty if new list)
-					Collection<ResultsListTab> tabs = list.getTabs();
-
-					// remove any ResultsListTabs which don't have a corresponding Dorm for this SubGroup 
-					for (Iterator<ResultsListTab> iter = tabs.iterator(); iter.hasNext();) {
-						ResultsListTab rlt = iter.next();
-						if (!dormMap.get(sg).contains(rlt.getDorm())) {
-							iter.remove();
-							list.removeTab(rlt);
-						}
-					}
-
-					for (Dorm d : dormMap.get(sg)) {
-						// if there is an existing ResultsListTab for this Dorm, update it
-						// otherwise, create a new one
-						ResultsListTab tab = containsDormTab(tabs, d);
-						if (tab != null) {
-							intersectResultsWithTab(sg, d, list, tab);
-						}
-						else {
-							// create a new ResultsListTab and add all the rooms to it
-							tab = new ResultsListTab(d, sg, list);
-							list.addTab(tab);
-							for (Room r : _results.get(sg)) {
-								if (r.getDorm() == d) {
-									addListItem(list, tab, r);
-								}
+						// remove any ResultsListTabs which don't have a corresponding Dorm for this SubGroup 
+						for (Iterator<ResultsListTab> iter = tabs.iterator(); iter.hasNext();) {
+							ResultsListTab rlt = iter.next();
+							if (!dormMap.get(sg).contains(rlt.getDorm())) {
+								iter.remove();
+								list.removeTab(rlt);
 							}
 						}
 
-						// make sure tabs display the average of their components' probabilities
-						tab.updateProbabilities();
+						for (Dorm d : dormMap.get(sg)) {
+							// if there is an existing ResultsListTab for this Dorm, update it
+							// otherwise, create a new one
+							ResultsListTab tab = containsDormTab(tabs, d);
+							if (tab != null) {
+								intersectResultsWithTab(sg, d, list, tab);
+							}
+							else {
+								// create a new ResultsListTab and add all the rooms to it
+								tab = new ResultsListTab(d, sg, list);
+								list.addTab(tab);
+								for (Room r : _results.get(sg)) {
+									if (r.getDorm() == d) {
+										addListItem(list, tab, r);
+									}
+								}
+							}
 
-						// make sure the ResultsListTab is displaying all of the list labels it should be
-						tab.validateListLabels();
-					}	
+							// make sure tabs display the average of their components' probabilities
+							tab.updateProbabilities();
+
+							// make sure the ResultsListTab is displaying all of the list labels it should be
+							tab.validateListLabels();
+						}	
+					}
+					else {
+						JLabel message = new JLabel("No available results!");
+						message.setHorizontalAlignment(JLabel.CENTER);
+						message.setBorder(new MatteBorder(1,1,0,1,Color.BLACK));
+						JPanel header = new JPanel(new BorderLayout());
+						header.add(headerTop, BorderLayout.NORTH);
+						header.add(message, BorderLayout.SOUTH);
+						
+						list.setHeader(header);
+					}
+				}
+				else {
+					
+					JLabel message = new JLabel("Select some preferences first!");
+					message.setHorizontalAlignment(JLabel.CENTER);
+					message.setBorder(new MatteBorder(1,1,0,1,Color.BLACK));
+					JPanel header = new JPanel(new BorderLayout());
+					header.add(headerTop, BorderLayout.NORTH);
+					header.add(message, BorderLayout.SOUTH);
+					
+					list.setHeader(header);
 				}
 			}
 		}
