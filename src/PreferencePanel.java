@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,7 +39,8 @@ public class PreferencePanel extends JPanel {
 		title.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 18));
 		
 		this.add(title);
-		_preferenceList = AccordionList.create(_listWidth, _listHeight, 0);
+		size = Toolkit.getDefaultToolkit().getScreenSize();
+		_preferenceList = AccordionList.create(_listWidth, Math.min(size.height - 100, _listHeight), 0);
 
 		for(House h: State.getInstance().getGroup()) {
 			PreferencePanelTab tab = new PreferencePanelTab(h, _preferenceList);

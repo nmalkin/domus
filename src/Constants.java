@@ -93,7 +93,7 @@ public class Constants {
 	// Preference panel
 	protected final static int PREFERENCE_PANEL_WIDTH = 200;
 	/* very bad. fix this (TODO) */
-	protected final static int PREFERENCE_PANEL_HEIGHT = 901;
+	protected final static int PREFERENCE_PANEL_HEIGHT = 580;
 	
 	// Results and lists icons
 	protected static final String CLOSED_FILE 	= PATH_PREFIX + "img/closed_results_tab_new.png";
