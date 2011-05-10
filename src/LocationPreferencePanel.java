@@ -104,7 +104,7 @@ public class LocationPreferencePanel extends JPanel implements ChangeListener {
 				_dormBoxes.put(dorm, dormBox);
 				_checkBoxes.add(dormBox);
 				
-				dormPanel.add(Box.createRigidArea(new Dimension(15,0)));
+//				dormPanel.add(Box.createRigidArea(new Dimension(15,0)));
 				dormPanel.add(dormBox);
 				dormPanel.add(Box.createHorizontalGlue());
 				
