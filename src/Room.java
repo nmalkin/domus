@@ -24,6 +24,9 @@ public class Room implements Comparable<Room> {
 	/** The name/number of this room. */
 	private String _number;
 	
+	/** The occupancy of this room. */
+	private int _occupancy;
+	
 	/** This room's history in the lottery. */
 	private List<LotteryResult> _results;
 	
@@ -72,6 +75,16 @@ public class Room implements Comparable<Room> {
 	/** Returns the past lottery results for this Room */
 	public List<LotteryResult> getResults() {
 		return new LinkedList<LotteryResult>(_results);
+	}
+	
+	/** 
+	 * Returns whether or not this room is genderNeutral.
+	 * Based on Dorm's genderNeutrality and Room's occupancy.
+	 */
+	public boolean isGenderNeutral() {
+		if (_occupancy > 1) 
+			return _dorm.isGenderNeutral();
+		return false;
 	}
 	
 	/** Returns the average lottery result for this Room. */
