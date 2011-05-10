@@ -157,6 +157,9 @@ public class Database {
 						// save coefficients
 						room.setCoefficients(subRooms.getDouble("b0"), subRooms.getDouble("b1"));
 						
+						// save past lottery results (replacing the current ones, if necessary)
+						room.clearResults();
+						
 						for(int i = 0; i < years.length; i++) {
 							if(subRooms.getInt("y" + years[i]) != 0) {
 								LotteryResult result = new LotteryResult(years[i], subRooms.getInt("y" + years[i]));
