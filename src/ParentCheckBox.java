@@ -28,11 +28,17 @@ public class ParentCheckBox extends JCheckBox implements ItemListener {
 	public ParentCheckBox(String text) {
 		super(text);
 		super.addItemListener(this);
+		
+		this.setFont(this.getFont().deriveFont(Constants.CHECKBOX_FONT_SIZE));
+		this.setPreferredSize(new java.awt.Dimension(this.getPreferredSize().width, Constants.CHECKBOX_HEIGHT));
 	}
 	
 	public ParentCheckBox(String text, boolean selected) {
 		super(text, selected);
 		super.addItemListener(this);
+		
+		this.setFont(this.getFont().deriveFont(Constants.CHECKBOX_FONT_SIZE));
+		this.setPreferredSize(new java.awt.Dimension(this.getPreferredSize().width, Constants.CHECKBOX_HEIGHT));
 	}
 	
 	/**

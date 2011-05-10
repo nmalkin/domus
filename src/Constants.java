@@ -20,6 +20,10 @@ public class Constants {
 	protected static final int INSET = 5; // pixels
 	protected static final Border EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
 	protected static final String DOMUS_FILE = PATH_PREFIX + "img/domus.png";
+	
+	// checkboxes
+	protected static final float CHECKBOX_FONT_SIZE = 10f;
+	protected static final int CHECKBOX_HEIGHT = 13;
 
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
