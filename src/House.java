@@ -205,7 +205,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	
 	@Override
 	public int getHeight() {
-		return _height + Constants.HOUSE_ROOF_HEIGHT;
+		return _height;
 	}
 	
 	@Override
@@ -215,7 +215,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 		
 		Rectangle rectangle = new Rectangle(
 				Constants.INSET, Constants.HOUSE_ROOF_HEIGHT + Constants.INSET, 
-				width - 2 * Constants.INSET, height - 2 * Constants.HOUSE_ROOF_HEIGHT  - 2 * Constants.INSET);
+				width - 2 * Constants.INSET, height - Constants.HOUSE_ROOF_HEIGHT  - 2 * Constants.INSET);
 		
 		int[] xPoints = {Constants.INSET, width / 2, width - Constants.INSET};
 		int[] yPoints = {Constants.HOUSE_ROOF_HEIGHT + Constants.INSET, Constants.INSET, Constants.HOUSE_ROOF_HEIGHT + Constants.INSET};
@@ -278,7 +278,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 		// draw box representing the subgroup
 		java.awt.Shape houseBox = new Rectangle(
 				Constants.INSET, Constants.HOUSE_ROOF_HEIGHT + Constants.INSET, 
-				width - 2 * Constants.INSET, height - 2 * Constants.HOUSE_ROOF_HEIGHT  - 2 * Constants.INSET);
+				width - 2 * Constants.INSET, height - Constants.HOUSE_ROOF_HEIGHT  - 2 * Constants.INSET);
 		
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -312,7 +312,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 			int houseLeftBoundary = Constants.INSET;
 			int houseRightBoundary = Constants.INSET + width - 2 * Constants.INSET;
 			int houseTopBoundary = Constants.HOUSE_ROOF_HEIGHT + Constants.INSET;
-			int houseBottomBoundary = Constants.HOUSE_ROOF_HEIGHT + Constants.INSET + height - 2 * Constants.HOUSE_ROOF_HEIGHT  - 2 * Constants.INSET;
+			int houseBottomBoundary = Constants.HOUSE_ROOF_HEIGHT + Constants.INSET + height - Constants.HOUSE_ROOF_HEIGHT  - 2 * Constants.INSET;
 			
 			g.drawLine(houseRightBoundary, houseTopBoundary, houseRightBoundary, houseBottomBoundary);
 			g.drawLine(houseRightBoundary, houseBottomBoundary, houseLeftBoundary, houseBottomBoundary);
