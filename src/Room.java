@@ -110,6 +110,7 @@ public class Room implements Comparable<Room> {
 	 * To compute the probability using the "simple technique," we compute the theoretical success rate in previous years,
 	 * using this number.
 	 * i.e., if you had this number during each of the previous years, would you have gotten this room?
+	 * If this technique is used, and there is no data for the currently selected years, @return Constants.PROBABILITY_NO_DATA
 	 */
 	public double getProbability() {
 		if(State.getInstance().useRegressionProbability()) {
@@ -119,25 +120,30 @@ public class Room implements Comparable<Room> {
 			 */
 			return 1.0 / (1.0 + Math.exp(-1 * (_b0_coefficient + _b1_coefficient * State.getInstance().getGroup().getLotteryNumber())));
 		} else {
+			/* 
+			 * To compute the probability using the "simple technique," we compute the theoretical success rate in previous years,
+			 * using this number.
+			 * i.e., if you had this number during each of the previous years, would you have gotten this room?
+			 */
 			Integer[] years = State.getInstance().getYears();
 			int lotteryNumber = State.getInstance().getGroup().getLotteryNumber();
 			int successCount = 0;
 			
-			for(LotteryResult result : _results) {
-				for(int year : years) {
-					if(result.getYear() == year) {
-						if(lotteryNumber <= result.getLotteryNumber()){
-							successCount++;
+			if(_results.size() == 0) { // there are no results for the selected years. probability concept isn't meaningful
+				return Constants.PROBABILITY_NO_DATA;
+			} else {
+				for(LotteryResult result : _results) {
+					for(int year : years) {
+						if(result.getYear() == year) {
+							if(lotteryNumber <= result.getLotteryNumber()){
+								successCount++;
+							}
+							
+							break;
 						}
-						
-						break;
 					}
 				}
-			}
 			
-			if(_results.size() == 0) {
-				return 0;
-			} else {
 				return successCount / (_results.size() + 0.0);
 			}
 			
@@ -160,6 +166,10 @@ public class Room implements Comparable<Room> {
 	
 	public void addResult(LotteryResult result) {
 		_results.add(result);
+	}
+	
+	public void clearResults() {
+		_results.clear();
 	}
 	
 	public Collection<RoomList> getRoomLists() {

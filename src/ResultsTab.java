@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -9,9 +11,13 @@ public class ResultsTab extends JPanel {
 	
 	private ResultsPanel _resultsPanel;
 	private PreferencePanel _preferencePanel;
+	private JLabel _noPeopleLabel;
 	
 	public ResultsTab() {
 		this.setLayout(new BorderLayout());
+		
+		_noPeopleLabel = new JLabel(Constants.NO_PEOPLE_MESSAGE);
+		_noPeopleLabel.setPreferredSize(new Dimension(Constants.LISTS_INSTRUCTIONS_WIDTH, Constants.LISTS_INSTRUCTIONS_HEIGHT));
 		
 		_preferencePanel = new PreferencePanel();
 		this.add(_preferencePanel, BorderLayout.LINE_START);
@@ -46,8 +52,15 @@ public class ResultsTab extends JPanel {
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
-			// update results, not just probabilities
-			updateResults(true);
+			if(State.getInstance().getGroup().numberOfPeople() == 0) {
+				_resultsPanel.removeAll();
+				_resultsPanel.add(_noPeopleLabel);
+			}
+			else {
+				// update results, not just probabilities
+				_resultsPanel.remove(_noPeopleLabel);
+				updateResults(true);
+			}
 			
 			this.remove(_preferencePanel);
 			_preferencePanel = new PreferencePanel();

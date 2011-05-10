@@ -183,8 +183,19 @@ public class State {
 	 * Fetches results from the Database based on new preferences.
 	 */
 	public void updateResults() {
+		// get years
+		Integer[] years;
+		if(_useRegressionProbability) { // if we're using the regression probability model, we want all the years
+			years = getYears();
+		} else { // otherwise, we only want the years that have been selected
+			years = new Integer[_years.size()];
+			for(int i = 0; i < _years.size(); i++) {
+				years[i] = _years.get(i);
+			}
+		}
+		
 		_results.clear();
-		Integer[] years = getYears();
+		
 		boolean sophomoreOnlyEligible = _group.isSophomore();
 		for (House h : _group) {
 			Collection<Dorm> locations = h.getLocationPreference();

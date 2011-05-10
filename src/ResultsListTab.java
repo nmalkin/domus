@@ -145,14 +145,17 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	}
 
 	public void updateProbabilities() {
-		double probabilitySum = 0, itemCount = 0;
+		double probabilitySum = 0, itemCount = 0, probabilityValue;
 		
 		for (Component c : _itemsPanel.getComponents()) {
 			ResultsListItem listItem = (ResultsListItem) c;
 			listItem.updateProbability();
 			
-			probabilitySum += listItem.getComparisonValue(); // getComparisonValue returns the probability for this room
-			itemCount++;
+			probabilityValue = listItem.getComparisonValue(); // getComparisonValue returns the probability for this room
+			if(probabilityValue != Constants.PROBABILITY_NO_DATA) {
+				probabilitySum += probabilityValue;
+				itemCount++;
+			}
 		}
 		
 		// update this tab's probability display

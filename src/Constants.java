@@ -112,6 +112,9 @@ public class Constants {
 	protected static final int RESULTS_LISTS_DISPLAYED = 2;
 	protected static final int RESULTS_PANEL_HORIZONTAL_GAP = 5;
 	
+	// probability
+	protected static final double PROBABILITY_NO_DATA = -1; // this must be < 0 or > 1 to avoid accidental conflicts! 
+	
 	// Probability display
 	protected static final int PROBABILITY_DISPLAY_WIDTH  = 40;
 	protected static final int PROBABILITY_DISPLAY_HEIGHT = 10;
@@ -148,9 +151,8 @@ public class Constants {
 			"Lastly, you can reorder the elements in these lists " +
 			"by simply dragging them to a new location.</center></html>";
 	
-	protected static final String PREFERENCE_PANEL_INSTRUCTIONS = "<html><center>View preferences for your houses here. " +
-			"Remove them if you like, and the results will update instantly. Mouse over the people if you need to remember" +
-			" who is in each house.</center></html>";
+	protected static final String NO_PEOPLE_MESSAGE = "<html><center>You currently have no people in your group!<p><p> " +
+			"Click the Preferences tab and drag people onto the canvas to view results.</center></html>";
 	
 	// Database
 	protected static final String DATABASE_NAME = PATH_PREFIX + "data/housingdata.db";
