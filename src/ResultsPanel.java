@@ -157,7 +157,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 						}	
 					}
 					else {
-						JLabel message = new JLabel("No available results!");
+						JLabel message = new JLabel("Sorry! We found no available results.");
 						message.setHorizontalAlignment(JLabel.CENTER);
 						message.setBorder(new MatteBorder(1,1,0,1,Color.BLACK));
 						JPanel header = new JPanel(new BorderLayout());

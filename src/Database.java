@@ -90,6 +90,7 @@ public class Database {
 
 			while(dorms.next()) {
 				Dorm dorm = new Dorm(dorms.getString("building"));
+				
 				for(CampusArea ca : _campusAreas) {
 					if(dorms.getString("campusArea").equals(ca.getName())) {
 						INSTANCE._dorms.put(dorm.getName(), dorm);
@@ -100,21 +101,24 @@ public class Database {
 			}
 
 			dorms.close();
+			
+			for(Dorm d: INSTANCE._dorms.values()) d.setGenderNeutral(isGenderNeutral(d));
 		} catch (SQLException e) {
+			e.printStackTrace();
 			System.out.println("ERROR: unable to retrieve campus areas");
 		}
 
 		return _campusAreas;
 	}
 
-	private boolean isGenderNeutral(Dorm d) throws SQLException {
+	private static boolean isGenderNeutral(Dorm d) throws SQLException {
 		ResultSet neutral = statement.executeQuery("select * from " + Constants.GENDER_TABLE + " where building='" + d.getName() + "';");
 		boolean genderNeutral = neutral.next();
 		neutral.close();
 		return genderNeutral;
 	}
 
-	private boolean isSophomoreOnly(Dorm d) throws SQLException {
+	private static boolean isSophomoreOnly(Dorm d) throws SQLException {
 		ResultSet sophomore = statement.executeQuery("select * from " + Constants.SOPHOMORE_TABLE + " where building='" + d.getName() + "';");
 		boolean sophomoreOnly = sophomore.next();
 		sophomore.close();
