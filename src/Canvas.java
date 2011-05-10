@@ -592,7 +592,7 @@ public class Canvas extends JLayeredPane {
 		String text = "add guy";
 		int textWidth = g.getFontMetrics().stringWidth(text);
 		int textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2; 
-		g.drawString(text, textPosition, _new_male_y_position - 20);
+//		g.drawString(text, textPosition, _new_male_y_position - 20);
 		
 		g.drawImage(Gender.MALE.getImage(), _new_male_x_position, _new_male_y_position, null);
 		
@@ -600,7 +600,8 @@ public class Canvas extends JLayeredPane {
 		text = "add girl";
 		textWidth = g.getFontMetrics().stringWidth(text);
 		textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2;
-		g.drawString(text, textPosition, _new_female_y_position - 20);
+//		g.drawString(text, textPosition, _new_female_y_position - 20);
+		
 		g.drawImage(Gender.FEMALE.getImage(), _new_female_x_position, _new_female_y_position, null);
 		
 		// trash can
