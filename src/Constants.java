@@ -54,6 +54,8 @@ public class Constants {
 			HOUSE_COLOR.getRed(), HOUSE_COLOR.getGreen(), HOUSE_COLOR.getBlue(), 
 			TRASH_OVERLAY_ALPHA);
 	
+	protected static final int HOUSE_ROOF_HEIGHT = 40; // pixels
+	
 	protected static final Color SELECTED_HOUSE_BORDER_COLOR = new Color(49, 49, 49);
 	protected static final float SELECTED_HOUSE_BORDER_WIDTH = INSET + 0f;
 	protected static final Color SELECTED_HOUSE_BORDER_COLOR_TRANSPARENT = new Color(

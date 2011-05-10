@@ -3,6 +3,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
@@ -149,7 +152,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 		_height = 0;
 		
 		int horizontalOffset = Constants.HOUSE_PADDING;
-		int verticalOffset = Constants.HOUSE_PADDING;
+		int verticalOffset = Constants.HOUSE_PADDING + Constants.HOUSE_ROOF_HEIGHT;
 		
 		int xPosition;
 		
@@ -201,7 +204,28 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 	
 	@Override
 	public int getHeight() {
-		return _height;
+		return _height + Constants.HOUSE_ROOF_HEIGHT;
+	}
+	
+	@Override
+	public boolean contains(int x, int y) {
+		int width = getWidth();
+		int height = getHeight();
+		
+		Rectangle rectangle = new Rectangle(
+				Constants.INSET, Constants.HOUSE_ROOF_HEIGHT + Constants.INSET, 
+				width - 2 * Constants.INSET, height - 2 * Constants.HOUSE_ROOF_HEIGHT  - 2 * Constants.INSET);
+		
+		int[] xPoints = {Constants.INSET, width / 2, width - Constants.INSET};
+		int[] yPoints = {Constants.HOUSE_ROOF_HEIGHT + Constants.INSET, Constants.INSET, Constants.HOUSE_ROOF_HEIGHT + Constants.INSET};
+		Polygon roof = new Polygon(xPoints, yPoints, 3);
+		
+		return rectangle.contains(x, y) || roof.contains(x, y);
+	}
+	
+	@Override
+	public boolean contains(Point p) {
+		return contains(p.x, p.y);
 	}
 	
 	/**
@@ -251,22 +275,28 @@ public class House extends CanvasComponent implements Iterable<SubGroup>, Compar
 		updatePosition(); // updates component dimensions (in addition to position)
 		
 		// draw box representing the subgroup
-		java.awt.Shape houseBox = new RoundRectangle2D.Double(
-				Constants.INSET, Constants.INSET, 
-				width - 2 * Constants.INSET, height - 2 * Constants.INSET, 
-				10, 10);
+		java.awt.Shape houseBox = new Rectangle(
+				Constants.INSET, Constants.HOUSE_ROOF_HEIGHT + Constants.INSET, 
+				width - 2 * Constants.INSET, height - 2 * Constants.HOUSE_ROOF_HEIGHT  - 2 * Constants.INSET);
+		
 		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// select color based on location (over trash can or not?)
 		g2.setPaint(getColor());
 		
 		g2.fill(houseBox);
 		
+		// draw roof on house
+		int[] xPoints = {Constants.INSET, width / 2, width - Constants.INSET};
+		int[] yPoints = {Constants.HOUSE_ROOF_HEIGHT + Constants.INSET, Constants.INSET, Constants.HOUSE_ROOF_HEIGHT + Constants.INSET};
+		g.fillPolygon(xPoints, yPoints, 3);
+		
 		// if selected, draw border
 		if(this == State.getInstance().getSelectedHouse()) {
-			g2.setPaint(getBorderColor());
-			g2.setStroke(new java.awt.BasicStroke(Constants.SELECTED_HOUSE_BORDER_WIDTH));
-			g2.draw(houseBox);
+//			g2.setPaint(getBorderColor());
+//			g2.setStroke(new java.awt.BasicStroke(Constants.SELECTED_HOUSE_BORDER_WIDTH));
+//			g2.draw(houseBox);
 		}
 	}
 	
