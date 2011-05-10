@@ -586,7 +586,7 @@ public class Canvas extends JLayeredPane {
 		g.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 16));
 		
 		// new guy
-		String text = "new guy";
+		String text = "add guy";
 		int textWidth = g.getFontMetrics().stringWidth(text);
 		int textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2; 
 		g.drawString(text, textPosition, _new_male_y_position - 20);
@@ -594,7 +594,7 @@ public class Canvas extends JLayeredPane {
 		g.drawImage(Gender.MALE.getImage(), _new_male_x_position, _new_male_y_position, null);
 		
 		// new girl
-		text = "new girl";
+		text = "add girl";
 		textWidth = g.getFontMetrics().stringWidth(text);
 		textPosition = (0 + Constants.SIDEBAR_WIDTH) / 2 - textWidth / 2;
 		g.drawString(text, textPosition, _new_female_y_position - 20);
