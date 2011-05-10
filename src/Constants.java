@@ -151,9 +151,8 @@ public class Constants {
 			"Lastly, you can reorder the elements in these lists " +
 			"by simply dragging them to a new location.</center></html>";
 	
-	protected static final String PREFERENCE_PANEL_INSTRUCTIONS = "<html><center>View preferences for your houses here. " +
-			"Remove them if you like, and the results will update instantly. Mouse over the people if you need to remember" +
-			" who is in each house.</center></html>";
+	protected static final String NO_PEOPLE_MESSAGE = "<html><center>You currently have no people in your group!<p><p> " +
+			"Click the Preferences tab and drag people onto the canvas to view results.</center></html>";
 	
 	// Database
 	protected static final String DATABASE_NAME = PATH_PREFIX + "data/housingdata.db";

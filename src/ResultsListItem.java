@@ -31,54 +31,82 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private JLabel _button;
 	private JPanel _labelsPanel;
 	private ProbabilityDisplay _probabilityDisplay;
+	private JPanel _infoPanel;
 	private boolean _isOpen;
 	private boolean _fullWidth;
 	private static ImageIcon _buttonIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 	private double _comparisonValue;
-	private static Font _unselectedFont = new Font("Verdana", Font.PLAIN, 12);
-	private static Color _unselectedBackgroundColor;
-	private static Color _selectedBackgroundColor;
-	
-	private final int _itemHeight = 15;
-	private final int _itemWidth = 350;
 	
 	public ResultsListItem(Room room, AccordionList<ResultsListTab, ResultsListItem> list) {
 		super();
-		_parentList = list;
-		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-		Dimension size = new Dimension(_itemWidth, _itemHeight);
+		
+		// set the layout and size of this panel
+		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		Dimension size = new Dimension(Constants.RESULTS_LIST_ITEM_WIDTH, Constants.RESULTS_LIST_ITEM_HEIGHT);
 		this.setPreferredSize(size);
 		this.setSize(size);
+		
+		// create a panel for the room name and probability
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+		panel.setPreferredSize(size);
+		panel.setSize(size);
+		
+		// set initial values
 		_room = room;
 		_room.addToListItem(this);
+		_parentList = list;
 		_comparisonValue = _room.getProbability();
 		_isOpen = false;
 		_fullWidth = true;
+		
+		// create label for Room name/number
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
-		_label.setFont(_unselectedFont);
-		this.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
-		this.add(_label);
+//		_label.setFont();
+		panel.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
+		panel.add(_label);
+		
+		// create panel for list labels
 		_labelsPanel = new JPanel();
 		_labelsPanel.setLayout(new BoxLayout(_labelsPanel, BoxLayout.LINE_AXIS));
 		_labelsPanel.setBackground(new Color(255, 255, 255, 0));
-		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
-		this.add(_labelsPanel);
-		this.add(Box.createHorizontalGlue());
+		panel.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
+		panel.add(_labelsPanel);
+		panel.add(Box.createHorizontalGlue());
 		
+		// create probability display
 		_probabilityDisplay = new ProbabilityDisplay(_room.getProbability());
-		this.add(_probabilityDisplay);
-		this.add(Box.createRigidArea(new Dimension(Constants.PROBABILITY_DISPLAY_RIGHT_SPACING, 0)));
+		panel.add(_probabilityDisplay);
+		panel.add(Box.createRigidArea(new Dimension(Constants.PROBABILITY_DISPLAY_RIGHT_SPACING, 0)));
 		
+		// create button (by default, action and icon are for adding)
+		// this can be changed later
 		_button = new JLabel(_buttonIcon);
 		_button.setPreferredSize(new Dimension(_buttonIcon.getIconWidth(), _buttonIcon.getIconHeight()));
-		_button.setPreferredSize(new Dimension(_buttonIcon.getIconWidth(), _buttonIcon.getIconHeight()));
 		_button.addMouseListener(new AddListener(this));
-		this.add(_button);
-		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
-		this.addMouseListener(new SelectedListener());
-		_unselectedBackgroundColor = this.getBackground();
-		_selectedBackgroundColor = _unselectedBackgroundColor.darker();
+		panel.add(_button);
+		panel.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
+		panel.addMouseListener(new SelectedListener());
+		
+		// make sure the room has the proper list labels
 		validateListLabels();
+		
+		// create a panel to hold the other information (LotteryResults, GAS, possible sq feet?)
+		_infoPanel = new JPanel();
+		size = new Dimension(Constants.RESULTS_LIST_ITEM_WIDTH, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
+		_infoPanel.setPreferredSize(size);
+		_infoPanel.setSize(size);
+		
+		// create a label for each property of this ResultListItem's room
+		// create a panel for the ResultsListItem's room's properties
+		JPanel propertiesPanel = new JPanel();
+		size = new Dimension(0, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
+		propertiesPanel.setPreferredSize(size);
+		propertiesPanel.setSize(size);
+		if (_room.isGenderNeutral()) {
+			JLabel genLabel = new JLabel("G");
+			propertiesPanel.add(genLabel);
+		}
 	}
 	
 	/** Makes sure the list labels for this item are updated */
@@ -159,11 +187,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	@Override
 	public void setOpen(boolean open) {
 		if (open) {
-			this.setBackground(_selectedBackgroundColor);
+			// TODO
 			_isOpen = true;
 		}
 		else {
-			this.setBackground(_unselectedBackgroundColor);
+			// TODO
 			_isOpen = false;
 		}
 	}
