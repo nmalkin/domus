@@ -215,6 +215,7 @@ public class Canvas extends JLayeredPane {
 	
 	public void placeSubGroup(SubGroup subgroup) {
 		House newHouse = null;
+		House currentHouse = subgroup.getHouse();
 		
 		for(House h : State.getInstance().getGroup()) {
 			if(intersecting(subgroup, h)) { // subgroup is inside this house
@@ -228,6 +229,10 @@ public class Canvas extends JLayeredPane {
 						
 						State.getInstance().setSelectedHouse(h);
 						
+						if(currentHouse != null) {
+							currentHouse.updateSubGroupPositions();
+						}
+						
 						this.repaint();
 						return;
 					}
@@ -239,8 +244,6 @@ public class Canvas extends JLayeredPane {
 				break;
 			}
 		}
-		
-		House currentHouse = subgroup.getHouse();
 		
 		if(newHouse == null) {
 			// subgroup isn't in any house. create one for it.
