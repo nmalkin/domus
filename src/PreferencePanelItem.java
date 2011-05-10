@@ -3,7 +3,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -12,7 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class PreferencePanelItem extends JPanel implements AccordionItem{
+public class PreferencePanelItem extends JPanel implements AccordionItem {
 
 	private AccordionList<PreferencePanelTab, PreferencePanelItem> _parentList;
 	private JPanel _labelsPanel;
@@ -184,6 +183,7 @@ public class PreferencePanelItem extends JPanel implements AccordionItem{
 	}
 
 	@Override
+	@Deprecated
 	public int compareTo(AccordionItem o) {
 		return _dorm.compareTo(((PreferencePanelItem) o).getDorm());
 	}

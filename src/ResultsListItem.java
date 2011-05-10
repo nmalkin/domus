@@ -84,10 +84,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	/** Makes sure the list labels for this item are updated */
 	public void validateListLabels() {
 		_labelsPanel.removeAll();
-		if (_room.getRoomLists() != null) {
-			for (RoomList rl : _room.getRoomLists()) {
-				addListLabel(rl);
-			}
+		for (RoomList rl : _room.getRoomLists()) {
+			addListLabel(rl);
 		}
 	}
 	
@@ -191,8 +189,9 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	}
 	
 	@Override
+	@Deprecated
 	public int compareTo(AccordionItem o) {
-		return _comparisonValue < o.getComparisonValue() ? -1 : (_comparisonValue > o.getComparisonValue() ? 1 : 0);
+		return _room.compareTo(((ResultsListItem) o).getRoom());
 	}
 	
 	@Override
@@ -230,8 +229,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 				boolean exists = false;
 				for (RoomList rl : State.getInstance().getRoomLists()) {
 					if (rl.getName().equals(selected)) {
-						rl.add(new ResultsListItem(_room, null));
 						_room.addToRoomList(rl);
+						rl.add(new ResultsListItem(_room, null));
 						ListsTab.getInstance().updateLists();
 						exists = true;
 						break;
@@ -240,8 +239,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 				if (!exists) {
 					RoomList list = new RoomList(selected);
 					State.getInstance().addRoomList(list);
-					list.add(new ResultsListItem(_room, null));
 					_room.addToRoomList(list);
+					list.add(new ResultsListItem(_room, null));
 					ListsTab.getInstance().updateLists();
 				}
 			}

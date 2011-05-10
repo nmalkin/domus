@@ -68,6 +68,7 @@ public class Group extends AbstractCollection<House> {
 	public void setLotteryNumber(int number) {
 		_lotteryNumber = number;
 		
+		// notify the listeners that the lottery number has changed
 		for (ChangeListener l : _groupStateChangeListeners) {
 			if (l != null) {
 				ChangeEvent e = new GroupChangeEvent(this, GroupChangeEvent.UPDATE_PROBABILITIES);
@@ -84,6 +85,7 @@ public class Group extends AbstractCollection<House> {
 	public void setSophomoreStatus(boolean soph) {
 		_sophomore = soph;
 		
+		// notify the listeners that the sophomore only status have changed
 		for (ChangeListener l : _groupStateChangeListeners) {
 			if (l != null) {
 				ChangeEvent e = new GroupChangeEvent(this, GroupChangeEvent.UPDATE_RESULTS);

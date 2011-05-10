@@ -190,6 +190,11 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 			_itemsPanel.setPreferredSize(new Dimension(size.width + d.width, size.height));
 			_itemsPanel.setSize(new Dimension(size.width + d.width, size.height));
 			_fullWidth = !_fullWidth;
+//			int bottom = 1;
+//			if (!_fullWidth && this == _parentList.getLastTab())
+//				bottom = 0;
+//			System.out.println(bottom);
+//			_itemsPanel.setBorder(BorderFactory.createMatteBorder(0, 1, bottom, 1, Color.BLACK));
 		}
 		
 		//resize items
@@ -250,6 +255,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	 * or if the two probabilities are equal but this tab's dorm comes first lexicographically
 	 */
 	@Override
+	@Deprecated
 	public int compareTo(AccordionItem o) {	
 		double ave1 = this.getComparisonValue();
 		double ave2 = o.getComparisonValue();
@@ -309,8 +315,8 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 					if (rl.getName().equals(selected)) {
 						for (Component c : _itemsPanel.getComponents()) {
 							ResultsListItem rli = (ResultsListItem) c;
-							rl.add(new ResultsListItem(rli.getRoom(), null));
 							rli.getRoom().addToRoomList(rl);
+							rl.add(new ResultsListItem(rli.getRoom(), null));
 						}
 						ListsTab.getInstance().updateLists();
 						exists = true;
@@ -322,8 +328,8 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 					State.getInstance().addRoomList(list);
 					for (Component c : _itemsPanel.getComponents()) {
 						ResultsListItem rli = (ResultsListItem) c;
-						list.add(new ResultsListItem(rli.getRoom(), null));
 						rli.getRoom().addToRoomList(list);
+						list.add(new ResultsListItem(rli.getRoom(), null));
 					}
 					ListsTab.getInstance().updateLists();
 				}

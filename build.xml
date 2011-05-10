@@ -1,15 +1,94 @@
-<project name="domus" default="build" basedir=".">
+<project name="domus" default="jar" basedir=".">
   <description>Build file for Domus</description>
-  <property name="target" location="domus.MainFrame"/>
-  <property name="src" location="src"/>
-  <property name="build" location="build"/>
-  <property name="tests" location="test"/>
 
-  <target name="init">
+  <!-- set some global properties -->
+  <property name="target" location="domus"/>
+  <property name="src" location="src"/>
+  <property name="lib" location="lib"/>
+  <property name="img" location="img"/>
+  <property name="resources" location="resources"/>
+  <property name="data" location="data"/>
+  <property name="help" location="help"/>
+  <property name="build" location="build"/>
+  <property name="test" location="test"/>
+
+  <!-- set up some paths -->
+  <path id="classpath.base"/>
+  <path id="classpath.lib">
+    <pathelement location="${lib}/junit.jar"/>
+    <pathelement location="${lib}/dom4j-1.6.1.jar"/>
+    <pathelement location="${lib}/guava-r09.jar"/>
+    <pathelement location="${lib}/guava-r09-gwt.jar"/>
+    <pathelement location="${lib}/sqlitejdbc-v056.jar"/>
+    <path refid="classpath.base"/>
+  </path>
+
+  <target name="clean">
+    <!-- Delete the ${build} directory tree -->
+    <delete dir="${build}"/>
+    <!-- Delete the jar file -->
+    <delete file="${target}.jar"/>
+  </target>
+
+  <target name="init" depends="clean">
+    <!-- Create a time stamp -->
     <tstamp/>
-    <mkdir dir="${build}">
+    <!-- Create the build directory used for compilation -->
+    <mkdir dir="${build}"/>
   </target>
   
-  <target name="build" depends="init">
+  <target name="compile" depends="init">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}" includes="**/*.java">
+       <classpath refid="classpath.lib"/>
+    </javac>
+    <!-- Compile the java code from ${test} into ${build} -->
+    <!-- <javac srcdir="${test} destdir="${build}" includes="**/*.java"> -->
+    <!--   <classpath refid="classpath.lib"/> -->
+    <!-- </javac> -->
+  </target>
+
+  <target name="test" depends="compile">
+    <!-- Run the test cases -->
+    <junit showouput="true" outputtoformatters="false">
+      <classpath refid="classpath.lib"/>
+      <batchtest fork="yes">
+        <fileset dir="${build}">
+          <include name="**/*Tests.class"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="jar" depends="compile">
+    <!-- Put everything into the jar file -->
+    <jar jarfile="${target}.jar" basedir=".">
+      <fileset dir="." includes="transform.xml" excludes=".git/**"/>
+      <fileset dir="${build}" includes="**/*.class" excludes=".git/**"/>
+      <fileset dir="${img}" includes="**/*.png" excludes=".git/**"/>
+      <fileset dir="${resources}" includes="**/*.TTF" excludes=".git/**"/>
+      <fileset dir="${data}">
+        <include name="**/*.csv"/>
+        <include name="**/*.db"/>
+        <exclude name=".git/**"/>
+      </fileset>
+      <zipfileset includes="**/*.class" src="${lib}/dom4j-1.6.1.jar"/>
+      <zipfileset includes="**/*.class" src="${lib}/guava-r09-gwt.jar"/>
+      <zipfileset includes="**/*.class" src="${lib}/guava-r09.jar"/>
+      <zipfileset includes="**/*.class" src="${lib}/junit.jar"/>
+      <zipfileset includes="**/*.class" src="${lib}/sqlitejdbc-v056.jar"/>
+      <manifest>
+        <attribute name="Built-By" value="Nathan Malkin, Miya Schneider, Sumner Warren"/>
+        <attribute name="Implementation-Title" value="Domus"/>
+        <attribute name="Implementation-Verison" value="1.0"/>
+        <attribute name="Main-Class" value="Domus"/>
+        <attribute name="Class-Path" value="dom4j-1.6.1.jar guava-r09-gwt.jar guava-r09.jar junit.jar sqlitejdbc-v056.jar"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="run" depends="jar">
+    <!-- run the jar file -->
+    <java jar="${target}.jar" fork="true"/>
   </target>
 </project>

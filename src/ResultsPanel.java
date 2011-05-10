@@ -32,7 +32,6 @@ public class ResultsPanel extends JPanel implements Runnable {
 	
 	private Map<SubGroup, AccordionList<ResultsListTab, ResultsListItem>> _listsMap;
 	private Multimap<SubGroup, Room> _results;
-	private Map<Dorm, DormAverage> _dormAverages;
 	private JScrollPane _scroller;
 	private JPanel _resultsPanel;
 	private JLabel _leftButton, _rightButton;
@@ -75,21 +74,9 @@ public class ResultsPanel extends JPanel implements Runnable {
 		
 		// set up some variables
 		SetMultimap<SubGroup, Dorm> dormMap = TreeMultimap.create(Ordering.natural(), new DormComparator());
-		_dormAverages = new HashMap<Dorm, DormAverage>();
 		
 		// get the results from State
 		_results = State.getInstance().getResults();
-		
-		// determine which Dorms are in the results and compute averages for them
-		for (SubGroup sg : _results.keySet()) {
-			for (Room r : _results.get(sg)) {
-				DormAverage average = _dormAverages.get(r.getDorm());
-				if (average == null)
-					average = new DormAverage();
-				average.add(r.getProbability());
-				_dormAverages.put(r.getDorm(), average);
-			}
-		}
 		
 		// create a multimap from SubGroup to Dorms
 		for (SubGroup sg : _results.keySet()) {
@@ -128,7 +115,7 @@ public class ResultsPanel extends JPanel implements Runnable {
 			// remove any ResultsListTabs which don't have a corresponding Dorm for this SubGroup 
 			for (Iterator<ResultsListTab> iter = tabs.iterator(); iter.hasNext();) {
 				ResultsListTab rlt = iter.next();
-				if (!_dormAverages.containsKey(rlt.getDorm())) {
+				if (!dormMap.get(sg).contains(rlt.getDorm())) {
 					iter.remove();
 					list.removeTab(rlt);
 				}
@@ -140,12 +127,10 @@ public class ResultsPanel extends JPanel implements Runnable {
 				ResultsListTab tab = containsDormTab(tabs, d);
 				if (tab != null) {
 					intersectResultsWithTab(sg, d, list, tab);
-					tab.setComparisonValue(_dormAverages.get(d).getAverage());
 				}
 				else {
 					// create a new ResultsListTab and add all the rooms to it
 					tab = new ResultsListTab(d, sg, list);
-					tab.setComparisonValue(_dormAverages.get(d).getAverage());
 					list.addTab(tab);
 					for (Room r : _results.get(sg)) {
 						if (r.getDorm() == d) {
@@ -360,54 +345,37 @@ public class ResultsPanel extends JPanel implements Runnable {
 				tab.updateProbabilities();
 			}
 		}
-		ListsTab.getInstance().updateLists();
 	}
-	
+
 	/**
-	 * A class for quickly storing and computing the average probability
-	 * for a Dorm.
+	 * Compares Dorms by CampusArea (alphabetically) and then
+	 * lexicographically inside of that.
 	 * 
 	 * @author jswarren
 	 */
-	private class DormAverage {
-		
-		private int _size;
-		private double _sum;
-		
-		public DormAverage() {
-			_sum = 0;
-			_size = 0;
-		}
-		
-		public void add(double d) {
-			_sum += d;
-			++_size;
-		}
-		
-		public double getAverage() {
-			return (double) (_sum / _size);
-		}
-	}
-
-	/**
-	 * Compares two dorms based on the average probability of their rooms.
-	 * If two dorms have the same average probability, they are compared lexicographically.
-	 * 
-	 * @return a number less than 0 if this dorm has a lower average probability,
-	 * or if the two probabilities are equal but this dorm comes first lexicographically
-	 */
 	private class DormComparator implements Comparator<Dorm> {
 
+		Map<Dorm, CampusArea> _campusAreas;
+		
+		public DormComparator() {
+			_campusAreas = new HashMap<Dorm, CampusArea>();
+			for (CampusArea ca : Database.getCampusAreas()) {
+				for (Dorm d : ca)
+					_campusAreas.put(d, ca);
+			}
+		}
+		
 		@Override
 		public int compare(Dorm o1, Dorm o2) {
-			double ave1 = _dormAverages.get(o1).getAverage();
-			double ave2 = _dormAverages.get(o2).getAverage();
-			if (ave1 < ave2)
-				return -1;
-			if (ave1 > ave2)
-				return 1;
+			// TODO Auto-generated method stub
+			CampusArea ca1 = _campusAreas.get(o1);
+			CampusArea ca2 = _campusAreas.get(o2);
 			
-			// if the averages are equal, compare dorm
+			int result = ca1.compareTo(ca2);
+			if (result < 0)
+				return -1;
+			if (result > 1)
+				return 1;
 			return o1.compareTo(o2);
 		}
 		

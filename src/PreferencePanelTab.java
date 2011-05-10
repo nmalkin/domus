@@ -117,6 +117,7 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 	}
 
 	@Override
+	@Deprecated
 	public int compareTo(AccordionItem o) {
 		return _house.compareTo(((PreferencePanelTab) o).getHouse());
 	}
