@@ -21,10 +21,10 @@ import com.google.common.collect.Multimap;
 
 public class PreferencePanel extends JPanel {
 
-	private AccordionList<PreferencePanelTab, PreferencePanelItem> preferenceList;
+	private AccordionList<PreferencePanelTab, PreferencePanelItem> _preferenceList;
 
-	private final int _listWidth = Constants.PREFERENCE_PANEL_WIDTH - 1;
-	private final int _listHeight = Constants.PREFERENCE_PANEL_HEIGHT;
+	private int _listWidth = Constants.PREFERENCE_PANEL_WIDTH - 1;
+	private int _listHeight = Constants.PREFERENCE_PANEL_HEIGHT;
 
 	protected PreferencePanel() {
 		Dimension size = new Dimension(Constants.PREFERENCE_PANEL_WIDTH,0);
@@ -35,27 +35,32 @@ public class PreferencePanel extends JPanel {
 		this.setBorder(new MatteBorder(0, 0, 0, 1, Color.GRAY));
 		
 		JLabel title = new JLabel("preference panel");
-		title.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 24));
+		title.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 18));
 		
 		this.add(title);
-		preferenceList = AccordionList.create(_listWidth, _listHeight, 0);
+		_preferenceList = AccordionList.create(_listWidth, _listHeight, 0);
 
 		for(House h: State.getInstance().getGroup()) {
-			PreferencePanelTab tab = new PreferencePanelTab(h, preferenceList);
-			preferenceList.addTab(tab);
+			PreferencePanelTab tab = new PreferencePanelTab(h, _preferenceList);
+			_preferenceList.addTab(tab);
 			
 			List<Dorm> dorms = new LinkedList<Dorm>();
 			for (Dorm d : h.getLocationPreference())
 				dorms.add(d);
 			Collections.sort(dorms, new DormComparator());
 			for (Dorm d : dorms){
-				PreferencePanelItem dorm = new PreferencePanelItem(h, d, preferenceList);
+				PreferencePanelItem dorm = new PreferencePanelItem(h, d, _preferenceList);
 
-				preferenceList.addListItem(tab, dorm);
+				_preferenceList.addListItem(tab, dorm);
 			}
 		}
 
-		this.add(preferenceList);
+		this.add(_preferenceList);
+	}
+	
+	public void updateHeight(int height) {
+		_listHeight = height;
+		_preferenceList.updateHeight(height);
 	}
 	
 	/**

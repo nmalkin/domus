@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -55,14 +56,17 @@ public class ListsTab extends JPanel implements Runnable {
 		_listsPanel.setLayout(new BoxLayout(_listsPanel, BoxLayout.LINE_AXIS));
 		_listsPanel.setBorder(new EmptyBorder(new Insets(0, 0, 0, 0)));
 		
+		// get screen size
+		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+		
 		// add the instructions initially
 		_listsPanel.add(_instructionsLabel);
-		_listsPanel.setPreferredSize(new Dimension(_instructionsLabel.getPreferredSize().width, Constants.LISTS_HEIGHT));
-		_listsPanel.setSize(new Dimension(_instructionsLabel.getPreferredSize().width, Constants.LISTS_HEIGHT));
+		_listsPanel.setPreferredSize(new Dimension(_instructionsLabel.getPreferredSize().width, Math.min(size.height - 25, Constants.LISTS_HEIGHT)));
+		_listsPanel.setSize(new Dimension(_instructionsLabel.getPreferredSize().width, Math.min(size.height - 25, Constants.LISTS_HEIGHT)));
 		
 		// create a scroll pane to hold the panel of lists
 		_scroller = new JScrollPane(_listsPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		_scroller.setPreferredSize(new Dimension(_listsPanel.getSize().width, Constants.LISTS_HEIGHT));
+		_scroller.setPreferredSize(new Dimension(_listsPanel.getSize().width, Math.min(size.height - 25, Constants.LISTS_HEIGHT)));
 		_scroller.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
 		_scroller.getHorizontalScrollBar().setBorder(new EmptyBorder(0, 0, 0, 0));
 		

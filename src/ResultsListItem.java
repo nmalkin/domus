@@ -37,12 +37,14 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private static ImageIcon _buttonIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 	private double _comparisonValue;
 	
+	private int _listWidth = Constants.RESULTS_LIST_ITEM_WIDTH;
+	
 	public ResultsListItem(Room room, AccordionList<ResultsListTab, ResultsListItem> list) {
 		super();
 		
 		// set the layout and size of this panel
 		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		Dimension size = new Dimension(Constants.RESULTS_LIST_ITEM_WIDTH, Constants.RESULTS_LIST_ITEM_HEIGHT);
+		Dimension size = new Dimension(_listWidth, Constants.RESULTS_LIST_ITEM_HEIGHT);
 		this.setPreferredSize(size);
 		this.setSize(size);
 		
@@ -94,7 +96,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		
 		// create a panel to hold the other information (LotteryResults, GAS, possible sq feet?)
 		_infoPanel = new JPanel();
-		size = new Dimension(Constants.RESULTS_LIST_ITEM_WIDTH, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
+		size = new Dimension(_listWidth, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT + 1);
 		_infoPanel.setPreferredSize(size);
 		_infoPanel.setSize(size);
 		_infoPanel.setLayout(new BoxLayout(_infoPanel, BoxLayout.LINE_AXIS));
@@ -200,10 +202,11 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		pastResultsPanel.add(Box.createHorizontalGlue());
 		holderPanel.add(pastResultsPanel);
 		holderPanel.add(Box.createHorizontalGlue());
-		holderPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, Color.BLACK));
+//		holderPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, Color.BLACK));
 		
 		_infoPanel.add(fillerPanel);
 		_infoPanel.add(holderPanel);
+		_infoPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 		
 		
 		// add info panel to ResultsListItem (initally not visible)
@@ -293,19 +296,24 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		int height = _infoPanel.getPreferredSize().height;
 		if (open) {
 			_infoPanel.setVisible(true);
-			_label.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK));
+//			_label.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK));
+			this.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+//			_infoPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 		}
 		else {
 			_infoPanel.setVisible(false);
 			_label.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.BLACK));
+			this.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.BLACK));
 			height = -height;
 		}
 		Dimension size = getSize();
 		size = new Dimension(size.width, size.height + height);
 		this.setPreferredSize(size);
 		this.setSize(size);
-		ResultsListTab tab = (ResultsListTab) getParent().getParent();
-		tab.resizeItem(new Dimension(0, height));
+		if (_parentList != null) {
+			ResultsListTab tab = (ResultsListTab) getParent().getParent();
+			tab.resizeItem(new Dimension(0, height));
+		}
 	}
 	
 	@Override
@@ -404,6 +412,14 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		public void mouseClicked(MouseEvent e) {
 			setOpen(!isOpen());
 		}
+	}
+
+	public void updateWidth(int width) {
+		// TODO Auto-generated method stub
+		_listWidth = width;
+		Dimension size = new Dimension(_listWidth, Constants.RESULTS_LIST_ITEM_HEIGHT);
+		this.setPreferredSize(size);
+		this.setSize(size);
 	}
 	
 }

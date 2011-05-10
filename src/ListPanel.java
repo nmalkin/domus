@@ -28,9 +28,9 @@ public class ListPanel extends JPanel {
 	private JScrollPane _scroller;
 	private static Font _font = new Font("Verdana", Font.PLAIN, 12);
 	
-	private final int _listWidth = 350;
-	private final int _listHeight = 500;
-	private final int _itemWidth = 150;
+	private final int _listWidth = Constants.LISTS_WIDTH;
+	private final int _listHeight = Constants.LISTS_HEIGHT;
+	private final int _itemWidth = Constants.LISTS_ITEM_WIDTH;
 	private final int _itemHeight = 15;
 	
 	public ListPanel(RoomList list) {
@@ -90,6 +90,7 @@ public class ListPanel extends JPanel {
 		for (ResultsListItem r : _list) {
 			r.setButtonIcon(_removeIcon);
 			r.setButtonMouseListener(new RemoveListener());
+			r.updateWidth(_itemWidth);
 //			removeLabel.setVisible(false);
 //			removeLabel.addMouseListener(new RemoveListener());
 //			r.addMouseListener(hoverListener);

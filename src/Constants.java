@@ -91,7 +91,7 @@ public class Constants {
 	protected static final int DEFAULT_LOTTERY_NUMBER = 1;
 	
 	// Preference panel
-	protected final static int PREFERENCE_PANEL_WIDTH = 250;
+	protected final static int PREFERENCE_PANEL_WIDTH = 200;
 	/* very bad. fix this (TODO) */
 	protected final static int PREFERENCE_PANEL_HEIGHT = 901;
 	
@@ -106,14 +106,14 @@ public class Constants {
 	protected static final int REMOVE_ICON_HEIGHT = 16;
 	
 	// Results
-	protected static final int RESULTS_LIST_WIDTH = 350;
+	protected static final int RESULTS_LIST_WIDTH = 250;
 	protected static final int RESULTS_LIST_HEIGHT = 550;
-	protected static final int RESULTS_LIST_TAB_WIDTH = 350;
+	protected static final int RESULTS_LIST_TAB_WIDTH = 250;
 	protected static final int RESULTS_LIST_TAB_HEIGHT = 25;
-	protected static final int RESULTS_LIST_ITEM_WIDTH = 350;
+	protected static final int RESULTS_LIST_ITEM_WIDTH = 250;
 	protected static final int RESULTS_LIST_ITEM_HEIGHT = 15;
 	protected static final int RESULTS_HEADER_HEIGHT = 30;
-	protected static final int RESULTS_PANEL_WIDTH = 850;
+	protected static final int RESULTS_PANEL_WIDTH = 600;
 	protected static final int RESULTS_PANEL_HEIGHT = RESULTS_LIST_HEIGHT + RESULTS_HEADER_HEIGHT;
 	protected static final int RESULTS_LISTS_DISPLAYED = 2;
 	protected static final int RESULTS_PANEL_HORIZONTAL_GAP = 5;
@@ -141,12 +141,13 @@ public class Constants {
 	
 	// Lists
 	protected static final int LISTS_PANEL_WIDTH = 1000;
-	protected static final int LISTS_WIDTH = 350;
+	protected static final int LISTS_WIDTH = 300;
 	protected static final int LISTS_HEIGHT = 800;
-	protected static final int LISTS_DISPLAYED = 3;
+	protected static final int LISTS_DISPLAYED = 2;
 	protected static final int LISTS_HORIZONTAL_GAP = 5;
 	protected static final int LISTS_INSTRUCTIONS_WIDTH = 500;
 	protected static final int LISTS_INSTRUCTIONS_HEIGHT = 300;
+	protected static final int LISTS_ITEM_WIDTH = 300;
 	
 	// Instructions
 	protected static final String LISTS_INSTRUCTIONS = "<html><center>To create a list, click on the plus sign " +
