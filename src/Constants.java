@@ -54,6 +54,8 @@ public class Constants {
 			HOUSE_COLOR.getRed(), HOUSE_COLOR.getGreen(), HOUSE_COLOR.getBlue(), 
 			TRASH_OVERLAY_ALPHA);
 	
+	protected static final int HOUSE_ROOF_HEIGHT = 40; // pixels
+	
 	protected static final Color SELECTED_HOUSE_BORDER_COLOR = new Color(49, 49, 49);
 	protected static final float SELECTED_HOUSE_BORDER_WIDTH = INSET + 0f;
 	protected static final Color SELECTED_HOUSE_BORDER_COLOR_TRANSPARENT = new Color(
@@ -177,4 +179,13 @@ public class Constants {
 	
 	// XML i/o
 	protected static final String XML_TRANFORM_FILE = "transform.xsl";
+	
+	
+	// HelpWindow
+	protected static final String HELP_SCREEN_PREFERENCE_FILE = PATH_PREFIX + "help/preferences_screen_annotated.png";
+	protected static final String HELP_SCREEN_RESULTS_FILE = PATH_PREFIX + "help/results_screen.png";
+	protected static final String HELP_SCREEN_CART_FILE = PATH_PREFIX + "help/cart_screen.png";
+	
+	/** the height to which to scale the help screen images */
+	protected static final int HELP_SCREEN_HEIGHT = 700;
 }
