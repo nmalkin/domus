@@ -19,7 +19,7 @@ public class Constants {
 	// General Graphics
 	protected static final int INSET = 5; // pixels
 	protected static final Border EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
-	protected static final String DOMUS_FILE = PATH_PREFIX + "img/domus.png";
+	protected static final String DOMUS_FILE = PATH_PREFIX + "img/domus_attempt_3.png";
 
 	// Canvas
 	protected static final int CANVAS_WIDTH  = 600;
@@ -94,8 +94,8 @@ public class Constants {
 	// Results and lists icons
 	protected static final String CLOSED_FILE 	= PATH_PREFIX + "img/closed_results_tab_new.png";
 	protected static final String OPEN_FILE 	= PATH_PREFIX + "img/open_results_tab_new.png";
-	protected static final String ADD_FILE 		= PATH_PREFIX + "img/add_to_list_black.png";
-	protected static final String REMOVE_FILE 	= PATH_PREFIX + "img/remove_from_list_thin.png";
+	protected static final String ADD_FILE 		= PATH_PREFIX + "img/add_to_list_center_1.png";
+	protected static final String REMOVE_FILE 	= PATH_PREFIX + "img/remove_from_list_black_center_1.png";
 	protected static final String LEFT_ARROW 	= PATH_PREFIX + "img/left_arrow_smaller.png";
 	protected static final String RIGHT_ARROW 	= PATH_PREFIX + "img/right_arrow_smaller.png";
 	protected static final int OPEN_ICON_WIDTH = 15;
