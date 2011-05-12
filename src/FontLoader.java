@@ -8,8 +8,6 @@ import java.io.InputStream;
 
 public class FontLoader {
     
-    private static FontLoader _INSTANCE = new FontLoader();
-    
     public static Font load(String path) {
         /*
          * Font font = null;
