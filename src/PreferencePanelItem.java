@@ -22,8 +22,6 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 	private boolean _fullWidth;
 	private static Font _unselectedFont = new Font("Verdana", Font.PLAIN, 12);
 	private ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
-	private static Color _unselectedBackgroundColor;
-	private static Color _selectedBackgroundColor;
 	private House _house;
 	private Dorm _dorm;
 	
@@ -68,8 +66,6 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 		this.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
 		this.addMouseListener(new SelectedListener());
 		
-		_unselectedBackgroundColor = this.getBackground();
-		_selectedBackgroundColor = _unselectedBackgroundColor.darker();
 	}
 
 	public Dorm getDorm () {
@@ -175,11 +171,9 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 	@Override
 	public void setOpen(boolean open) {
 		if (open) {
-			this.setBackground(_selectedBackgroundColor);
 			_isOpen = true;
 		}
 		else {
-			this.setBackground(_unselectedBackgroundColor);
 			_isOpen = false;
 		}
 	}

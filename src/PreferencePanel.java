@@ -33,7 +33,7 @@ public class PreferencePanel extends JPanel {
 		this.setBorder(new MatteBorder(0, 0, 0, 1, Color.GRAY));
 		
 		JLabel title = new JLabel("preference panel");
-		title.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 18));
+		title.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 24));
 		
 		this.add(title);
 		size = Toolkit.getDefaultToolkit().getScreenSize();
