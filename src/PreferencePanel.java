@@ -1,3 +1,5 @@
+
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -13,77 +15,77 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
-
 public class PreferencePanel extends JPanel {
 
-	private AccordionList<PreferencePanelTab, PreferencePanelItem> preferenceList;
+    private AccordionList<PreferencePanelTab, PreferencePanelItem> preferenceList;
 
-	private final int _listWidth = Constants.PREFERENCE_PANEL_WIDTH - 1;
-	private final int _listHeight = Constants.PREFERENCE_PANEL_HEIGHT;
+    private final int _listWidth = Constants.PREFERENCE_PANEL_WIDTH - 1;
+    private final int _listHeight = Constants.PREFERENCE_PANEL_HEIGHT;
 
-	protected PreferencePanel() {
-		Dimension size = new Dimension(Constants.PREFERENCE_PANEL_WIDTH,0);
-		this.setPreferredSize(size);
-		this.setSize(size);
-		this.setLayout(new FlowLayout(FlowLayout.CENTER));
-		this.setAlignmentX(CENTER_ALIGNMENT);
-		this.setBorder(new MatteBorder(0, 0, 0, 1, Color.GRAY));
-		
-		JLabel title = new JLabel("preference panel");
-		title.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 24));
-		
-		this.add(title);
-		preferenceList = AccordionList.create(_listWidth, _listHeight, 0);
+    protected PreferencePanel() {
+        Dimension size = new Dimension(Constants.PREFERENCE_PANEL_WIDTH, 0);
+        this.setPreferredSize(size);
+        this.setSize(size);
+        this.setLayout(new FlowLayout(FlowLayout.CENTER));
+        this.setAlignmentX(CENTER_ALIGNMENT);
+        this.setBorder(new MatteBorder(0, 0, 0, 1, Color.GRAY));
 
-		for(House h: State.getInstance().getGroup()) {
-			PreferencePanelTab tab = new PreferencePanelTab(h, preferenceList);
-			preferenceList.addTab(tab);
-			
-			List<Dorm> dorms = new LinkedList<Dorm>();
-			for (Dorm d : h.getLocationPreference())
-				dorms.add(d);
-			Collections.sort(dorms, new DormComparator());
-			for (Dorm d : dorms){
-				PreferencePanelItem dorm = new PreferencePanelItem(h, d, preferenceList);
+        JLabel title = new JLabel("preference panel");
+        title.setFont(Constants.DOMUS_FONT.deriveFont(Font.PLAIN, 24));
 
-				preferenceList.addListItem(tab, dorm);
-			}
-		}
+        this.add(title);
+        preferenceList = AccordionList.create(_listWidth, _listHeight, 0);
 
-		this.add(preferenceList);
-	}
-	
-	/**
-	 * Compares Dorms by CampusArea (alphabetically) and then
-	 * lexicographically inside of that.
-	 * 
-	 * @author jswarren
-	 */
-	private class DormComparator implements Comparator<Dorm> {
+        for (House h : State.getInstance().getGroup()) {
+            PreferencePanelTab tab = new PreferencePanelTab(h, preferenceList);
+            preferenceList.addTab(tab);
 
-		Map<Dorm, CampusArea> _campusAreas;
-		
-		public DormComparator() {
-			_campusAreas = new HashMap<Dorm, CampusArea>();
-			for (CampusArea ca : Database.getCampusAreas()) {
-				for (Dorm d : ca)
-					_campusAreas.put(d, ca);
-			}
-		}
-		
-		@Override
-		public int compare(Dorm o1, Dorm o2) {
-			// TODO Auto-generated method stub
-			CampusArea ca1 = _campusAreas.get(o1);
-			CampusArea ca2 = _campusAreas.get(o2);
-			
-			int result = ca1.compareTo(ca2);
-			if (result < 0)
-				return -1;
-			if (result > 1)
-				return 1;
-			return o1.compareTo(o2);
-		}
-		
-	}
+            List<Dorm> dorms = new LinkedList<Dorm>();
+            for (Dorm d : h.getLocationPreference())
+                dorms.add(d);
+            Collections.sort(dorms, new DormComparator());
+            for (Dorm d : dorms) {
+                PreferencePanelItem dorm = new PreferencePanelItem(h, d,
+                        preferenceList);
+
+                preferenceList.addListItem(tab, dorm);
+            }
+        }
+
+        this.add(preferenceList);
+    }
+
+    /**
+     * Compares Dorms by CampusArea (alphabetically) and then lexicographically
+     * inside of that.
+     * 
+     * @author jswarren
+     */
+    private class DormComparator implements Comparator<Dorm> {
+
+        Map<Dorm, CampusArea> _campusAreas;
+
+        public DormComparator() {
+            _campusAreas = new HashMap<Dorm, CampusArea>();
+            for (CampusArea ca : Database.getCampusAreas()) {
+                for (Dorm d : ca)
+                    _campusAreas.put(d, ca);
+            }
+        }
+
+        @Override
+        public int compare(Dorm o1, Dorm o2) {
+            // TODO Auto-generated method stub
+            CampusArea ca1 = _campusAreas.get(o1);
+            CampusArea ca2 = _campusAreas.get(o2);
+
+            int result = ca1.compareTo(ca2);
+            if (result < 0)
+                return -1;
+            if (result > 1)
+                return 1;
+            return o1.compareTo(o2);
+        }
+
+    }
 }
