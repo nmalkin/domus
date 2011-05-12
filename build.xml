@@ -4,7 +4,7 @@
   <!-- set some global properties -->
   <property name="target" location="domus"/>
   <property name="basedir" location="."/>
-  <property name="src" location="src/com"/>
+  <property name="src" location="src"/>
   <property name="lib" location="lib"/>
   <property name="img" location="img"/>
   <property name="resources" location="resources"/>
@@ -83,8 +83,8 @@
         <attribute name="Built-By" value="Nathan Malkin, Miya Schneider, Sumner Warren"/>
         <attribute name="Implementation-Title" value="Domus"/>
         <attribute name="Implementation-Verison" value="1.0"/>
-        <attribute name="Main-Class" value="com.Domus"/>
-        <attribute name="Class-Path" value="./com/"/> <!-- ./lib/dom4j-1.6.1.jar ./lib/guava-r09-gwt.jar ./lib/guava-r09.jar ./lib/junit.jar ./lib/sqlitejdbc-v056.jar"/> -->
+        <attribute name="Main-Class" value="Domus"/>
+        <attribute name="Class-Path" value="./com/"/>
       </manifest>
     </jar>
   </target>
