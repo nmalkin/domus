@@ -138,10 +138,10 @@ public class Constants {
 	protected static final Color PROBABILITY_DISPLAY_BACKGROUND_COLOR = Color.WHITE;
 	
 	// Lists
-	protected static final int LISTS_PANEL_WIDTH = 1000;
+	protected static final int LISTS_PANEL_WIDTH = 800;
 	protected static final int LISTS_WIDTH = 350;
 	protected static final int LISTS_HEIGHT = 800;
-	protected static final int LISTS_DISPLAYED = 3;
+	protected static final int LISTS_DISPLAYED = 2;
 	protected static final int LISTS_HORIZONTAL_GAP = 5;
 	protected static final int LISTS_INSTRUCTIONS_WIDTH = 500;
 	protected static final int LISTS_INSTRUCTIONS_HEIGHT = 300;

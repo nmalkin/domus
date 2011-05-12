@@ -33,14 +33,9 @@ public class ResultsTab extends JPanel implements ComponentListener {
 		
 		this.add(new LotteryNumberPanel(), BorderLayout.LINE_END);
 		
-//		System.out.println(getHeight());
-//		System.out.println(getSize().height);
-//		System.out.println(getPreferredSize().height);
-		
-		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-//		System.out.println(size);
-		_resultsPanel.updateHeight(Math.min(size.height - 100, Constants.RESULTS_PANEL_HEIGHT));
-		_preferencePanel.updateHeight(Math.min(size.height - 100, Constants.RESULTS_PANEL_HEIGHT));
+//		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+//		_resultsPanel.updateHeight(Math.min(size.height - 100, Constants.RESULTS_PANEL_HEIGHT));
+//		_preferencePanel.updateHeight(Math.min(size.height - 100, Constants.RESULTS_PANEL_HEIGHT));
 		
 		// add listeners to Group and State for updating results based on certain user interactions
 		State.getInstance().getGroup().addGroupStateChangeListener(new GroupStateChangeListener());
@@ -168,9 +163,9 @@ public class ResultsTab extends JPanel implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		System.out.println(getSize().height);
-		System.out.println(getPreferredSize().height);
-		_resultsPanel.updateHeight(getSize().height);
+//		System.out.println(getSize().height);
+//		System.out.println(getPreferredSize().height);
+//		_resultsPanel.updateHeight(getSize().height);
 	}
 
 	@Override
