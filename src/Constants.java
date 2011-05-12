@@ -7,6 +7,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 public class Constants {
+
     protected static final int VERSION = 1;
     protected static final int FILE_FORMAT_VERSION = 1;
 
@@ -220,4 +221,5 @@ public class Constants {
 
     /** the height to which to scale the help screen images */
     protected static final int HELP_SCREEN_HEIGHT = 700;
+
 }

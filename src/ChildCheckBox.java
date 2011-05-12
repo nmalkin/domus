@@ -23,6 +23,7 @@ import javax.swing.JCheckBox;
  * 
  */
 public class ChildCheckBox extends JCheckBox implements ItemListener {
+    
     private Collection<ParentCheckBox> _parents;
 
     public ChildCheckBox(String text) {
