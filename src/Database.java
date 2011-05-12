@@ -30,6 +30,7 @@ public class Database {
     private HashMap<String, Dorm> _dorms;
 
     private Database() {
+        // TODO: fix this for jar stuff
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:"

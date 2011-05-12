@@ -20,8 +20,7 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 	private boolean _isOpen;
 	private JLabel _label;
 	private boolean _fullWidth;
-	private static Font _unselectedFont = new Font("Verdana", Font.PLAIN, 12);
-	private ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
+	private ImageIcon _removeIcon = new ImageIcon(getClass().getResource(Constants.REMOVE_FILE));
 	private House _house;
 	private Dorm _dorm;
 	
@@ -43,7 +42,6 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 		_isOpen = false;
 		
 		_label = new JLabel(dorm.getName());
-		_label.setFont(_unselectedFont);
 		
 		this.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
 		this.add(_label);

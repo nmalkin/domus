@@ -22,8 +22,8 @@ public class PreferencePanelTab  extends JPanel implements AccordionItem {
 	private House _house;
 	private AccordionList<PreferencePanelTab, PreferencePanelItem> _parentList;
 
-	private static ImageIcon _openIcon = new ImageIcon(Constants.OPEN_FILE, "open results list");
-	private static ImageIcon _closedIcon = new ImageIcon(Constants.CLOSED_FILE, "closed results list");
+	private ImageIcon _openIcon = new ImageIcon(getClass().getResource(Constants.OPEN_FILE));
+	private ImageIcon _closedIcon = new ImageIcon(getClass().getResource(Constants.CLOSED_FILE));
 
 	//constants
 	private final int _tabHeight = 40;
