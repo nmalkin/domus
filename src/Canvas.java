@@ -14,6 +14,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
 public class Canvas extends JLayeredPane {
+
     private static final Canvas INSTANCE = new Canvas();
 
     public static Canvas getInstance() {
@@ -741,4 +742,5 @@ public class Canvas extends JLayeredPane {
             _lastMousePosition.y = e.getY();
         }
     }
+
 }

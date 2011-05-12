@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Database {
+
     private static final Database INSTANCE = new Database();
     private static Connection connection;
     private static Statement statement;
