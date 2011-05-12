@@ -1,9 +1,8 @@
-import java.awt.Color;
-import java.awt.Point;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 
 public class Person extends CanvasComponent {
 	/** What is my name? */

@@ -1,4 +1,3 @@
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
@@ -6,7 +5,13 @@ import java.awt.event.ComponentEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 public class HelpWindow extends JFrame {
 	private List<ImageIcon> _screens;

@@ -8,7 +8,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 
-import javax.swing.*;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 
 public class Canvas extends JLayeredPane {
 	private static final Canvas INSTANCE = new Canvas();

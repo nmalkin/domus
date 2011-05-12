@@ -1,7 +1,7 @@
-import java.util.Set;
 import java.util.AbstractSet;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Groups can express their preferences for locations by listing which

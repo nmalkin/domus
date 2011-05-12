@@ -3,6 +3,7 @@
 
   <!-- set some global properties -->
   <property name="target" location="domus"/>
+  <property name="basedir" location="."/>
   <property name="src" location="src"/>
   <property name="lib" location="lib"/>
   <property name="img" location="img"/>
@@ -11,6 +12,9 @@
   <property name="help" location="help"/>
   <property name="build" location="build"/>
   <property name="test" location="test"/>
+  <defaultexcludes add="**/.git/**"/>
+  <defaultexcludes add="**/.git/**"/>
+  <defaultexcludes add="**/.getignore"/>
 
   <!-- set up some paths -->
   <path id="classpath.base"/>
@@ -62,16 +66,14 @@
 
   <target name="jar" depends="compile">
     <!-- Put everything into the jar file -->
-    <jar jarfile="${target}.jar" basedir=".">
-      <fileset dir="." includes="transform.xml" excludes=".git/**"/>
-      <fileset dir="${build}" includes="**/*.class" excludes=".git/**"/>
-      <fileset dir="${img}" includes="**/*.png" excludes=".git/**"/>
-      <fileset dir="${resources}" includes="**/*.TTF" excludes=".git/**"/>
-      <fileset dir="${data}">
-        <include name="**/*.csv"/>
-        <include name="**/*.db"/>
-        <exclude name=".git/**"/>
+    <jar jarfile="${target}.jar">
+      <fileset dir="${basedir}">
+        <exclude name="**/src"/>
+        <exclude name="**/src/**"/>
+        <!-- <exclude name="**/build/"/> -->
+        <!-- <exclude name="**/build/**"/> -->
       </fileset>
+      <!-- <fileset dir="${build}"/> -->
       <zipfileset includes="**/*.class" src="${lib}/dom4j-1.6.1.jar"/>
       <zipfileset includes="**/*.class" src="${lib}/guava-r09-gwt.jar"/>
       <zipfileset includes="**/*.class" src="${lib}/guava-r09.jar"/>
@@ -82,7 +84,7 @@
         <attribute name="Implementation-Title" value="Domus"/>
         <attribute name="Implementation-Verison" value="1.0"/>
         <attribute name="Main-Class" value="Domus"/>
-        <attribute name="Class-Path" value="dom4j-1.6.1.jar guava-r09-gwt.jar guava-r09.jar junit.jar sqlitejdbc-v056.jar"/>
+        <attribute name="Class-Path" value="./build/"/> <!-- ./lib/dom4j-1.6.1.jar ./lib/guava-r09-gwt.jar ./lib/guava-r09.jar ./lib/junit.jar ./lib/sqlitejdbc-v056.jar"/> -->
       </manifest>
     </jar>
   </target>

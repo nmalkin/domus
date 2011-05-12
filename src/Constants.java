@@ -41,8 +41,8 @@ public class Constants {
 	
 //	protected static final String TRASH_FILE = "img/trash.png";
 	protected static final String TRASH_CLOSED_FILE = PATH_PREFIX + "img/trashcan_closed.png";
-	protected static final String TRASH_OPEN_FILE = PATH_PREFIX + "img/trashcan_open.png";
-	protected static final int TRASH_WIDTH = 77; // pixels
+	protected static final String TRASH_OPEN_FILE   = PATH_PREFIX + "img/trashcan_open.png";
+	protected static final int TRASH_WIDTH  = 77; // pixels
 	protected static final int TRASH_HEIGHT = 140; // pixels
 	protected static final float TRASH_OVERLAY_ALPHA_FRACTION = 0.25f;
 	protected static final int TRASH_OVERLAY_ALPHA = (int) (TRASH_OVERLAY_ALPHA_FRACTION * 255);
@@ -102,16 +102,16 @@ public class Constants {
 	protected static final int REMOVE_ICON_HEIGHT = 16;
 	
 	// Results
-	protected static final int RESULTS_LIST_WIDTH = 350;
-	protected static final int RESULTS_LIST_HEIGHT = 800;
-	protected static final int RESULTS_LIST_TAB_WIDTH = 350;
-	protected static final int RESULTS_LIST_TAB_HEIGHT = 25;
-	protected static final int RESULTS_LIST_ITEM_WIDTH = 350;
-	protected static final int RESULTS_LIST_ITEM_HEIGHT = 15;
-	protected static final int RESULTS_HEADER_HEIGHT = 30;
-	protected static final int RESULTS_PANEL_WIDTH = 850;
-	protected static final int RESULTS_PANEL_HEIGHT = RESULTS_LIST_HEIGHT + RESULTS_HEADER_HEIGHT;
-	protected static final int RESULTS_LISTS_DISPLAYED = 2;
+	protected static final int RESULTS_LIST_WIDTH           = 350;
+	protected static final int RESULTS_LIST_HEIGHT          = 800;
+	protected static final int RESULTS_LIST_TAB_WIDTH       = 350;
+	protected static final int RESULTS_LIST_TAB_HEIGHT      = 25;
+	protected static final int RESULTS_LIST_ITEM_WIDTH      = 350;
+	protected static final int RESULTS_LIST_ITEM_HEIGHT     = 15;
+	protected static final int RESULTS_HEADER_HEIGHT        = 30;
+	protected static final int RESULTS_PANEL_WIDTH          = 850;
+	protected static final int RESULTS_PANEL_HEIGHT         = RESULTS_LIST_HEIGHT + RESULTS_HEADER_HEIGHT;
+	protected static final int RESULTS_LISTS_DISPLAYED      = 2;
 	protected static final int RESULTS_PANEL_HORIZONTAL_GAP = 5;
 	
 	// probability
@@ -136,12 +136,12 @@ public class Constants {
 	protected static final Color PROBABILITY_DISPLAY_BACKGROUND_COLOR = Color.WHITE;
 	
 	// Lists
-	protected static final int LISTS_PANEL_WIDTH = 1000;
-	protected static final int LISTS_WIDTH = 350;
-	protected static final int LISTS_HEIGHT = 800;
-	protected static final int LISTS_DISPLAYED = 3;
-	protected static final int LISTS_HORIZONTAL_GAP = 5;
-	protected static final int LISTS_INSTRUCTIONS_WIDTH = 500;
+	protected static final int LISTS_PANEL_WIDTH         = 1000;
+	protected static final int LISTS_WIDTH               = 350;
+	protected static final int LISTS_HEIGHT              = 800;
+	protected static final int LISTS_DISPLAYED           = 3;
+	protected static final int LISTS_HORIZONTAL_GAP      = 5;
+	protected static final int LISTS_INSTRUCTIONS_WIDTH  = 500;
 	protected static final int LISTS_INSTRUCTIONS_HEIGHT = 300;
 	
 	// Instructions

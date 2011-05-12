@@ -1,8 +1,4 @@
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.sql.SQLException;
 
 public class DatabaseTest {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
