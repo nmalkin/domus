@@ -119,7 +119,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		propertiesPanel.setSize(size);
 		propertiesPanel.setLayout(new BoxLayout(propertiesPanel, BoxLayout.LINE_AXIS));
 		if (_room.isGenderNeutral()) {
-			JLabel genLabel = new JLabel("G ");
+			JLabel genLabel = new JLabel(new ImageIcon(Constants.GENDER_EMBLEM));
 			propertiesPanel.add(genLabel);
 			genLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
 			genLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
@@ -128,7 +128,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			propertiesPanel.setSize(new Dimension(size.width + genLabel.getPreferredSize().width, size.height));
 		}
 		if (_room.hasApartmentRate()) {
-			JLabel rateLabel = new JLabel("A ");
+			JLabel rateLabel = new JLabel(new ImageIcon(Constants.APARTMENT_EMBLEM));
 			propertiesPanel.add(rateLabel);
 			rateLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
 			rateLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
@@ -137,7 +137,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			propertiesPanel.setSize(new Dimension(size.width + rateLabel.getPreferredSize().width, size.height));
 		}
 		if (_room.getDorm().isSophomoreOnly()) {
-			JLabel sophLabel = new JLabel("S "); 
+			JLabel sophLabel = new JLabel(new ImageIcon(Constants.SOPHOMORE_EMBLEM)); 
 			propertiesPanel.add(sophLabel);
 			sophLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
 			sophLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));

@@ -100,6 +100,9 @@ public class Constants {
 	protected static final String REMOVE_FILE 	= PATH_PREFIX + "img/remove_from_list_black_center_1.png";
 	protected static final String LEFT_ARROW 	= PATH_PREFIX + "img/left_arrow_smaller.png";
 	protected static final String RIGHT_ARROW 	= PATH_PREFIX + "img/right_arrow_smaller.png";
+	protected static final String GENDER_EMBLEM = PATH_PREFIX + "img/genderNeutralEmblem.png";
+	protected static final String APARTMENT_EMBLEM = PATH_PREFIX + "img/apartmentRateEmblem.png";
+	protected static final String SOPHOMORE_EMBLEM = PATH_PREFIX + "img/sophomoreOnlyEmblem.png";
 	protected static final int OPEN_ICON_WIDTH = 15;
 	protected static final int REMOVE_ICON_HEIGHT = 16;
 	
