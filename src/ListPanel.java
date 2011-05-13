@@ -23,7 +23,6 @@ public class ListPanel extends JPanel {
 	private static ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
 	private JList _panel;
 	private JScrollPane _scroller;
-	private static Font _font = new Font("Verdana", Font.PLAIN, 12);
 	
 	private final int _listWidth = Constants.LISTS_WIDTH;
 	private final int _listHeight = Constants.LISTS_HEIGHT;
@@ -40,7 +39,7 @@ public class ListPanel extends JPanel {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 		panel.setBounds(0, 0, _listWidth, _itemHeight);
 		JLabel label = new JLabel(_list.getName());
-		label.setFont(new Font(_font.getFontName(), Font.BOLD, _font.getSize()));
+		label.setFont(Constants.DOMUS_FONT.deriveFont(12f).deriveFont(Font.BOLD));
 		if (_list.getColor() == null) {
 			_list.setColor(null);
 		}

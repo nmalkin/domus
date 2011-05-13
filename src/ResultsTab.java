@@ -24,6 +24,7 @@ public class ResultsTab extends JPanel implements ComponentListener {
 		
 		_noPeopleLabel = new JLabel(Constants.NO_PEOPLE_MESSAGE);
 		_noPeopleLabel.setPreferredSize(new Dimension(Constants.LISTS_INSTRUCTIONS_WIDTH, Constants.LISTS_INSTRUCTIONS_HEIGHT));
+		_noPeopleLabel.setFont(Constants.DOMUS_FONT.deriveFont(12f));
 		
 		_preferencePanel = new PreferencePanel();
 		this.add(_preferencePanel, BorderLayout.LINE_START);

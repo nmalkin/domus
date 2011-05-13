@@ -20,7 +20,6 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 	private boolean _isOpen;
 	private JLabel _label;
 	private boolean _fullWidth;
-	private static Font _unselectedFont = new Font("Verdana", Font.PLAIN, 12);
 	private ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
 	private House _house;
 	private Dorm _dorm;
@@ -43,7 +42,7 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 		_isOpen = false;
 		
 		_label = new JLabel(dorm.getName());
-		_label.setFont(_unselectedFont);
+		_label.setFont(Constants.DOMUS_FONT.deriveFont(12f));
 		
 		this.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
 		this.add(_label);
@@ -94,6 +93,41 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 		// TODO Auto-generated method stub
 		
 	}
+	
+   @Override
+    public void setOpen(boolean open) {
+        if (open) {
+            _isOpen = true;
+        }
+        else {
+            _isOpen = false;
+        }
+    }
+
+    @Override
+    @Deprecated
+    public int compareTo(AccordionItem o) {
+        return _dorm.compareTo(((PreferencePanelItem) o).getDorm());
+    }
+
+    @Override
+    public void resizeItem(Dimension d) {
+        // determine if component needs to be resized
+        boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
+        
+        // resize if necessary
+        if (resize) {
+            Dimension size = getPreferredSize();
+            setPreferredSize(new Dimension(size.width + d.width, size.height));
+            setSize(new Dimension(size.width + d.width, size.height));
+            _fullWidth = !_fullWidth;
+        }
+    }
+    
+    @Override
+    public boolean isFullWidth() {
+        return _fullWidth;
+    }
 	
 	/** Listener for removal button display */
 	private class HoverListener extends MouseAdapter {
@@ -166,41 +200,6 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 			else
 				_parentList.setSelectedItem(null);
 		}
-	}
-
-	@Override
-	public void setOpen(boolean open) {
-		if (open) {
-			_isOpen = true;
-		}
-		else {
-			_isOpen = false;
-		}
-	}
-
-	@Override
-	@Deprecated
-	public int compareTo(AccordionItem o) {
-		return _dorm.compareTo(((PreferencePanelItem) o).getDorm());
-	}
-
-	@Override
-	public void resizeItem(Dimension d) {
-		// determine if component needs to be resized
-		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth);
-		
-		// resize if necessary
-		if (resize) {
-			Dimension size = getPreferredSize();
-			setPreferredSize(new Dimension(size.width + d.width, size.height));
-			setSize(new Dimension(size.width + d.width, size.height));
-			_fullWidth = !_fullWidth;
-		}
-	}
-	
-	@Override
-	public boolean isFullWidth() {
-		return _fullWidth;
 	}
 
 }

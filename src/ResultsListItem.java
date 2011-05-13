@@ -2,6 +2,7 @@
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,6 +68,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		
 		// create label for Room name/number
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
+		_label.setFont(Constants.DOMUS_FONT.deriveFont(12f));
 //		_label.setFont();
 		panel.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
 		panel.add(_label);
@@ -173,20 +175,23 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			// create a label for the year and for the result
 			JLabel year = new JLabel(lotteryResult.getYear() + " ");
 			year.setFont(year.getFont().deriveFont(10f));
-			year.setPreferredSize(new Dimension(28, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			year.setSize(new Dimension(28, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			year.setHorizontalAlignment(JLabel.CENTER);
+			int width = 28;
+			if (count == 0)
+			    --width;
+			year.setPreferredSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			year.setSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//			year.setHorizontalAlignment(JLabel.CENTER);
 			year.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 			JLabel result = new JLabel(lotteryResult.getLotteryNumber() + " ");
 			result.setFont(result.getFont().deriveFont(10f));
-			result.setPreferredSize(new Dimension(28, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			result.setSize(new Dimension(28, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			result.setHorizontalAlignment(JLabel.CENTER);
+			result.setPreferredSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			result.setSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//			result.setHorizontalAlignment(JLabel.CENTER);
 			
 			// add the labels and reset the size
 			pastResult.add(year);
 			pastResult.add(result);
-			int width = Math.max(year.getPreferredSize().width, result.getSize().width);
+			width = Math.max(year.getPreferredSize().width, result.getSize().width);
 			size = pastResult.getSize();
 			size = new Dimension(width, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
 			pastResult.setPreferredSize(size);

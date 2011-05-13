@@ -3,6 +3,7 @@
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,6 +63,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		
 		//Set up label on tab (with expansion icon)
 		_label = new JLabel(_dorm.getName());
+		_label.setFont(Constants.DOMUS_FONT.deriveFont(12f));
 		_label.setIcon(_closedIcon);
 		_tab.addMouseListener(new ExpandListener());
 		_tab.add(_label);
