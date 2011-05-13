@@ -52,6 +52,7 @@ public class ListsTab extends JPanel implements Runnable {
 		// create a panel for the instructions which will be displayed whenever there are no lists
 		_instructionsLabel = new JLabel(Constants.LISTS_INSTRUCTIONS);
 		_instructionsLabel.setPreferredSize(new Dimension(Constants.LISTS_INSTRUCTIONS_WIDTH, Constants.LISTS_INSTRUCTIONS_HEIGHT));
+		_instructionsLabel.setFont(Constants.DOMUS_FONT.deriveFont(12f));
 		
 		// create the panel to hold the lists
 		_listsPanel = new JPanel();

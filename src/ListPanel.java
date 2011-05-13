@@ -40,6 +40,7 @@ public class ListPanel extends JPanel {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 		panel.setBounds(0, 0, _listWidth, _itemHeight);
 		JLabel label = new JLabel(_list.getName());
+		label.setFont(Constants.DOMUS_FONT.deriveFont(12f).deriveFont(Font.BOLD));
 		if (_list.getColor() == null) {
 			_list.setColor(null);
 		}

@@ -3,6 +3,7 @@
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,6 +63,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		
 		//Set up label on tab (with expansion icon)
 		_label = new JLabel(_dorm.getName());
+		_label.setFont(Constants.DOMUS_FONT.deriveFont(12f));
 		_label.setIcon(_closedIcon);
 		_tab.addMouseListener(new ExpandListener());
 		_tab.add(_label);
@@ -178,26 +180,23 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 		//determine if components need to be resized
 		boolean resize = (d.width < 0 && _fullWidth) || (d.width > 0 && !_fullWidth) || getHeight() != d.height;
 		
-		//resize this component
-		Dimension size = this.getSize();
 		if (resize) {
+		    //resize this component
+		    Dimension size = this.getSize();
 			this.setPreferredSize(new Dimension(size.width + d.width, size.height + d.height));
 			this.setSize(new Dimension(size.width + d.width, size.height + d.height));
-		}
 		
 		//resize tab
-		size = _tab.getSize();
-		if (resize) {
+			size = _tab.getSize();
 			_tab.setPreferredSize(new Dimension(size.width + d.width, size.height));
 			_tab.setSize(new Dimension(size.width + d.width, size.height));
-		}
 
 		//resize itemsPanel
-		size = _itemsPanel.getSize();
-		if (resize) {
+			size = _itemsPanel.getSize();
 			_itemsPanel.setPreferredSize(new Dimension(size.width + d.width, size.height + d.height));
 			_itemsPanel.setSize(new Dimension(size.width + d.width, size.height + d.height));
-			_fullWidth = !_fullWidth;
+			if (d.width != 0)
+			    _fullWidth = !_fullWidth;
 //			int bottom = 1;
 //			if (!_fullWidth && this == _parentList.getLastTab())
 //				bottom = 0;
@@ -244,7 +243,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	public void addItem(AccordionItem item) {
 		_itemsPanel.add((JComponent) item);
 		Dimension size = _itemsPanel.getPreferredSize();
-		size = new Dimension(size.width, size.height + ((JComponent) item).getHeight());
+		size = new Dimension(size.width, size.height + ((JComponent) item).getSize().height);
 		_itemsPanel.setPreferredSize(size);
 		_itemsPanel.setSize(size);
 	}
@@ -253,7 +252,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	public void removeItem(AccordionItem item) {
 		_itemsPanel.remove((JComponent) item);
 		Dimension size = _itemsPanel.getPreferredSize();
-		size = new Dimension(size.width, size.height - ((JComponent) item).getHeight());
+		size = new Dimension(size.width, size.height - ((JComponent) item).getSize().height);
 		_itemsPanel.setPreferredSize(size);
 		_itemsPanel.setSize(size);
 	}

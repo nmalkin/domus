@@ -2,6 +2,7 @@
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,6 +68,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		
 		// create label for Room name/number
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
+		_label.setFont(Constants.DOMUS_FONT.deriveFont(12f));
 //		_label.setFont();
 		panel.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
 		panel.add(_label);
@@ -117,7 +119,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		propertiesPanel.setSize(size);
 		propertiesPanel.setLayout(new BoxLayout(propertiesPanel, BoxLayout.LINE_AXIS));
 		if (_room.isGenderNeutral()) {
-			JLabel genLabel = new JLabel("G ");
+			JLabel genLabel = new JLabel(new ImageIcon(getClass().getResource(Constants.GENDER_EMBLEM)));
 			propertiesPanel.add(genLabel);
 			genLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
 			genLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
@@ -126,7 +128,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			propertiesPanel.setSize(new Dimension(size.width + genLabel.getPreferredSize().width, size.height));
 		}
 		if (_room.hasApartmentRate()) {
-			JLabel rateLabel = new JLabel("A ");
+			JLabel rateLabel = new JLabel(new ImageIcon(getClass().getResource(Constants.APARTMENT_EMBLEM)));
 			propertiesPanel.add(rateLabel);
 			rateLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
 			rateLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
@@ -135,7 +137,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			propertiesPanel.setSize(new Dimension(size.width + rateLabel.getPreferredSize().width, size.height));
 		}
 		if (_room.getDorm().isSophomoreOnly()) {
-			JLabel sophLabel = new JLabel("S "); 
+			JLabel sophLabel = new JLabel(new ImageIcon(getClass().getResource(Constants.SOPHOMORE_EMBLEM))); 
 			propertiesPanel.add(sophLabel);
 			sophLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
 			sophLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
@@ -173,20 +175,23 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			// create a label for the year and for the result
 			JLabel year = new JLabel(lotteryResult.getYear() + " ");
 			year.setFont(year.getFont().deriveFont(10f));
-			year.setPreferredSize(new Dimension(28, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			year.setSize(new Dimension(28, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			year.setHorizontalAlignment(JLabel.CENTER);
+			int width = 28;
+			if (count == 0)
+			    --width;
+			year.setPreferredSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			year.setSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//			year.setHorizontalAlignment(JLabel.CENTER);
 			year.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 			JLabel result = new JLabel(lotteryResult.getLotteryNumber() + " ");
 			result.setFont(result.getFont().deriveFont(10f));
-			result.setPreferredSize(new Dimension(28, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			result.setSize(new Dimension(28, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			result.setHorizontalAlignment(JLabel.CENTER);
+			result.setPreferredSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+			result.setSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//			result.setHorizontalAlignment(JLabel.CENTER);
 			
 			// add the labels and reset the size
 			pastResult.add(year);
 			pastResult.add(result);
-			int width = Math.max(year.getPreferredSize().width, result.getSize().width);
+			width = Math.max(year.getPreferredSize().width, result.getSize().width);
 			size = pastResult.getSize();
 			size = new Dimension(width, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
 			pastResult.setPreferredSize(size);
@@ -335,7 +340,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			Dimension size = getPreferredSize();
 			setPreferredSize(new Dimension(size.width + d.width, size.height));
 			setSize(new Dimension(size.width + d.width, size.height));
-			_fullWidth = !_fullWidth;
+			if (d.width != 0)
+			    _fullWidth = !_fullWidth;
 		}
 	}
 	
