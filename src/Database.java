@@ -39,25 +39,23 @@ public class Database {
 
     private Database() {
         // TODO: fix this for jar stuff
-        
-        File database = null;
+        File database = new File(Constants.DATABASE_NAME);
         InputStream in = null;
         FileOutputStream out = null;
         try {        
-            JarFile jar = new JarFile(Constants.TARGET_JAR);
-            JarEntry db = jar.getJarEntry(Constants.DATABASE_NAME);
-            database = new File(Constants.DATABASE_NAME);
             if (!database.isFile()) {
+                JarFile jar = new JarFile(Constants.TARGET_JAR);
+                JarEntry db = jar.getJarEntry(Constants.DATABASE_NAME);
                 File dir = new File(Constants.DATABASE_PATH);
                 if (!dir.isDirectory()) {
                     dir.mkdirs();
                 }
                 database.createNewFile();
-            }
-            in = jar.getInputStream(db);
-            out = new FileOutputStream(database);
-            while (in.available() > 0) {
-                out.write(in.read());
+                in = jar.getInputStream(db);
+                out = new FileOutputStream(database);
+                while (in.available() > 0) {
+                    out.write(in.read());
+                }
             }
         }
         catch (IOException e) {
