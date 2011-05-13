@@ -27,8 +27,8 @@ public class ListPanel extends JPanel {
 	
 	private final int _listWidth = Constants.LISTS_WIDTH;
 	private final int _listHeight = Constants.LISTS_HEIGHT;
-	private final int _itemWidth = Constants.LISTS_WIDTH;
-	private final int _itemHeight = 15;
+	private final int _itemWidth = Constants.LISTS_ITEM_WIDTH;
+	private final int _itemHeight = Constants.LISTS_ITEM_HEIGHT;
 	
 	public ListPanel(RoomList list) {
 		super();

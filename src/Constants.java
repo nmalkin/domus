@@ -141,6 +141,8 @@ public class Constants {
 	protected static final int LISTS_PANEL_WIDTH = 800;
 	protected static final int LISTS_WIDTH = 350;
 	protected static final int LISTS_HEIGHT = 800;
+	protected static final int LISTS_ITEM_WIDTH = 200;
+	protected static final int LISTS_ITEM_HEIGHT = 15;
 	protected static final int LISTS_DISPLAYED = 2;
 	protected static final int LISTS_HORIZONTAL_GAP = 5;
 	protected static final int LISTS_INSTRUCTIONS_WIDTH = 500;
