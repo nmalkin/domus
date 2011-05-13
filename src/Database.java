@@ -1,5 +1,11 @@
 
 
+import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -11,6 +17,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Database {
 
@@ -31,6 +39,54 @@ public class Database {
 
     private Database() {
         // TODO: fix this for jar stuff
+        
+        File database = null;
+        InputStream in = null;
+        FileOutputStream out = null;
+        try {        
+            JarFile jar = new JarFile(Constants.TARGET_JAR);
+            JarEntry db = jar.getJarEntry(Constants.DATABASE_NAME);
+            database = new File(Constants.DATABASE_NAME);
+            if (!database.isFile()) {
+                File dir = new File(Constants.DATABASE_PATH);
+                if (!dir.isDirectory()) {
+                    dir.mkdirs();
+                }
+                database.createNewFile();
+            }
+            in = jar.getInputStream(db);
+            out = new FileOutputStream(database);
+            while (in.available() > 0) {
+                out.write(in.read());
+            }
+        }
+        catch (IOException e) {
+            System.err.println("ERROR: unable to create database file " + Constants.DATABASE_NAME + ". " + e.getMessage());
+            e.printStackTrace();
+            try {
+                if (in != null)
+                    in.close();
+                if (out != null)
+                    out.close();
+            }
+            catch (IOException ex) {
+                System.err.println("ERROR: unable to close input or output streams." + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }
+        finally {
+            try {
+                if (in != null)
+                    in.close();
+                if (out != null)
+                    out.close();
+            }
+            catch (IOException ex) {
+                System.err.println("ERROR: unable to close input or output streams." + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }
+        
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:"

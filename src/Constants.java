@@ -140,6 +140,8 @@ public class Constants {
 	// Lists
 	protected static final int LISTS_PANEL_WIDTH = 800;
 	protected static final int LISTS_WIDTH = 350;
+	protected static final int LISTS_ITEM_WIDTH = 200;
+	protected static final int LISTS_ITEM_HEIGHT = 15;
 	protected static final int LISTS_HEIGHT = 800;
 	protected static final int LISTS_DISPLAYED = 2;
 	protected static final int LISTS_HORIZONTAL_GAP = 5;
@@ -159,6 +161,8 @@ public class Constants {
 			"Click the Preferences tab and drag people onto the canvas to view results.</center></html>";
 	
 	// Database
+	protected static final String TARGET_JAR = "domus.jar";
+	protected static final String DATABASE_PATH = "data/";
 	protected static final String DATABASE_NAME = PATH_PREFIX + "data/housingdata.db";
 	protected static final String ROOM_TABLE = "rooms_with_regressions";
 	protected static final String GENDER_TABLE = "genderNeutral";
