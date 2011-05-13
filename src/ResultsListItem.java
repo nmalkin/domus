@@ -1,6 +1,7 @@
 
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -18,7 +19,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
 
 /**
  * A single result inside a tab of results for a specific subgroup.
@@ -26,7 +29,7 @@ import javax.swing.JPanel;
  * @author jswarren
  * 
  */
-public class ResultsListItem extends JPanel implements AccordionItem {
+public class ResultsListItem extends JPanel implements AccordionItem, ListCellRenderer {
 
 	private AccordionList<ResultsListTab, ResultsListItem> _parentList;
 	private Room _room;
@@ -39,6 +42,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	private boolean _fullWidth;
 	private ImageIcon _buttonIcon;
 	private double _comparisonValue;
+	private Color _backgroundColor;
 	
 	private int _listWidth = Constants.RESULTS_LIST_ITEM_WIDTH;
 	
@@ -65,6 +69,7 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		_isOpen = false;
 		_fullWidth = true;
 		_buttonIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
+		_backgroundColor = this.getBackground();
 		
 		// create label for Room name/number
 		_label = new JLabel(_room.getDorm().getName() + " " + _room.getNumber());
@@ -280,6 +285,18 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			_button.addMouseListener(l);
 	}
 	
+    public JLabel getButton() {
+        return _button;
+    }
+	
+    public void updateWidth(int width) {
+        // TODO Auto-generated method stub
+        _listWidth = width;
+        Dimension size = new Dimension(_listWidth, Constants.RESULTS_LIST_ITEM_HEIGHT);
+        this.setPreferredSize(size);
+        this.setSize(size);
+    }
+	
 	@Override
 	public double getComparisonValue() {
 		return _comparisonValue;
@@ -300,6 +317,10 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	 */
 	@Override
 	public void setOpen(boolean open) {
+	    // if the status is not changing, do nothing
+	    if (open == _isOpen)
+	        return;
+	    
 		_isOpen = open;
 		int height = _infoPanel.getPreferredSize().height;
 		if (open) {
@@ -349,6 +370,32 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 	public boolean isFullWidth() {
 		return _fullWidth;
 	}
+	
+	@Override
+	public Dimension getPreferredSize() {
+	    int height = Constants.RESULTS_LIST_ITEM_HEIGHT;
+	    if (_isOpen)
+	        height *= 3;
+	    return new Dimension(Constants.RESULTS_LIST_ITEM_WIDTH, height);
+	}
+
+    @Override
+    public Component getListCellRendererComponent(JList list, Object value,
+            int index, boolean isSelected, boolean cellHasFocus) {
+//        System.out.println("selected: " + isSelected);
+//        System.out.println("focus: " + cellHasFocus);
+        if (isSelected) {
+//            this.setBackground(new Color(134, 171, 217));
+//            _label.setBackground(new Color(134, 171, 217));
+//            _infoPanel.setBackground(new Color(134, 171, 217));
+        }
+        else {
+//            this.setBackground(_backgroundColor);
+//            _label.setBackground(_backgroundColor);
+//            _infoPanel.setBackground(_backgroundColor);
+        }
+        return (ResultsListItem) value;
+    }
 	
 	@Override
 	@Deprecated
@@ -426,14 +473,6 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 		public void mouseClicked(MouseEvent e) {
 			setOpen(!isOpen());
 		}
-	}
-
-	public void updateWidth(int width) {
-		// TODO Auto-generated method stub
-		_listWidth = width;
-		Dimension size = new Dimension(_listWidth, Constants.RESULTS_LIST_ITEM_HEIGHT);
-		this.setPreferredSize(size);
-		this.setSize(size);
 	}
 	
 }

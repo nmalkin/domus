@@ -352,10 +352,8 @@ public class ListsTab extends JPanel implements Runnable {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			if (!((Group.GroupChangeEvent) e).getUpdateType())
-				for (RoomList rl : State.getInstance().getRoomLists()) {
-					for (ResultsListItem rli : rl) {
-						rli.updateProbability();
-					}
+				for (ListPanel lp : _lists) {
+					lp.updateProbabilities();
 				}
 		}
 		
