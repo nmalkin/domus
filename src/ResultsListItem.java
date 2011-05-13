@@ -340,7 +340,8 @@ public class ResultsListItem extends JPanel implements AccordionItem {
 			Dimension size = getPreferredSize();
 			setPreferredSize(new Dimension(size.width + d.width, size.height));
 			setSize(new Dimension(size.width + d.width, size.height));
-			_fullWidth = !_fullWidth;
+			if (d.width != 0)
+			    _fullWidth = !_fullWidth;
 		}
 	}
 	
