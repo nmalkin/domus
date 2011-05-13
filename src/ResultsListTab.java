@@ -243,7 +243,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	public void addItem(AccordionItem item) {
 		_itemsPanel.add((JComponent) item);
 		Dimension size = _itemsPanel.getPreferredSize();
-		size = new Dimension(size.width, size.height + ((JComponent) item).getHeight());
+		size = new Dimension(size.width, size.height + ((JComponent) item).getSize().height);
 		_itemsPanel.setPreferredSize(size);
 		_itemsPanel.setSize(size);
 	}
@@ -252,7 +252,7 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	public void removeItem(AccordionItem item) {
 		_itemsPanel.remove((JComponent) item);
 		Dimension size = _itemsPanel.getPreferredSize();
-		size = new Dimension(size.width, size.height - ((JComponent) item).getHeight());
+		size = new Dimension(size.width, size.height - ((JComponent) item).getSize().height);
 		_itemsPanel.setPreferredSize(size);
 		_itemsPanel.setSize(size);
 	}
