@@ -17,6 +17,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -103,129 +104,137 @@ public class ResultsListItem extends JPanel implements AccordionItem, ListCellRe
 		
 		// make sure the room has the proper list labels
 		validateListLabels();
-		
-		// create a panel to hold the other information (LotteryResults, GAS, possible sq feet?)
-		_infoPanel = new JPanel();
-		size = new Dimension(_listWidth, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT + 1);
-		_infoPanel.setPreferredSize(size);
-		_infoPanel.setSize(size);
-		_infoPanel.setLayout(new BoxLayout(_infoPanel, BoxLayout.LINE_AXIS));
-		JPanel fillerPanel = new JPanel();
-		fillerPanel.setLayout(new BoxLayout(fillerPanel, BoxLayout.LINE_AXIS));
-		fillerPanel.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
-		JPanel holderPanel = new JPanel();
-		holderPanel.setLayout(new BoxLayout(holderPanel, BoxLayout.LINE_AXIS));
-		
-		// create a label for each property of this ResultListItem's room
-		// create a panel for the ResultsListItem's room's properties
-		JPanel propertiesPanel = new JPanel();
-		size = new Dimension(0, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
-		propertiesPanel.setPreferredSize(size);
-		propertiesPanel.setSize(size);
-		propertiesPanel.setLayout(new BoxLayout(propertiesPanel, BoxLayout.LINE_AXIS));
-		if (_room.isGenderNeutral()) {
-			JLabel genLabel = new JLabel(new ImageIcon(Constants.GENDER_EMBLEM));
-			propertiesPanel.add(genLabel);
-			genLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			genLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			size = propertiesPanel.getPreferredSize();
-			propertiesPanel.setPreferredSize(new Dimension(size.width + genLabel.getPreferredSize().width, size.height));
-			propertiesPanel.setSize(new Dimension(size.width + genLabel.getPreferredSize().width, size.height));
-		}
-		if (_room.hasApartmentRate()) {
-			JLabel rateLabel = new JLabel(new ImageIcon(Constants.APARTMENT_EMBLEM));
-			propertiesPanel.add(rateLabel);
-			rateLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			rateLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			size = propertiesPanel.getPreferredSize();
-			propertiesPanel.setPreferredSize(new Dimension(size.width + rateLabel.getPreferredSize().width, size.height));
-			propertiesPanel.setSize(new Dimension(size.width + rateLabel.getPreferredSize().width, size.height));
-		}
-		if (_room.getDorm().isSophomoreOnly()) {
-			JLabel sophLabel = new JLabel(new ImageIcon(Constants.SOPHOMORE_EMBLEM)); 
-			propertiesPanel.add(sophLabel);
-			sophLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			sophLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			size = propertiesPanel.getPreferredSize();
-			propertiesPanel.setPreferredSize(new Dimension(size.width + sophLabel.getPreferredSize().width, size.height));
-			propertiesPanel.setSize(new Dimension(size.width + sophLabel.getPreferredSize().width, size.height));
-		}
-//		JLabel results = new JLabel("Past Results:"); 
-//		propertiesPanel.add(results);
-//		propertiesPanel.setPreferredSize(new Dimension(30, Constants.RESULTS_LIST_ITEM_HEIGHT));
-//		propertiesPanel.setSize(new Dimension(30, Constants.RESULTS_LIST_ITEM_HEIGHT));
-//		size = propertiesPanel.getPreferredSize();
-//		propertiesPanel.setPreferredSize(new Dimension(size.width + results.getPreferredSize().width, size.height));
-//		propertiesPanel.setSize(new Dimension(size.width + results.getPreferredSize().width, size.height));
-		holderPanel.add(propertiesPanel);
-		holderPanel.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
-		
-		// create a panel for the past lottery results
-		JPanel pastResultsPanel = new JPanel();
-		pastResultsPanel.setLayout(new BoxLayout(pastResultsPanel, BoxLayout.LINE_AXIS));
-		size = new Dimension(0, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
-		pastResultsPanel.setPreferredSize(size);
-		pastResultsPanel.setSize(size);
-		
-		// create a panel for each past result
-		int count = 0;
-		for (LotteryResult lotteryResult : _room.getResults()) {
-			JPanel pastResult = new JPanel();
-			pastResult.setLayout(new BoxLayout(pastResult, BoxLayout.PAGE_AXIS));
-			int left = 1;
-			if (count == 0)
-				left = 0;
-			pastResult.setBorder(BorderFactory.createMatteBorder(0, left, 0, 0, Color.BLACK));
-			
-			// create a label for the year and for the result
-			JLabel year = new JLabel(lotteryResult.getYear() + " ");
-			year.setFont(year.getFont().deriveFont(10f));
-			int width = 28;
-			if (count == 0)
-			    --width;
-			year.setPreferredSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			year.setSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
-//			year.setHorizontalAlignment(JLabel.CENTER);
-			year.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
-			JLabel result = new JLabel(lotteryResult.getLotteryNumber() + " ");
-			result.setFont(result.getFont().deriveFont(10f));
-			result.setPreferredSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
-			result.setSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
-//			result.setHorizontalAlignment(JLabel.CENTER);
-			
-			// add the labels and reset the size
-			pastResult.add(year);
-			pastResult.add(result);
-			width = Math.max(year.getPreferredSize().width, result.getSize().width);
-			size = pastResult.getSize();
-			size = new Dimension(width, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
-			pastResult.setPreferredSize(size);
-			pastResult.setSize(size);
-//			pastResult.setMinimumSize(size);
-			
-			// add the panel to the past lottery results panel
-			// and resize it
-			pastResultsPanel.add(pastResult);
-			size = pastResultsPanel.getSize();
-			size = new Dimension(size.width + pastResult.getSize().width, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
-			pastResultsPanel.setPreferredSize(size);
-			pastResultsPanel.setSize(size);
-			count++;
-		}
-		pastResultsPanel.add(Box.createHorizontalGlue());
-		holderPanel.add(pastResultsPanel);
-		holderPanel.add(Box.createHorizontalGlue());
-//		holderPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, Color.BLACK));
-		
-		_infoPanel.add(fillerPanel);
-		_infoPanel.add(holderPanel);
-		_infoPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
-		
-		
-		// add info panel to ResultsListItem (initally not visible)
-		_infoPanel.setVisible(false);
-		this.add(_infoPanel);
-		
+		setupInfoPanel();
+	}
+	
+	/**
+	 * Sets up the information in the info panel. This includes:
+	 * emblems for genderNeutral, sophomoreOnly, and apartmentRate,
+	 * and past lottery results. In the future, other information 
+	 * might be added to this area.
+	 */
+	public void setupInfoPanel() {
+	 // create a panel to hold the other information (LotteryResults, GAS, possible sq feet?)
+        _infoPanel = new JPanel();
+        Dimension size = new Dimension(_listWidth, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT + 1);
+        _infoPanel.setPreferredSize(size);
+        _infoPanel.setSize(size);
+        _infoPanel.setLayout(new BoxLayout(_infoPanel, BoxLayout.LINE_AXIS));
+        JPanel fillerPanel = new JPanel();
+        fillerPanel.setLayout(new BoxLayout(fillerPanel, BoxLayout.LINE_AXIS));
+        fillerPanel.add(Box.createRigidArea(new Dimension(Constants.OPEN_ICON_WIDTH, 0)));
+        JPanel holderPanel = new JPanel();
+        holderPanel.setLayout(new BoxLayout(holderPanel, BoxLayout.LINE_AXIS));
+        
+        // create a label for each property of this ResultListItem's room
+        // create a panel for the ResultsListItem's room's properties
+        JPanel propertiesPanel = new JPanel();
+        size = new Dimension(0, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
+        propertiesPanel.setPreferredSize(size);
+        propertiesPanel.setSize(size);
+        propertiesPanel.setLayout(new BoxLayout(propertiesPanel, BoxLayout.LINE_AXIS));
+        if (_room.isGenderNeutral()) {
+            JLabel genLabel = new JLabel(new ImageIcon(Constants.GENDER_EMBLEM));
+            propertiesPanel.add(genLabel);
+            genLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
+            genLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
+            size = propertiesPanel.getPreferredSize();
+            propertiesPanel.setPreferredSize(new Dimension(size.width + genLabel.getPreferredSize().width, size.height));
+            propertiesPanel.setSize(new Dimension(size.width + genLabel.getPreferredSize().width, size.height));
+        }
+        if (_room.hasApartmentRate()) {
+            JLabel rateLabel = new JLabel(new ImageIcon(Constants.APARTMENT_EMBLEM));
+            propertiesPanel.add(rateLabel);
+            rateLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
+            rateLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
+            size = propertiesPanel.getPreferredSize();
+            propertiesPanel.setPreferredSize(new Dimension(size.width + rateLabel.getPreferredSize().width, size.height));
+            propertiesPanel.setSize(new Dimension(size.width + rateLabel.getPreferredSize().width, size.height));
+        }
+        if (_room.getDorm().isSophomoreOnly()) {
+            JLabel sophLabel = new JLabel(new ImageIcon(Constants.SOPHOMORE_EMBLEM)); 
+            propertiesPanel.add(sophLabel);
+            sophLabel.setPreferredSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
+            sophLabel.setSize(new Dimension(20, Constants.RESULTS_LIST_ITEM_HEIGHT));
+            size = propertiesPanel.getPreferredSize();
+            propertiesPanel.setPreferredSize(new Dimension(size.width + sophLabel.getPreferredSize().width, size.height));
+            propertiesPanel.setSize(new Dimension(size.width + sophLabel.getPreferredSize().width, size.height));
+        }
+//      JLabel results = new JLabel("Past Results:"); 
+//      propertiesPanel.add(results);
+//      propertiesPanel.setPreferredSize(new Dimension(30, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//      propertiesPanel.setSize(new Dimension(30, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//      size = propertiesPanel.getPreferredSize();
+//      propertiesPanel.setPreferredSize(new Dimension(size.width + results.getPreferredSize().width, size.height));
+//      propertiesPanel.setSize(new Dimension(size.width + results.getPreferredSize().width, size.height));
+        holderPanel.add(propertiesPanel);
+        holderPanel.add(Box.createRigidArea(new Dimension(Constants.INSET, 0)));
+        
+        // create a panel for the past lottery results
+        JPanel pastResultsPanel = new JPanel();
+        pastResultsPanel.setLayout(new BoxLayout(pastResultsPanel, BoxLayout.LINE_AXIS));
+        size = new Dimension(0, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
+        pastResultsPanel.setPreferredSize(size);
+        pastResultsPanel.setSize(size);
+        
+        // create a panel for each past result
+        int count = 0;
+        for (LotteryResult lotteryResult : _room.getResults()) {
+            JPanel pastResult = new JPanel();
+            pastResult.setLayout(new BoxLayout(pastResult, BoxLayout.PAGE_AXIS));
+            int left = 1;
+            if (count == 0)
+                left = 0;
+            pastResult.setBorder(BorderFactory.createMatteBorder(0, left, 0, 0, Color.BLACK));
+            
+            // create a label for the year and for the result
+            JLabel year = new JLabel(lotteryResult.getYear() + " ");
+            year.setFont(year.getFont().deriveFont(10f));
+            int width = 28;
+            if (count == 0)
+                --width;
+            year.setPreferredSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+            year.setSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//          year.setHorizontalAlignment(JLabel.CENTER);
+            year.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+            JLabel result = new JLabel(lotteryResult.getLotteryNumber() + " ");
+            result.setFont(result.getFont().deriveFont(10f));
+            result.setPreferredSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+            result.setSize(new Dimension(width, Constants.RESULTS_LIST_ITEM_HEIGHT));
+//          result.setHorizontalAlignment(JLabel.CENTER);
+            
+            // add the labels and reset the size
+            pastResult.add(year);
+            pastResult.add(result);
+            width = Math.max(year.getPreferredSize().width, result.getSize().width);
+            size = pastResult.getSize();
+            size = new Dimension(width, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
+            pastResult.setPreferredSize(size);
+            pastResult.setSize(size);
+//          pastResult.setMinimumSize(size);
+            
+            // add the panel to the past lottery results panel
+            // and resize it
+            pastResultsPanel.add(pastResult);
+            size = pastResultsPanel.getSize();
+            size = new Dimension(size.width + pastResult.getSize().width, 2 * Constants.RESULTS_LIST_ITEM_HEIGHT);
+            pastResultsPanel.setPreferredSize(size);
+            pastResultsPanel.setSize(size);
+            count++;
+        }
+        pastResultsPanel.add(Box.createHorizontalGlue());
+        holderPanel.add(pastResultsPanel);
+        holderPanel.add(Box.createHorizontalGlue());
+//      holderPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 1, 0, Color.BLACK));
+        
+        _infoPanel.add(fillerPanel);
+        _infoPanel.add(holderPanel);
+        _infoPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        
+        
+        // add info panel to ResultsListItem (initally not visible)
+        _infoPanel.setVisible(false);
+        this.add(_infoPanel);
 	}
 	
 	/** Makes sure the list labels for this item are updated */
@@ -295,6 +304,47 @@ public class ResultsListItem extends JPanel implements AccordionItem, ListCellRe
         Dimension size = new Dimension(_listWidth, Constants.RESULTS_LIST_ITEM_HEIGHT);
         this.setPreferredSize(size);
         this.setSize(size);
+    }
+    
+    public void setSelected(boolean selected) {
+        if (selected) {            
+            this.setBackground(new Color(134, 171, 217));
+            for (Component c1 : getComponents()) {
+                JComponent j1 = (JComponent) c1;
+                j1.setBackground(new Color(134, 171, 217));
+                for (Component c2 : j1.getComponents()) {
+                    JComponent j2 = (JComponent) c2;
+                    j2.setBackground(new Color(134, 171, 217));
+                    for (Component c3 : j2.getComponents()) {
+                        JComponent j3 = (JComponent) c3;
+                        j3.setBackground(new Color(134, 171, 217));
+                        for (Component c4 : j3.getComponents()) {
+                            JComponent j4 = (JComponent) c4;
+                            j4.setBackground(new Color(134, 171, 217));
+                        }
+                    }
+                }
+            }        
+        }
+        else {
+            this.setBackground(_backgroundColor);
+            for (Component c1 : getComponents()) {
+                JComponent j1 = (JComponent) c1;
+                j1.setBackground(_backgroundColor);
+                for (Component c2 : j1.getComponents()) {
+                    JComponent j2 = (JComponent) c2;
+                    j2.setBackground(_backgroundColor);
+                    for (Component c3 : j2.getComponents()) {
+                        JComponent j3 = (JComponent) c3;
+                        j3.setBackground(_backgroundColor);
+                        for (Component c4 : j3.getComponents()) {
+                            JComponent j4 = (JComponent) c4;
+                            j4.setBackground(_backgroundColor);
+                        }
+                    }
+                }
+            }
+        }
     }
 	
 	@Override
@@ -382,19 +432,10 @@ public class ResultsListItem extends JPanel implements AccordionItem, ListCellRe
     @Override
     public Component getListCellRendererComponent(JList list, Object value,
             int index, boolean isSelected, boolean cellHasFocus) {
-//        System.out.println("selected: " + isSelected);
-//        System.out.println("focus: " + cellHasFocus);
-        if (isSelected) {
-//            this.setBackground(new Color(134, 171, 217));
-//            _label.setBackground(new Color(134, 171, 217));
-//            _infoPanel.setBackground(new Color(134, 171, 217));
-        }
-        else {
-//            this.setBackground(_backgroundColor);
-//            _label.setBackground(_backgroundColor);
-//            _infoPanel.setBackground(_backgroundColor);
-        }
-        return (ResultsListItem) value;
+        ResultsListItem item = (ResultsListItem) value;
+        
+        item.setSelected(isSelected);
+        return item;
     }
 	
 	@Override

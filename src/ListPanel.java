@@ -18,6 +18,7 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.DropMode;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -84,7 +85,7 @@ public class ListPanel extends JPanel {
 		_panel.setDropMode(DropMode.INSERT);
 		_panel.setTransferHandler(new ListTransferHandler());
 		_panel.addMouseListener(new ListClickListener());
-//		_panel.setFixedCellHeight(Constants.LISTS_ITEM_HEIGHT * 3);
+		_panel.setSelectionModel(new ToggleListSelectionModel());
 		_scroller = new JScrollPane(_panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		_scroller.setBounds(0, panel.getHeight(), _listWidth, _listHeight - _itemHeight);
 		this.add(_scroller);
@@ -319,10 +320,17 @@ public class ListPanel extends JPanel {
                     return false;
                 return true;
             }
-	        
+            
 	    }
+	    
 	}
 	
+	/** 
+	 * Listens for clicks on list items. Used for removal and
+	 * opening/closing the info panel
+	 * 
+	 * @author jswarren
+	 */
 	private class ListClickListener extends MouseAdapter {
 	    
 	    @Override
@@ -334,7 +342,12 @@ public class ListPanel extends JPanel {
 	        DefaultListModel listModel = (DefaultListModel) _panel.getModel();
 	        ResultsListItem item = (ResultsListItem) listModel.getElementAt(index);
 	        JLabel button = item.getButton();
-	        Point click = new Point(e.getX() - button.getX(), e.getY() - button.getY());
+	        int height = 0;
+	        for (int i = 0; i < index; ++i) {
+	            ResultsListItem rli = (ResultsListItem) listModel.get(i);
+                height += rli.getPreferredSize().height; 
+	        }
+	        Point click = new Point(e.getX() - button.getX(), e.getY() - button.getY() - height);
 	        if (button.contains(click)) {
 	            removeResultsListItem(item);
 	        }
@@ -342,8 +355,32 @@ public class ListPanel extends JPanel {
 	            item.setOpen(!item.isOpen());
 	            listModel.setElementAt(item, index);
 	        }
-	        System.out.println();
 	    }
+	    
 	}
 	
+	/**
+	 * Used to toggle selection for list items, insted of needing to
+	 * select something else to unselect an item.
+	 * 
+	 * @author jswarren
+	 */
+	private class ToggleListSelectionModel extends DefaultListSelectionModel {
+	    
+	    boolean gestureStarted = false;
+	    
+	    public void setSelectionInterval(int index0, int index1) {
+	        if (isSelectedIndex(index0) && !gestureStarted) {
+	            super.removeSelectionInterval(index0, index1);
+	        }
+	        else {
+	            super.setSelectionInterval(index0, index1);
+	        }
+	    }
+	    
+	    public void setValueIsAdjusting(boolean isAdjusting) {
+	        gestureStarted = isAdjusting;
+	    }
+	    
+	}
 }
