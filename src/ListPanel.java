@@ -10,9 +10,11 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.Box;
@@ -34,7 +36,9 @@ public class ListPanel extends JPanel {
 	private RoomList _list;
 	private static ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
 	private JList _panel;
+    private static JList _sourceList;
 	private JScrollPane _scroller;
+	private static boolean _controlDown = false;
 	
 	private final int _listWidth = Constants.LISTS_WIDTH;
 	private final int _listHeight = Constants.LISTS_HEIGHT;
@@ -84,7 +88,17 @@ public class ListPanel extends JPanel {
 		_panel.setDragEnabled(true);
 		_panel.setDropMode(DropMode.INSERT);
 		_panel.setTransferHandler(new ListTransferHandler());
+		List<MouseListener> listeners = new LinkedList<MouseListener>();
+		for (MouseListener l : _panel.getMouseListeners()) {
+		    listeners.add(l);
+		}
+		for (MouseListener l : listeners) {
+		    _panel.removeMouseListener(l);
+		}
 		_panel.addMouseListener(new ListClickListener());
+		for (MouseListener l : listeners) {
+		    _panel.addMouseListener(l);
+		}
 		_panel.setSelectionModel(new ToggleListSelectionModel());
 		_scroller = new JScrollPane(_panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		_scroller.setBounds(0, panel.getHeight(), _listWidth, _listHeight - _itemHeight);
@@ -116,11 +130,12 @@ public class ListPanel extends JPanel {
 	 * Updates the probabilities of all components in the
 	 * list model.
 	 */
-	public void updateProbabilities() {
+	public void updateDisplay() {
 	    DefaultListModel listModel = (DefaultListModel) _panel.getModel();
 	    for (int i = 0; i < listModel.size(); ++i) {
 	        ResultsListItem item = (ResultsListItem) listModel.getElementAt(i);
 	        item.updateProbability();
+	        item.validateListLabels();
 	        listModel.setElementAt(item, i);
 	    }
 	}
@@ -129,11 +144,13 @@ public class ListPanel extends JPanel {
 	public void removeResultsListItem(ResultsListItem item) {
 		DefaultListModel listModel = (DefaultListModel) _panel.getModel();
 		listModel.removeElement(item);
+		_list.remove(item);
 		item.getRoom().removeFromRoomList(_list);
 		item.getRoom().removeFromListItem(item);
 		for (ResultsListItem rli : item.getRoom().getListItems()) {
 			rli.validateListLabels();
 		}
+		ListsTab.getInstance().updateListsDisplay();
 	}
 	
 	/** Listener for removal button display */
@@ -188,24 +205,56 @@ public class ListPanel extends JPanel {
 	private class ListTransferHandler extends TransferHandler {
 	    
 	    private int[] indices = null;
+	    private int lastIndex;
 	    
 	    @Override
 	    public boolean canImport(TransferHandler.TransferSupport info) {
 	        // Check for proper flavor
 	        try {
-	            if (!info.isDataFlavorSupported(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + ResultsListItem.class.getName() + "\"")))
+	            if (!info.isDataFlavorSupported(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + ResultsListItem.class.getName() + "\""))) {
 	                return false;
+	            }
 	        }
 	        catch (ClassNotFoundException e) {
 	            System.err.println("Class not found during drag and drop action. " + e.getMessage());
 	            e.printStackTrace();
 	        }
+	        
+	        if (info.getUserDropAction() == TransferHandler.COPY) {
+	            info.setDropAction(TransferHandler.MOVE);
+	        }
+	        
+	        if (info.getComponent() != _sourceList) {
+    	        Transferable trans = info.getTransferable();
+                if (trans == null)
+                    return false;
+                
+                List<ResultsListItem> items = null;
+                try {
+                    items = (List<ResultsListItem>) trans.getTransferData(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + ResultsListItem.class.getName() + "\""));
+                }
+                catch (Exception e) {
+                    System.out.println("Error during drag and drop action. " + e.getMessage());
+                    e.printStackTrace();
+                    return false;
+                }
+                
+                for (ResultsListItem item : items) {
+                    if (!_list.contains(item))
+                        info.setDropAction(TransferHandler.COPY);
+                }
+                
+                if (info.getDropAction() != TransferHandler.COPY)
+                    return false;
+	        }
+
 	        return true;
 	    }
 	    
 	    @Override
 	    protected Transferable createTransferable(JComponent c) {
 	        JList list = (JList) c;
+	        _sourceList = list;
 	        indices = list.getSelectedIndices();
 	        Object[] values = list.getSelectedValues();
 	        
@@ -231,12 +280,13 @@ public class ListPanel extends JPanel {
 	            return false;
 	        }
 	        
-	        ResultsListItemTransferable t = (ResultsListItemTransferable) info.getTransferable();
-	        List<ResultsListItem> items = new ArrayList<ResultsListItem>();
+	        Transferable trans = info.getTransferable();
+	        if (trans == null)
+	            return false;
+	        
+	        List<ResultsListItem> items = null;
 	        try {
-	            for (int i = 0; i < t.getItemCount(); ++i) {
-	                items.add((ResultsListItem) t.getTransferDataAt(i, new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + ResultsListItem.class.getName() + "\"")));
-	            }
+	            items = (List<ResultsListItem>) trans.getTransferData(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=\"" + ResultsListItem.class.getName() + "\""));
 	        }
 	        catch (Exception e) {
 	            System.err.println("Error during drag and drop action. " + e.getMessage());
@@ -244,14 +294,22 @@ public class ListPanel extends JPanel {
 	            return false;
 	        }
 	        
-	        for (int i = 0; i < items.size(); ++i) {
-	            ResultsListItem item = items.get(i);
-	            listModel.add(index++, item);
+	        for (ResultsListItem item : items) {
 	            // TODO: fix this so it's not just graphical and 
 	            // is represented in the RoomLists as well (ordering)
-	            if (!_list.contains(item))
+	            if (!_list.contains(item)) {
 	                _list.add(item);
+	                item.getRoom().addToRoomList(_list);
+	            }
+	            item.validateListLabels();
+	            for (ResultsListItem rli : item.getRoom().getListItems()) {
+	                    rli.validateListLabels();
+	            }
+	            if (info.getDropAction() == TransferHandler.MOVE || (info.getDropAction() == TransferHandler.COPY && !listModel.contains(item)))
+	                listModel.add(index++, item);    
 	        }
+	        
+	        lastIndex = index;
 	        
 	        return true;
 	    }
@@ -261,13 +319,36 @@ public class ListPanel extends JPanel {
 	        JList source = (JList) c;
 	        DefaultListModel listModel = (DefaultListModel) source.getModel();
 	        
+	        boolean success = false;
 	        if (action == TransferHandler.MOVE) {
 	            for (int i = indices.length - 1; i >= 0; --i) {
-	                listModel.remove(indices[i]);
+	                int index = indices[i];
+	                if (lastIndex <= index) {
+	                    index += indices.length;
+	                    --lastIndex;
+	                }
+	                listModel.remove(index);
+	                success = true;
+	            }
+	        }
+	        if (action == TransferHandler.COPY) {
+	            for (int i = indices.length - 1; i >= 0; --i) {
+	                int index = indices[i];
+	                if (index >= listModel.getSize())
+	                    continue;
+	                ResultsListItem item = (ResultsListItem) listModel.getElementAt(index);
+	                item.validateListLabels();
+	                listModel.setElementAt(item, index);
+	                success = true;
 	            }
 	        }
 	        
+	        if (success)
+	            _sourceList.getSelectionModel().clearSelection();
+	        
+	        lastIndex = 0;
 	        indices = null;
+	        _sourceList = null;
 	    }
 	    
 	    /** Transferable representing a group of ResultsListItems */
@@ -278,26 +359,19 @@ public class ListPanel extends JPanel {
 	        public ResultsListItemTransferable(Object[] values) {
 	            _items = new ArrayList<ResultsListItem>();
 	            for (Object o : values) {
-	                _items.add((ResultsListItem) o);
+	                ResultsListItem newItem = new ResultsListItem(((ResultsListItem) o).getRoom(), null);
+	                newItem.setButtonIcon(_removeIcon);
+	                newItem.updateWidth(_itemWidth);
+	                newItem.updateProbability();
+	                newItem.validateListLabels();
+	                _items.add(newItem);
 	            }
 	        }
 	        
             @Override
             public Object getTransferData(DataFlavor flavor)
                     throws UnsupportedFlavorException, IOException {
-                return null;
-            }
-            
-            public Object getTransferDataAt(int index, DataFlavor flavor)
-                    throws UnsupportedFlavorException, IOException {
-                if (!isDataFlavorSupported(flavor)) {
-                    throw new UnsupportedFlavorException(flavor);
-                }
-                return _items.get(index);
-            }
-            
-            public int getItemCount() {
-                return _items.size();
+                return _items;
             }
 
             @Override
@@ -321,13 +395,18 @@ public class ListPanel extends JPanel {
                 return true;
             }
             
+            @Override
+            public String toString() {
+                return _items.toString();
+            }
+            
 	    }
 	    
 	}
 	
 	/** 
 	 * Listens for clicks on list items. Used for removal and
-	 * opening/closing the info panel
+	 * opening/closing the info panel.
 	 * 
 	 * @author jswarren
 	 */
@@ -352,8 +431,10 @@ public class ListPanel extends JPanel {
 	            removeResultsListItem(item);
 	        }
 	        else {
-	            item.setOpen(!item.isOpen());
-	            listModel.setElementAt(item, index);
+	            if (!e.isControlDown()) {
+    	            item.setOpen(!item.isOpen());
+    	            listModel.setElementAt(item, index);
+	            }
 	        }
 	    }
 	    
@@ -368,19 +449,26 @@ public class ListPanel extends JPanel {
 	private class ToggleListSelectionModel extends DefaultListSelectionModel {
 	    
 	    boolean gestureStarted = false;
-	    
+	    	    
+	    @Override
 	    public void setSelectionInterval(int index0, int index1) {
+	        if (!_controlDown)
+	            return;
+	        
 	        if (isSelectedIndex(index0) && !gestureStarted) {
 	            super.removeSelectionInterval(index0, index1);
 	        }
 	        else {
 	            super.setSelectionInterval(index0, index1);
 	        }
+	        
 	    }
 	    
+	    @Override
 	    public void setValueIsAdjusting(boolean isAdjusting) {
 	        gestureStarted = isAdjusting;
 	    }
 	    
 	}
+	
 }

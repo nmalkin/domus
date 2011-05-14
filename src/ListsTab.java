@@ -214,6 +214,16 @@ public class ListsTab extends JPanel implements Runnable {
 		_rightButton.setVisible(buttonsVisible);
 	}
 	
+	/**
+	 * Updates the display of each list. This includes
+	 * probabilities and list labels.
+	 */
+	public void updateListsDisplay() {
+	    for (ListPanel lp : _lists) {
+            lp.updateDisplay();
+        }
+	}
+	
 	@Override
 	public void run() {
 		// this ensures that if a mouseClicked event fires, the mousePressed
@@ -352,9 +362,7 @@ public class ListsTab extends JPanel implements Runnable {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			if (!((Group.GroupChangeEvent) e).getUpdateType())
-				for (ListPanel lp : _lists) {
-					lp.updateProbabilities();
-				}
+				updateListsDisplay();
 		}
 		
 	}

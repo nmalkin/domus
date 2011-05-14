@@ -307,6 +307,7 @@ public class ResultsListItem extends JPanel implements AccordionItem, ListCellRe
     }
     
     public void setSelected(boolean selected) {
+        // This is very hacky. Make sure to fix this later.
         if (selected) {            
             this.setBackground(new Color(134, 171, 217));
             for (Component c1 : getComponents()) {
