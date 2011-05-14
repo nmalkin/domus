@@ -158,7 +158,8 @@ public class Constants {
 			"add individual rooms or entire dorms to them.<p><p>" +
 			"You can also remove items or an entire list if you want.<p><p>" +
 			"Lastly, you can reorder the elements in these lists " +
-			"by simply dragging them to a new location.</center></html>";
+			"by simply dragging them to a new location.<p><p>" +
+			"Hold control to select items to drag.</center></html>";
 	
 	protected static final String NO_PEOPLE_MESSAGE = "<html><center>You currently have no people in your group!<p><p> " +
 			"Click the Preferences tab and drag people onto the canvas to view results.</center></html>";
