@@ -105,7 +105,7 @@ public class ResultsListItem extends JPanel implements AccordionItem, ListCellRe
 		// make sure the room has the proper list labels
 		validateListLabels();
 		
-		// setup Info Panel
+		// setup the Info Panel
 		setupInfoPanel();
 	}
 	
