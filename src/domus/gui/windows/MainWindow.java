@@ -39,7 +39,7 @@ public class MainWindow extends JFrame {
     	
     	Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			public void uncaughtException(Thread t, Throwable e) {
-				showMessage(null, "Oh no! An error occurred: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
+				showMessage(null, "Oh no! An error occurred: " + e.getCause().getMessage(), JOptionPane.ERROR_MESSAGE);
 			}
     	});
     	
