@@ -157,7 +157,7 @@ public class ListsTab extends JPanel implements Runnable {
 	 * Removes a list from the lists panel 
 	 * @param list
 	 */
-	void removeList(ListPanel list) {
+	public void removeList(ListPanel list) {
 		// if the list doesn't exist, return
 		if (!_lists.remove(list))
 			return;

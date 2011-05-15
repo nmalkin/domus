@@ -153,7 +153,7 @@ public class House extends CanvasComponent implements Iterable<SubGroup>,
         return count;
     }
 
-    protected void updateSubGroupPositions() {
+    public void updateSubGroupPositions() {
         // note: positions are absolute,
         // so everything is (also) offset by this house's position
 

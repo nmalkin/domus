@@ -60,11 +60,11 @@ public class Database {
      * @param dormName
      * @return
      */
-    protected static Dorm getDorm(String dormName) {
+    public static Dorm getDorm(String dormName) {
         return INSTANCE._dorms.get(dormName);
     }
 
-    protected static int[] getYears() {
+    public static int[] getYears() {
         try {
             ResultSet rs = statement.executeQuery("select * from "
                     + Constants.SEMESTER_TABLE + " limit 1;");
@@ -93,7 +93,7 @@ public class Database {
      * 
      * @return
      */
-    protected static Collection<CampusArea> getCampusAreas() {
+    public static Collection<CampusArea> getCampusAreas() {
         if (_campusAreas != null)
             return _campusAreas;
 
@@ -159,7 +159,7 @@ public class Database {
         return sophomoreOnly;
     }
 
-    protected static int getMaxLotteryNumber() {
+    public static int getMaxLotteryNumber() {
         try {
             ResultSet maxNum = statement
                     .executeQuery("select max(number) as maxNum from "
@@ -184,7 +184,7 @@ public class Database {
      * @return
      * @throws SQLException
      */
-    protected static Collection<Room> getResults(Collection<Dorm> locations,
+    public static Collection<Room> getResults(Collection<Dorm> locations,
             int occupancy, Integer[] years, boolean genderNeutral,
             boolean sophomoreEligible) {
         List<Room> rooms = new LinkedList<Room>();
@@ -243,7 +243,7 @@ public class Database {
         return rooms;
     }
 
-    protected static int optimismFromLotteryNumber(int lotteryNumber) {
+    public static int optimismFromLotteryNumber(int lotteryNumber) {
         try {
             Integer[] years = State.getInstance().getYears();
             int semester = semesterFromLotteryNumber(lotteryNumber);
@@ -290,7 +290,7 @@ public class Database {
      * @return average semester level for groups with this lottery number
      * @throws SQLException
      */
-    protected static int semesterFromLotteryNumber(int lotteryNumber) {
+    public static int semesterFromLotteryNumber(int lotteryNumber) {
         try {
             Integer[] years = State.getInstance().getYears();
 
@@ -327,7 +327,7 @@ public class Database {
      * @return average semester level for groups with this lottery number
      * @throws SQLException
      */
-    protected static int predictLotteryNumber(int semester, int optimism) {
+    public static int predictLotteryNumber(int semester, int optimism) {
         Integer[] years = State.getInstance().getYears();
 
         int count = 0;

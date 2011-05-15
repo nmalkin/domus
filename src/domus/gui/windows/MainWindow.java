@@ -33,7 +33,7 @@ import domus.xml.DomusXML;
 public class MainWindow extends JFrame {
     JTabbedPane tabbedPane;
 
-    protected MainWindow() {
+    public MainWindow() {
         super("Domus");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 

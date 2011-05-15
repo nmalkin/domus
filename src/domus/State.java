@@ -88,7 +88,7 @@ public class State {
         return _group;
     }
 
-    protected void setGroup(Group group) { // TODO: do we want to expose it like
+    public void setGroup(Group group) { // TODO: do we want to expose it like
                                            // this? -RE: No...? -Sumner
         _group = group;
     }

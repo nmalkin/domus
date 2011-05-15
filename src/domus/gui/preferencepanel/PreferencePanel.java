@@ -33,7 +33,7 @@ public class PreferencePanel extends JPanel {
 	private int _listWidth = Constants.PREFERENCE_PANEL_WIDTH - 1;
 	private int _listHeight = Constants.PREFERENCE_PANEL_HEIGHT;
 
-	protected PreferencePanel() {
+	public PreferencePanel() {
 		Dimension size = new Dimension(Constants.PREFERENCE_PANEL_WIDTH,0);
 		this.setPreferredSize(size);
 		this.setSize(size);
