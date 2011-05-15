@@ -12,8 +12,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-
 import domus.State;
 import domus.data.RoomList;
 import domus.gui.accordionlist.AccordionItem;
@@ -57,7 +55,6 @@ public class AddListener extends MouseAdapter {
         _cb.setEditable(true);
         _cb.setSelectedIndex(-1);
         _cb.putClientProperty("JComboBox.isTableCellEditor", true);
-        JTextField cbField = (JTextField) _cb.getEditor().getEditorComponent();
         if (_container.getClass().getSimpleName().equals("ResultsListTab")) {
             _cb
                     .addActionListener(((ResultsListTab) _container).new RoomListSelectionListener(
