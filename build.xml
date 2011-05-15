@@ -26,6 +26,10 @@
     <pathelement location="${lib}/sqlitejdbc-v056.jar"/>
     <path refid="classpath.base"/>
   </path>
+  <path id="classpath.build">
+    <pathelement location="${build}"/>
+    <path refid="classpath.lib"/>
+  </path>
 
   <target name="clean">
     <!-- Delete the ${build} directory tree -->
@@ -89,8 +93,10 @@
     </jar>
   </target>
 
-  <target name="run" depends="jar">
+  <target name="run" depends="compile">
     <!-- run the jar file -->
-    <java jar="${target}.jar" fork="true"/>
+    <java classname="domus.Domus" fork="true">
+      <classpath refid="classpath.build"/>
+    </java>
   </target>
 </project>
