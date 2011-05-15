@@ -46,7 +46,7 @@ public class MainWindow extends JFrame {
     	try {
     		main = new MainWindow();
     	} catch(Exception e) {
-    		main.showMessage(main, "Oh no! An error occurred: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
+    		showMessage(main, "Oh no! An error occurred: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
     	}
     }
     
