@@ -34,7 +34,7 @@ import javax.swing.border.EmptyBorder;
 public class ListPanel extends JPanel {
 
 	private RoomList _list;
-	private static ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
+	private ImageIcon _removeIcon = new ImageIcon(getClass().getResource(Constants.REMOVE_FILE));
 	private JList _panel;
     private static JList _sourceList;
 	private JScrollPane _scroller;
@@ -48,6 +48,7 @@ public class ListPanel extends JPanel {
 	public ListPanel(RoomList list) {
 		super();
 		_list = list;
+		
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(_listWidth, _listHeight));
 		this.setSize(new Dimension(_listWidth, _listHeight));

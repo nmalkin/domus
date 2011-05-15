@@ -20,7 +20,7 @@ public class PreferencePanelItem extends JPanel implements AccordionItem {
 	private boolean _isOpen;
 	private JLabel _label;
 	private boolean _fullWidth;
-	private ImageIcon _removeIcon = new ImageIcon(Constants.REMOVE_FILE, "remove from list");
+	private ImageIcon _removeIcon = new ImageIcon(getClass().getResource(Constants.REMOVE_FILE));
 	private House _house;
 	private Dorm _dorm;
 	

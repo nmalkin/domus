@@ -8,6 +8,8 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Iterator;
 
 import javax.swing.JLayeredPane;
@@ -53,11 +55,11 @@ public class Canvas extends JLayeredPane {
 
         // load trash icon and watermark
         try {
-            _trashOpenImage = javax.imageio.ImageIO.read(new java.io.File(
+            _trashOpenImage = javax.imageio.ImageIO.read(getClass().getResource(
                     Constants.TRASH_OPEN_FILE));
-            _trashClosedImage = javax.imageio.ImageIO.read(new java.io.File(
+            _trashClosedImage = javax.imageio.ImageIO.read(getClass().getResource(
                     Constants.TRASH_CLOSED_FILE));
-            _domusImage = javax.imageio.ImageIO.read(new java.io.File(
+            _domusImage = javax.imageio.ImageIO.read(getClass().getResource(
                     Constants.DOMUS_FILE));
         } catch (java.io.IOException e) {
             // TODO: yell, or break silently? break silently..duh..

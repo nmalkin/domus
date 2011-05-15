@@ -15,7 +15,7 @@ public enum Gender {
         _image = null;
 
         try {
-            _image = javax.imageio.ImageIO.read(new java.io.File(imageFile));
+            _image = javax.imageio.ImageIO.read(getClass().getResource(imageFile));
         } catch (IOException e) {
             // TODO: do anything except silently fail?
         }

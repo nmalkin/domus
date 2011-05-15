@@ -41,7 +41,7 @@ public class ResultsListItem extends JPanel implements AccordionItem, ListCellRe
 	private JPanel _infoPanel;
 	private boolean _isOpen;
 	private boolean _fullWidth;
-	private ImageIcon _buttonIcon;
+	private ImageIcon _buttonIcon = new ImageIcon(getClass().getResource(Constants.ADD_FILE));
 	private double _comparisonValue;
 	private Color _backgroundColor;
 	
@@ -69,7 +69,6 @@ public class ResultsListItem extends JPanel implements AccordionItem, ListCellRe
 		_comparisonValue = _room.getProbability();
 		_isOpen = false;
 		_fullWidth = true;
-		_buttonIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
 		_backgroundColor = this.getBackground();
 		
 		// create label for Room name/number

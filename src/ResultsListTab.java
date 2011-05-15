@@ -41,9 +41,9 @@ public class ResultsListTab extends JPanel implements AccordionItem {
 	private double _comparisonValue;
 	private boolean _isOpen;
 	private boolean _fullWidth;
-	private static ImageIcon _openIcon = new ImageIcon(Constants.OPEN_FILE, "open results list");
-	private static ImageIcon _closedIcon = new ImageIcon(Constants.CLOSED_FILE, "closed results list");
-	private static ImageIcon _addToListIcon = new ImageIcon(Constants.ADD_FILE, "add to list");
+	private ImageIcon _openIcon = new ImageIcon(getClass().getResource(Constants.OPEN_FILE));
+	private ImageIcon _closedIcon = new ImageIcon(getClass().getResource(Constants.CLOSED_FILE));
+	private ImageIcon _addToListIcon = new ImageIcon(getClass().getResource(Constants.ADD_FILE));
 	
 	ResultsListTab(Dorm dorm, SubGroup sg, AccordionList<ResultsListTab, ResultsListItem> list) {
 		super();

@@ -165,6 +165,8 @@ public class Constants {
 			"Click the Preferences tab and drag people onto the canvas to view results.</center></html>";
 	
 	// Database
+	protected static final String TARGET_JAR = "domus.jar";
+	protected static final String DATABASE_PATH = "data/";
 	protected static final String DATABASE_NAME = PATH_PREFIX + "data/housingdata.db";
 	protected static final String ROOM_TABLE = "rooms_with_regressions";
 	protected static final String GENDER_TABLE = "genderNeutral";

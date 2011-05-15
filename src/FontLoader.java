@@ -2,11 +2,12 @@
 
 import java.awt.Font;
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 
 public class FontLoader {
+    
+    private static FontLoader _INSTANCE = new FontLoader();
     
     public static Font load(String path) {
         /*
@@ -21,7 +22,7 @@ public class FontLoader {
 
         Font font = null;
         try {
-            InputStream is = new BufferedInputStream(new FileInputStream(path));
+            InputStream is = new BufferedInputStream(_INSTANCE.getClass().getResourceAsStream(path));
             font = Font.createFont(Font.TRUETYPE_FONT, is);
             // ttfReal = ttfBase.deriveFont(Font.PLAIN, 24);
         } catch (Exception ex) {
