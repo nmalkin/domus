@@ -69,7 +69,8 @@ public class Canvas extends JLayeredPane {
             _domusImage = javax.imageio.ImageIO.read(new java.io.File(
                     Constants.DOMUS_FILE));
         } catch (java.io.IOException e) {
-            // TODO: yell, or break silently? break silently..duh..
+            System.err.println("unable to load canvas icons");
+            // we will, however, continue running
         }
         _trashImage = _trashClosedImage;
 
