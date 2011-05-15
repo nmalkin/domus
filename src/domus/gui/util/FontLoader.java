@@ -27,7 +27,6 @@ public class FontLoader {
             // ttfReal = ttfBase.deriveFont(Font.PLAIN, 24);
         } catch (Exception ex) {
             System.err.println("font could not be loaded. using default font.");
-            ex.printStackTrace();
             font = new Font("serif", Font.PLAIN, 12);
         }
 
