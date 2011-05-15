@@ -36,10 +36,17 @@ public class MainWindow extends JFrame {
 
     public static void openMainWindow() {
     	MainWindow main = null;
+    	
+    	Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+			public void uncaughtException(Thread t, Throwable e) {
+				showMessage(null, "Oh no! An error occurred: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
+			}
+    	});
+    	
     	try {
     		main = new MainWindow();
     	} catch(Exception e) {
-    		main.showMessage("Oh no! An error occurred: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
+    		main.showMessage(main, "Oh no! An error occurred: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
     	}
     }
     
@@ -257,6 +264,21 @@ public class MainWindow extends JFrame {
 
         this.pack();
         this.setVisible(true);
+    }
+    
+    /**
+     * Displays a pop-up window with the given message and an appropriate icon.
+     * 
+     * @param parentComponent the parent component for this message
+     * @param message
+     *            the message to be displayed
+     * @param messageType
+     *            one of the message types accepted by JOptionPane; see
+     *            http://download
+     *            .oracle.com/javase/6/docs/api/javax/swing/JOptionPane.html
+     */
+    private static void showMessage(java.awt.Component parentComponent, String message, int messageType) {
+        JOptionPane.showMessageDialog(parentComponent, message, "Domus", messageType);
     }
 
     /**
