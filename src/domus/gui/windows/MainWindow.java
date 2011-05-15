@@ -243,7 +243,7 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO: better about message
-                showMessage("Domus\nVersion " + Constants.VERSION);
+                showMessage("Domus\nVersion " + Constants.VERSION + " (" + Constants.LAST_UPDATED + ")\nNathan Malkin, Sumner Warren, Miya Schneider");
             }
         });
         helpMenu.add(aboutMenuItem);

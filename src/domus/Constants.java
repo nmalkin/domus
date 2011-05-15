@@ -11,7 +11,7 @@ import domus.gui.util.FontLoader;
 
 
 public class Constants {
-
+	public static final String LAST_UPDATED = "May 2011";
 	public static final int VERSION = 1;
 	public static final int FILE_FORMAT_VERSION = 1;
 	
