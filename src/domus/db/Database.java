@@ -19,6 +19,7 @@ import domus.data.CampusArea;
 import domus.data.Dorm;
 import domus.data.LotteryResult;
 import domus.data.Room;
+import domus.exceptions.DatabaseException;
 
 public class Database {
 
@@ -46,9 +47,9 @@ public class Database {
 
             _dorms = new HashMap<String, Dorm>();
         } catch (ClassNotFoundException e) {
-            System.err.println("ERROR: missing .jar file");
+           throw new DatabaseException("missing .jar file");
         } catch (SQLException e) {
-            System.err.println("ERROR: unable to connect to database "
+        	throw new DatabaseException("unable to connect to database "
                     + Constants.DATABASE_NAME);
         }
     }
@@ -81,10 +82,8 @@ public class Database {
 
             return years;
         } catch (SQLException e) {
-            System.out.println("error retrieving years");
+        	throw new DatabaseException("error retrieving years");
         }
-
-        return null;
     }
 
     /**
@@ -134,29 +133,37 @@ public class Database {
             for (Dorm d : INSTANCE._dorms.values())
                 d.setSophomoreOnly(isSophomoreOnly(d));
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("ERROR: unable to retrieve campus areas");
+        	throw new DatabaseException("unable to retrieve campus areas");
         }
 
         return _campusAreas;
     }
 
-    private static boolean isGenderNeutral(Dorm d) throws SQLException {
-        ResultSet neutral = statement.executeQuery("select * from "
-                + Constants.GENDER_TABLE + " where building='" + d.getName()
-                + "';");
-        boolean genderNeutral = neutral.next();
-        neutral.close();
-        return genderNeutral;
+    private static boolean isGenderNeutral(Dorm d) {     
+		try {
+			ResultSet neutral;
+			neutral = statement.executeQuery("select * from "
+			        + Constants.GENDER_TABLE + " where building='" + d.getName()
+			        + "';");
+			boolean genderNeutral = neutral.next();
+	        neutral.close();
+	        return genderNeutral;
+		} catch (SQLException e) {
+			throw new DatabaseException("unable to query for gender-neutral dorms");
+		}
     }
 
-    private static boolean isSophomoreOnly(Dorm d) throws SQLException {
-        ResultSet sophomore = statement.executeQuery("select * from "
-                + Constants.SOPHOMORE_TABLE + " where building='" + d.getName()
-                + "';");
-        boolean sophomoreOnly = sophomore.next();
-        sophomore.close();
-        return sophomoreOnly;
+    private static boolean isSophomoreOnly(Dorm d) {
+	    try {
+	    	ResultSet sophomore = statement.executeQuery("select * from "
+	                + Constants.SOPHOMORE_TABLE + " where building='" + d.getName()
+	                + "';");
+	        boolean sophomoreOnly = sophomore.next();
+	        sophomore.close();
+	        return sophomoreOnly;
+	    } catch (SQLException e) {
+			throw new DatabaseException("unable to query for sophomore-only dorms");
+		}
     }
 
     public static int getMaxLotteryNumber() {
@@ -168,7 +175,7 @@ public class Database {
 
             return maxNum.getInt("maxNum");
         } catch (SQLException e) {
-            return -1;
+        	throw new DatabaseException("unsuccessful query to semester-level table");
         }
     }
 
@@ -236,8 +243,7 @@ public class Database {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("ERROR: unable to retrieve results");
+            throw new DatabaseException("unable to retrieve results");
         }
 
         return rooms;
@@ -276,7 +282,7 @@ public class Database {
 
             return Math.round(sum / years.length);
         } catch (SQLException e) {
-            return -1;
+        	throw new DatabaseException("unable to retrieve results");
         }
     }
 
@@ -310,8 +316,7 @@ public class Database {
 
             return Math.round(sum / count);
         } catch (SQLException e) {
-            // TODO: better handling
-            return -1;
+        	throw new DatabaseException("unable to retrieve results");
         }
     }
 
@@ -378,7 +383,7 @@ public class Database {
 
             return sum / count;
         } catch (SQLException e) {
-            return -1; // TODO: fix this too
+        	throw new DatabaseException("unable to retrieve results");
         }
     }
 
@@ -416,7 +421,7 @@ public class Database {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+        	throw new DatabaseException("unable to retrieve results");
         }
     }
 
@@ -429,7 +434,7 @@ public class Database {
             statement.close();
             connection.close();
         } catch (SQLException e) {
-            System.err.println("ERROR: unable to close database");
+        	throw new DatabaseException("unable to close database");
         }
     }
 
