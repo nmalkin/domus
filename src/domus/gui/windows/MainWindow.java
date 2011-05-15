@@ -16,6 +16,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.transform.TransformerException;
@@ -33,16 +34,21 @@ import domus.xml.DomusXML;
 public class MainWindow extends JFrame {
     JTabbedPane tabbedPane;
 
-    public MainWindow() {
+    public static void openMainWindow() {
+    	MainWindow main = null;
+    	try {
+    		main = new MainWindow();
+    	} catch(Exception e) {
+    		main.showMessage("Oh no! An error occurred: " + e.getMessage(), JOptionPane.ERROR_MESSAGE);
+    	}
+    }
+    
+    private MainWindow() throws Exception {
         super("Domus");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         // look and feel
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         // state file chooser
         final JFileChooser stateFileChooser = new JFileChooser();
@@ -128,12 +134,10 @@ public class MainWindow extends JFrame {
                                     % NUMBER_OF_TABS);
                         }
                     }
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                } catch (DocumentException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                } catch (IOException err) {
+                    showMessage("Problem reading from file: " + err.getMessage(), JOptionPane.ERROR_MESSAGE);
+                } catch (DocumentException err) {
+                    showMessage("Invalid input file: \n" + err.getMessage(), JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -150,9 +154,8 @@ public class MainWindow extends JFrame {
                     if (file != null) {
                         DomusXML.writeXML(file);
                     }
-                } catch (java.io.IOException err) {
-                    System.err.println("an error occurred writing to output");
-                    // TODO: display a message
+                } catch (IOException err) {
+                    showMessage("Problem writing to file: " + err.getMessage(), JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -170,14 +173,10 @@ public class MainWindow extends JFrame {
                         DomusXML.writeHTML(file);
                     }
 
-                } catch (java.io.IOException err) {
-                    System.err.println("an error occurred writing to output");
-                    err.printStackTrace();
-                    // TODO: display a message
+                } catch (IOException err) {
+                    showMessage("Problem writing to file: " + err.getMessage(), JOptionPane.ERROR_MESSAGE);
                 } catch (TransformerException err) {
-                    System.err.println("an error occurred writing to output");
-                    err.printStackTrace();
-                    // TODO: display a message
+                	showMessage("Export failed. Unable to process output document: " + err.getMessage(), JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
